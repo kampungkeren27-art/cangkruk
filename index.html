@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #10b981; 
+            --primary-dark: #059669;
+            --primary-light: #ecfdf5;
+            --secondary: #2ecc71;
+            --dark: #111827;
+            --bg-soft: #f9fafb;
+            --white: #ffffff;
+            --glass: rgba(255, 255, 255, 0.9);
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--bg-soft); 
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+        
+        .navbar { 
+            background-color: var(--glass) !important; 
+            backdrop-filter: blur(15px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.04); 
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding: 12px 0;
+            z-index: 1050 !important; 
+        }
+        .navbar-brand { color: var(--primary) !important; font-weight: 800; font-size: 1.4rem; letter-spacing: -0.5px; }
+        .nav-link { color: #4b5563 !important; font-weight: 600; font-size: 0.95rem; transition: 0.3s; }
+        .nav-link:hover { color: var(--primary) !important; }
+
+        .dropdown-menu {
+            z-index: 9999 !important;
+            border-radius: 20px !important;
+            border: none !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+        }
+
+        .hero-banner {
+            position: relative;
+            height: 480px; 
+            min-height: 480px;
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)), 
+                        url('https://lh3.googleusercontent.com/d/1c8_z1QDUgxfT-FWIK0ZrDe31pkwFObUp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed; 
+            background-color: var(--primary);
+            color: white; 
+            margin-bottom: -60px;
+            border-radius: 0 0 60px 60px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .hero-banner h1 { 
+            font-size: 3.2rem; 
+            font-weight: 800; 
+            letter-spacing: -1.5px; 
+            margin-bottom: 15px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.3); 
+        }
+        .hero-banner p { 
+            font-size: 1.25rem; 
+            opacity: 0.95; 
+            max-width: 650px; 
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .card { 
+            border: none; 
+            border-radius: 30px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.03); 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            background: var(--white);
+            border: 1px solid rgba(0,0,0,0.04);
+        }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
+        
+        .stat-card { 
+            background: #ffffff;
+            border-left: 8px solid var(--primary); 
+        }
+
+        .chart-container { 
+            position: relative; 
+            height: 350px; 
+            width: 100%; 
+        }
+
+        #loader { 
+            display:flex; position: fixed; top:0; left:0; width:100%; height:100%; 
+            background:rgba(255,255,255,0.9); z-index:9999; align-items:center; justify-content:center;
+            flex-direction: column; backdrop-filter: blur(8px);
+        }
+
+        .stat-card small { color: #6b7280; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; }
+        .stat-card h4 { font-weight: 800; font-size: 2.4rem; color: var(--dark); margin-top: 5px; }
+        
+        .btn-primary { 
+            background: var(--primary); 
+            border: none; 
+            border-radius: 18px; 
+            font-weight: 700; 
+            padding: 16px 32px; 
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.25);
+            transition: 0.3s;
+        }
+        
+        .btn-primary:hover { background: var(--primary-dark); transform: scale(1.02); }
+        .news-img { width: 100%; height: 350px; object-fit: cover; border-radius: 25px; background-color: #ddd; }
+        
+        .announcement-box { 
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); 
+            border: 1px solid #fde68a; 
+            border-radius: 25px; 
+        }
+
+        .table-custom thead { 
+            background: var(--primary-light); 
+            color: var(--primary-dark);
+        }
+        .table-custom th { border: none !important; font-size: 0.8rem; letter-spacing: 0.5px; }
+        .table-custom td { vertical-align: middle; font-size: 0.85rem; }
+
+        .admin-form-input {
+            border-radius: 15px !important;
+            padding: 12px 20px !important;
+            border: 2px solid #eee !important;
+        }
+
+        #stats-section {
+            padding-top: 50px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #searchInput:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+            background: #ffffff !important;
+            outline: none;
+        }
+        .protected-overlay {
+            background: rgba(249, 250, 251, 0.8);
+            padding: 40px;
+            text-align: center;
+            border-radius: 20px;
+            border: 2px dashed #d1d5db;
+        }
+        .table-custom td a:hover {
+            color: var(--primary-dark) !important;
+            text-decoration: underline !important;
+        }
+
+        #infoModal .modal-content {
+            border: none;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="javascript:void(0)" onclick="showHome()">
+                <span style="color: var(--primary)">●</span> RW 01 <span style="font-weight:300; color: #6b7280;">CANGKRUK'AN</span>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <? if (isAdmin) { ?>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2 text-danger font-weight-bold" href="javascript:void(0)" onclick="showAdminPage()">
+                            ⚙️ DASHBOARD ADMIN
+                        </a>
+                    </li>
+                    <? } else { ?>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2 text-primary font-weight-bold" href="https://accounts.google.com/ServiceLogin" target="_top">
+                            🔑 ADMIN
+                        </a>
+                    </li>
+                    <? } ?>
+
+                    <li class="nav-item" id="login-nav-item">
+                        <a class="nav-link mx-2 text-success font-weight-bold" href="javascript:void(0)" data-toggle="modal" data-target="#loginModal">
+                            👤 LOGIN WARGA
+                        </a>
+                    </li>
+                    <li class="nav-item" id="user-nav-item" style="display:none;">
+                        <span class="nav-link mx-2 text-dark font-weight-bold">
+                           👋 Halo, <span id="nama-warga-login" class="text-success">Warga</span>
+                        </span>
+                    </li>
+                    <li class="nav-item" id="logout-nav-item" style="display:none;">
+                        <a class="nav-link mx-2 text-muted" href="javascript:void(0)" onclick="logoutWarga()">Keluar</a>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link mx-2" href="javascript:void(0)" onclick="showHome()">Beranda</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle btn btn-light rounded-pill px-4 py-2 mt-1 mt-lg-0 shadow-sm" 
+                           href="javascript:void(0)" 
+                           id="navbarDropdown" 
+                           role="button" 
+                           data-toggle="dropdown" 
+                           aria-haspopup="true" 
+                           aria-expanded="false" 
+                           style="font-size: 0.85rem; color: var(--primary-dark) !important;">
+                             Statistik Wilayah
+                        </a>
+                        <div class="dropdown-menu border-0 shadow-lg p-3" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item py-3 rounded mb-1" href="javascript:void(0)" onclick="loadRT('RT 01')">📍 Data RT 01</a>
+                            <a class="dropdown-item py-3 rounded mb-1" href="javascript:void(0)" onclick="loadRT('RT 02')">📍 Data RT 02</a>
+                            <a class="dropdown-item py-3 rounded mb-1" href="javascript:void(0)" onclick="loadRT('RT 03')">📍 Data RT 03</a>
+                            <a class="dropdown-item py-3 rounded" href="javascript:void(0)" onclick="loadRT('RT 04')">📍 Data RT 04</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div id="main-page-content">
+        <div id="banner-section" class="hero-banner">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-9">
+                        <span class="badge badge-success px-3 py-2 mb-3 rounded-pill font-weight-bold" style="background: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.2);">SISTEM INFORMASI TERPADU</span>
+                        <h1>Ruang Cangkruk <br>RW 01, Desa Ganting</h1>
+                        <p>WebApps Informasi Digital Kependudukan RW.01 Desa Ganting</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container" style="margin-top: -30px; position: relative; z-index: 5;">
+            <div id="home-section">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <h6 class="font-weight-bold text-muted mb-3" style="letter-spacing: 1px;">PENGUMUMAN TERBARU</h6>
+                        <div class="card p-3 mb-5">
+                            <div class="overflow-hidden rounded" style="border-radius: 22px;">
+                                <img id="main-news-img" src="https://picsum.photos/id/11/800/450" class="news-img">
+                            </div>
+                            <div class="card-body px-2">
+                                <div class="d-flex align-items-center mb-3">
+                                    <span class="badge badge-success px-3 py-2 rounded-pill mr-3">KEGIATAN WARGA</span>
+                                    <small id="main-news-date" class="text-muted font-weight-bold">Hari Ini</small>
+                                </div>
+                                <h2 id="main-news-title" class="font-weight-bold mb-3">Agenda Kerja Bakti Akbar Wilayah</h2>
+                                <p id="main-news-desc" class="text-muted mb-4 lead" style="font-size: 1rem;">Mengundang seluruh Bapak/Ibu warga RW 01 untuk berpartisipasi dalam pembersihan lingkungan serentak.</p>
+                                <button class="btn btn-primary px-5" data-toggle="modal" data-target="#infoModal" onclick="setModalDefault()">Lihat Rincian Agenda</button>
+                            </div>
+                        </div>
+
+                        <h6 class="font-weight-bold mb-3 text-muted" style="letter-spacing: 1px;">STATISTIK KUMULATIF RW</h6>
+                        <div class="card p-4 mb-5 border-0">
+                            <div class="row text-center mb-5 mt-3">
+                                <div class="col-4 border-right"><small>TOTAL WARGA</small><h2 id="g-total" class="font-weight-bold mt-2">0</h2></div>
+                                <div class="col-4 border-right"><small>LAKI-LAKI</small><h2 id="g-pria" class="font-weight-bold mt-2" style="color: #3b82f6;">0</h2></div>
+                                <div class="col-4"><small>PEREMPUAN</small><h2 id="g-wanita" class="font-weight-bold mt-2" style="color: #ec4899;">0</h2></div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="globalChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <h6 class="font-weight-bold mb-3 text-muted" style="letter-spacing: 1px;">INFORMASI CEPAT</h6>
+                        <div class="card announcement-box p-4 mb-4 shadow-sm border-0">
+                            <div class="mb-4 pb-3 border-bottom border-warning">
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge badge-warning text-dark px-2 py-1 mr-2">KAS RW</span>
+                                    <small class="font-weight-800">PENTING</small>
+                                </div>
+                                <p class="small mb-0 font-weight-bold text-dark opacity-75">Penyampaian Kas Desa Ganting Sidoarjo.</p>
+                            </div>
+                            <div>
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge badge-danger px-2 py-1 mr-2">LAPOR</span>
+                                    <small class="font-weight-800">KEAMANAN</small>
+                                </div>
+                                <p class="small mb-0 font-weight-bold text-dark opacity-75">Tamu lebih dari 24 jam wajib lapor Ketua RT.</p>
+                            </div>
+
+                            <div class="mt-4 pt-3 border-top">
+                                <h6 class="small font-weight-bold mb-3">STRUKTUR ORGANISASI / INFO</h6>
+                                <div class="rounded border overflow-hidden bg-light" style="cursor: pointer;" onclick="viewStruktur()">
+                                    <img src="https://drive.google.com/uc?export=view&id=1mzgcz-aq7H_nK2tjQIPnmVUxB3UwvUjg" class="img-fluid" style="height: 120px; width: 100%; object-fit: cover; opacity: 0.8; transition: 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">
+                                    <div class="p-2 bg-white text-center">
+                                        <small class="text-primary font-weight-bold">🔍 Klik untuk View</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card p-4 bg-dark text-white shadow-lg border-0" style="border-radius: 25px;">
+                            <h5 class="font-weight-bold mb-2">Layanan Bantuan</h5>
+                            <p class="small opacity-75 mb-4">Menemukan ketidaksesuaian data? Hubungi operator pusat kami.</p>
+                            <a href="https://wa.me/628123456789" target="_blank" class="btn btn-outline-light btn-block rounded-pill font-weight-bold">WhatsApp Admin RW</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="stats-section" style="display:none;">
+            <div class="container py-4 px-md-5">
+                <div class="d-flex align-items-center mb-5">
+                    <button onclick="showHome()" class="btn btn-white shadow-sm rounded-circle d-flex align-items-center justify-content-center mr-4" 
+                            style="width: 55px; height: 55px; border: none; min-width: 55px; background: white; transition: 0.3s;">
+                        <span class="text-success" style="font-size: 1.4rem;">←</span>
+                    </button>
+                    <div>
+                        <h2 id="title-rt" class="mb-0 font-weight-bold display-5 text-dark" style="letter-spacing: -1px;">Data Warga</h2>
+                        <p class="text-muted mb-0 font-weight-bold opacity-75">Daftar Penduduk Wilayah Terpilih</p>
+                    </div>
+                </div>
+
+                <div class="row mb-5 text-center">
+                    <div class="col-md-4 mb-4">
+                        <div class="card border-0 shadow-sm h-100" style="border-radius: 20px; overflow: hidden;">
+                            <div class="card-body p-4">
+                                <div class="mb-2 text-muted small font-weight-bold text-uppercase" style="letter-spacing: 1px;">Total Penduduk</div>
+                                <h2 id="v-total" class="display-4 font-weight-bold mb-0 text-dark">0</h2>
+                                <div class="mt-2"><span class="badge badge-light px-3 py-2 text-muted">Jiwa</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-4">
+                        <div class="card border-0 shadow-sm h-100" style="border-radius: 20px; border-top: 6px solid #3b82f6 !important;">
+                            <div class="card-body p-4">
+                                <div class="mb-2 font-weight-bold text-uppercase" style="letter-spacing: 1px; color: #3b82f6;">Laki-Laki</div>
+                                <h2 id="v-pria" class="display-4 font-weight-bold mb-0" style="color: #3b82f6;">0</h2>
+                                <div class="mt-2 text-muted small font-weight-bold text-uppercase">Jiwa</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <div class="card border-0 shadow-sm h-100" style="border-radius: 20px; border-top: 6px solid #ec4899 !important;">
+                            <div class="card-body p-4">
+                                <div class="mb-2 font-weight-bold text-uppercase" style="letter-spacing: 1px; color: #ec4899;">Perempuan</div>
+                                <h2 id="v-wanita" class="display-4 font-weight-bold mb-0" style="color: #ec4899;">0</h2>
+                                <div class="mt-2 text-muted small font-weight-bold text-uppercase">Jiwa</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm mb-5" style="border-radius: 20px; overflow: hidden;">
+                    <div id="table-wrapper"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin-page-content" style="display:none;" class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="d-flex align-items-center mb-4">
+                    <button class="btn btn-white shadow-sm border-0 mr-3 p-0 rounded-circle d-flex align-items-center justify-content-center" onclick="showHome()" style="width:45px; height:45px; background: white;">
+                        <span style="font-size: 1.2rem; color: var(--primary); font-weight: bold;">←</span>
+                    </button>
+                    <h2 class="font-weight-bold mb-0">Update Informasi Web</h2>
+                </div>
+                <div class="card p-5 shadow-lg border-0" style="border-radius: 35px;">
+                    <form id="adminForm">
+                        <div class="form-group mb-3">
+                            <label class="small font-weight-bold">Judul Pengumuman</label>
+                            <input type="text" id="adm-judul" class="form-control admin-form-input" placeholder="Contoh: Kerja Bakti Akbar">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="small font-weight-bold">Isi Pengumuman</label>
+                            <textarea id="adm-isi" class="form-control admin-form-input" rows="4" placeholder="Tuliskan detail pengumuman di sini..."></textarea>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label class="small font-weight-bold">Upload Foto</label>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="adm-file" accept="image/*">
+                                <label class="custom-file-label" for="adm-file">Pilih gambar...</label>
+                            </div>
+                        </div>
+                        <button type="button" onclick="prosesUploadAdmin()" id="btn-admin-save" class="btn btn-primary btn-block py-3 shadow-lg">Publikasikan Informasi</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content" style="border-radius: 30px;">
+                <div class="modal-body p-5">
+                    <div class="text-center mb-4">
+                        <h3 class="font-weight-bold">Login Warga</h3>
+                        <p class="text-muted">Gunakan No. KK sebagai username & password</p>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="small font-weight-bold">NOMOR KK</label>
+                        <input type="number" id="login-kk" class="form-control admin-form-input" placeholder="16 Digit No. KK">
+                    </div>
+                    <div class="form-group mb-4">
+                        <label class="small font-weight-bold">PASSWORD</label>
+                        <input type="password" id="login-pass" class="form-control admin-form-input" placeholder="No. KK Anda">
+                    </div>
+                    <button type="button" onclick="prosesLogin()" class="btn btn-primary btn-block py-3">Masuk Sekarang</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="infoModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content" style="border-radius: 35px;">
+                <div class="modal-header border-0 px-4 pt-4">
+                    <h5 class="modal-title font-weight-bold" id="modal-title-text">Informasi Detail</h5>
+                    <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div id="modal-dynamic-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="loader">
+        <div class="spinner-border text-success" style="width: 3rem; height: 3rem; border-width: 0.35em;"></div>
+        <h6 class="mt-4 font-weight-bold text-dark" id="loader-text">Memproses Data RW 01...</h6>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    let rawSheetData = <?!= rawSheetData ?>; 
+    let currentUser = null;
+    let currentActiveRT = ''; // Menyimpan RT mana yang sedang dibuka
+    Chart.register(ChartDataLabels);
+
+    $(document).ready(function() { 
+        // Panggil gambar struktur saat halaman dimuat
+        muatGambarStruktur();
+        
+        processGlobalStatsLocally();
+        $('#loader').fadeOut(800);
+        // ... (sisa kode lainnya)
+    });
+    function muatGambarStruktur() {
+        const fileID = "1mzgcz-aq7H_nK2tjQIPnmVUxB3UwvUjg";
+        google.script.run.withSuccessHandler(function(base64Data) {
+            if (base64Data) {
+                // Masukkan gambar ke area preview di dashboard
+                $('#img-preview-struktur').attr('src', base64Data);
+            }
+        }).getFileAsBase64(fileID);
+    }
+
+    // --- FUNGSI LOGIN & LOGOUT ---
+    function prosesLogin() {
+    const kk = $('#login-kk').val();
+    const pass = $('#login-pass').val();
+
+    if (!kk || !pass) {
+        Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Harap isi semua kolom!' });
+        return;
+    }
+
+    if (kk !== pass) {
+        Swal.fire({ icon: 'error', title: 'Login Gagal', text: 'Password salah! Pastikan password sama dengan No. KK.' });
+        return;
+    }
+
+    $('#loader-text').text("Memverifikasi...");
+    $('#loader').show();
+
+    let found = false;
+    for (let i = 1; i < rawSheetData.length; i++) {
+        const row = rawSheetData[i];
+        const sheetKK = row[1] ? row[1].toString().trim() : "";
+        
+        if (sheetKK === kk.trim()) {
+            currentUser = {
+                nama: row[2],
+                kk: sheetKK,
+                rt: row[8]
+            };
+            found = true;
+            break;
+        }
+    }
+
+    setTimeout(() => {
+        $('#loader').hide();
+        if (found) {
+            $('#loginModal').modal('hide');
+            updateUIAfterLogin();
+            
+            if($('#stats-section').is(':visible') && currentActiveRT !== ''){
+               loadRT(currentActiveRT);
+            }
+            
+            // TAMPILAN BARU: Tanpa tulisan aneh
+            Swal.fire({
+                icon: 'success',
+                title: 'Login Berhasil',
+                text: 'Selamat Datang, ' + currentUser.nama,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        } else {
+            Swal.fire({ icon: 'error', title: 'Tidak Ditemukan', text: 'Data No. KK tidak ditemukan di database warga!' });
+        }
+    }, 800);
+}
+
+    function updateUIAfterLogin() {
+        $('#login-nav-item').hide();
+        $('#user-nav-item, #logout-nav-item').show();
+        $('#nama-warga-login').text(currentUser.nama);
+    }
+
+    function logoutWarga() {
+        currentUser = null;
+        $('#login-nav-item').show();
+        $('#user-nav-item, #logout-nav-item').hide();
+        
+        // Muat ulang tabel (untuk memproteksi kembali jika user sedang buka data RT)
+        if($('#stats-section').is(':visible') && currentActiveRT !== ''){
+           loadRT(currentActiveRT);
+        }
+        showHome();
+    }
+    function showDetailWarga(index) {
+    const data = rawSheetData[index];
+    const profil = {
+        nik: data[0] || '-',
+        kk: data[1] || '-',
+        nama: data[2] || '-',
+        tmpLahir: data[3] || '-',
+        tglLahir: data[4] ? new Date(data[4]).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) : '-',
+        jk: data[6] || '-',
+        alamat: data[7] || '-',
+        rt: data[8] || '-',
+        statusHub: data[9] || '-',
+        pekerjaan: data[11] || '-',
+        pendidikan: data[12] || '-',
+        fotoUrl: data[13] || '' 
+    };
+
+    // CEK APAKAH USER BOLEH EDIT (Hanya No KK Spesifik)
+    const bolehEdit = (currentUser && currentUser.kk === "3515162501090114");
+
+    const fotoProfilHtml = profil.fotoUrl 
+        ? `<img src="${profil.fotoUrl.replace('open?', 'uc?export=view&')}" style="width:150px; height:150px; object-fit:cover; border-radius:50%; border: 4px solid var(--primary);">`
+        : `<span style="font-size: 5rem;">${profil.jk.startsWith('L') ? '👨' : '👩'}</span>`;
+
+    const detailHtml = `
+        <div id="view-mode">
+            <div class="row">
+                <div class="col-md-4 text-center mb-4">
+                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto" style="width:150px; height:150px; border: 4px solid var(--primary-light); overflow:hidden;">
+                        ${fotoProfilHtml}
+                    </div>
+                    <h5 class="mt-3 font-weight-bold text-uppercase">${profil.nama}</h5>
+                    <span class="badge badge-success px-3 py-2 rounded-pill">${profil.statusHub}</span>
+                    <hr>
+                    ${bolehEdit ? 
+                        `<button class="btn btn-sm btn-outline-primary btn-block rounded-pill" onclick="$('#view-mode').hide(); $('#edit-mode').fadeIn();">✏️ Edit Biodata / Foto</button>` : 
+                        `<p class="small text-muted text-center italic">Hanya pemilik akun khusus yang dapat mengedit data ini.</p>`
+                    }
+                </div>
+                <div class="col-md-8">
+                    <table class="table table-sm table-borderless">
+                        <tr><td class="text-muted" width="35%">NIK</td><td class="font-weight-bold">:${profil.nik}</td></tr>
+                        <tr><td class="text-muted">No. KK</td><td class="font-weight-bold">:${profil.kk}</td></tr>
+                        <tr><td class="text-muted">Tempat, Tgl Lahir</td><td>:${profil.tmpLahir}, ${profil.tglLahir}</td></tr>
+                        <tr><td class="text-muted">Jenis Kelamin</td><td>:${profil.jk}</td></tr>
+                        <tr><td class="text-muted">Pekerjaan</td><td>:${profil.pekerjaan}</td></tr>
+                        <tr><td class="text-muted">Pendidikan</td><td>:${profil.pendidikan}</td></tr>
+                        <tr><td class="text-muted">Alamat</td><td>:${profil.alamat} (RT ${profil.rt})</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="edit-mode" style="display:none;">
+            <h6 class="font-weight-bold text-primary mb-3">FORM EDIT DATA & FOTO</h6>
+            <form id="editFormWarga">
+                <input type="hidden" id="edit-nik" value="${profil.nik}">
+                <input type="hidden" id="edit-nama" value="${profil.nama}">
+                
+                <div class="form-group mb-3">
+                    <label class="small font-weight-bold">UPLOAD FOTO BARU</label>
+                    <input type="file" id="edit-file" class="form-control-file" accept="image/*">
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="small font-weight-bold">PEKERJAAN</label>
+                    <input type="text" id="edit-pekerjaan" class="form-control rounded-pill" value="${profil.pekerjaan}">
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="small font-weight-bold">PENDIDIKAN</label>
+                    <input type="text" id="edit-pendidikan" class="form-control rounded-pill" value="${profil.pendidikan}">
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-light rounded-pill px-4" onclick="$('#edit-mode').hide(); $('#view-mode').fadeIn();">Batal</button>
+                    <button type="button" class="btn btn-primary rounded-pill px-4" onclick="simpanEditWarga()">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    `;
+
+    $('#modal-title-text').text("Biodata Penduduk");
+    $('#modal-dynamic-content').html(detailHtml);
+    $('#infoModal').modal('show');
+}
+function simpanEditWarga() {
+    // PROTEKSI LOGIN & NOMOR KK
+    if (!currentUser || currentUser.kk !== "3515162501090114") {
+        Swal.fire('Ditolak', 'Maaf, Anda tidak memiliki akses untuk mengubah data.', 'error');
+        return;
+    }
+
+    const formData = {
+        nik: $('#edit-nik').val(),
+        nama: $('#edit-nama').val(),
+        pekerjaan: $('#edit-pekerjaan').val(),
+        pendidikan: $('#edit-pendidikan').val(),
+        adminKK: currentUser.kk // Kirim KK pengedit sebagai bukti ke server
+    };
+
+    const fileInput = document.getElementById('edit-file');
+    const file = fileInput.files[0];
+
+    Swal.fire({ title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const fileData = { 
+                data: e.target.result.split(',')[1], 
+                mimeType: file.type, 
+                fileName: "FOTO_" + formData.nama 
+            };
+            google.script.run.withSuccessHandler(onEditSuccess).updateBiodataWarga(formData, fileData);
+        };
+        reader.readAsDataURL(file);
+    } else {
+        google.script.run.withSuccessHandler(onEditSuccess).updateBiodataWarga(formData, null);
+    }
+}
+function viewStruktur() {
+    // ID File kamu
+    const fileID = "1mzgcz-aq7H_nK2tjQIPnmVUxB3UwvUjg"; 
+    
+    // TRICK: Gunakan link thumbnail dengan parameter s4000 (size maksimal) agar gambar jernih
+    const imageUrl = "https://lh3.googleusercontent.com/u/0/d/" + fileID + "=s4000";
+    
+    const driveLink = "https://drive.google.com/file/d/" + fileID + "/view?usp=sharing";
+    
+    const content = `
+        <div class="text-center">
+            <div id="img-container" style="min-height: 250px; background: #eee; display: flex; align-items: center; justify-content: center;">
+                <img src="${imageUrl}" 
+                     class="img-fluid rounded shadow-sm mb-3" 
+                     style="width: 100%; display: block;" 
+                     onerror="handleImageError(this)">
+            </div>
+            
+            <div class="mt-2">
+                <a href="${driveLink}" target="_blank" class="btn btn-success btn-block rounded-pill">
+                    📥 Buka Full Res / Download (Drive)
+                </a>
+            </div>
+        </div>
+    `;
+    
+    $('#modal-title-text').text("Informasi Struktur Organisasi");
+    $('#modal-dynamic-content').html(content);
+    $('#infoModal').modal('show');
+}
+
+// Fungsi tambahan jika link bypass pertama gagal, dia akan coba link kedua
+function handleImageError(img) {
+    const fileID = "1mzgcz-aq7H_nK2tjQIPnmVUxB3UwvUjg";
+    const backupUrl = "https://drive.google.com/thumbnail?authuser=0&sz=w1000&id=" + fileID;
+    
+    if (img.src !== backupUrl) {
+        img.src = backupUrl;
+    } else {
+        img.parentElement.innerHTML = `<div class="alert alert-warning small">Gambar tidak dapat dimuat langsung karena kebijakan privasi browser. Silakan klik tombol hijau di bawah untuk melihat.</div>`;
+    }
+}
+// FUNGSI PROSES SIMPAN (Pastikan Fungsi ini ada di bawah tag <script>)
+function simpanEditWarga() {
+    const formData = {
+        nik: $('#edit-nik').val(),
+        nama: $('#edit-nama').val(),
+        pekerjaan: $('#edit-pekerjaan').val(),
+        pendidikan: $('#edit-pendidikan').val()
+    };
+
+    const fileInput = document.getElementById('edit-file');
+    const file = fileInput.files[0];
+
+    Swal.fire({
+        title: 'Menyimpan Data...',
+        text: 'Mohon tunggu sebentar',
+        allowOutsideClick: false,
+        didOpen: () => { Swal.showLoading(); }
+    });
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const fileData = { 
+                data: e.target.result.split(',')[1], 
+                mimeType: file.type, 
+                fileName: "FOTO_" + formData.nama 
+            };
+            google.script.run.withSuccessHandler(onEditSuccess).updateBiodataWarga(formData, fileData);
+        };
+        reader.readAsDataURL(file);
+    } else {
+        google.script.run.withSuccessHandler(onEditSuccess).updateBiodataWarga(formData, null);
+    }
+}
+
+function onEditSuccess(res) {
+    if(res.success) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil Update!',
+            text: res.message,
+            timer: 2000,
+            showConfirmButton: false
+        }).then(() => {
+            // Ambil data terbaru tanpa reload halaman
+            google.script.run.withSuccessHandler(newData => {
+                rawSheetData = JSON.parse(newData); 
+                $('#infoModal').modal('hide');
+                loadRT(currentActiveRT); // Update tabel secara instan
+            }).getRawDataJSON(); 
+        });
+    } else {
+        // Tampilan Gagal yang lebih rapi
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal Simpan',
+            text: res.message
+        });
+    }
+}
+// Di Code.gs
+function getRawDataJSON() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName("Sheet1");
+  const data = sheet.getDataRange().getValues();
+  return JSON.stringify(data);
+}
+
+    // --- FUNGSI TAMPILAN ---
+    function showAdminPage() {
+        $('#main-page-content').hide();
+        $('#admin-page-content').fadeIn();
+        window.scrollTo(0, 0);
+    }
+
+    function showHome() {
+        currentActiveRT = '';
+        $('#admin-page-content, #stats-section').hide();
+        $('#main-page-content, #banner-section, #home-section').fadeIn();
+        window.scrollTo(0, 0);
+    }
+
+    function getRTTableHTML(rtName) {
+    // 1. CEK LOGIN (Tetap utuh)
+    if (!currentUser) {
+        return `
+            <div class="protected-overlay" style="padding: 60px 20px; text-align: center;">
+                <h4 class="font-weight-bold text-dark">Data Terproteksi</h4>
+                <p class="text-muted">Detail daftar warga hanya dapat diakses oleh warga RW 01 yang telah login.</p>
+                <button class="btn btn-primary px-4 mt-2" data-toggle="modal" data-target="#loginModal">
+                    🔐 Login No. KK untuk Melihat Data
+                </button>
+            </div>`;
+    }
+
+    const rtNum = parseInt(rtName.replace(/\D/g, ""));
+    
+    // 2. Tambahkan Search Bar di atas tabel
+    let tableHtml = `
+       
+
+            <div class="table-responsive" style="border-radius: 12px; border: 1px solid #eee; max-height: 500px; overflow-y: auto;">
+                <table class="table table-hover table-custom mb-0" style="width: 100%; white-space: nowrap; border-collapse: separate; border-spacing: 0;">
+                    <thead style="position: sticky; top: 0; z-index: 999; background-color: #f8f9fa;">
+                        <tr style="font-size: 13px; color: #4a5568; text-transform: uppercase;">
+                            <th class="py-3 px-4" style="background: #f8f9fa; border-bottom: 2px solid #dee2e6;">NO</th>
+                            <th class="py-3 px-3" style="background: #f8f9fa; border-bottom: 2px solid #dee2e6;">NAMA LENGKAP</th>
+                            <th class="py-3 px-3" style="background: #f8f9fa; border-bottom: 2px solid #dee2e6;">TMPT LHR</th>
+                            <th class="py-3 px-3" style="background: #f8f9fa; border-bottom: 2px solid #dee2e6;">TGL LAHIR</th>
+                            <th class="py-3 px-3" style="background: #f8f9fa; border-bottom: 2px solid #dee2e6;">STATUS</th>
+                            <th class="py-3 px-3" style="background: #f8f9fa; border-bottom: 2px solid #dee2e6;">L/P</th>
+                            <th class="py-3 px-4" style="background: #f8f9fa; border-bottom: 2px solid #dee2e6;">ALAMAT</th>
+                        </tr>
+                    </thead>
+                    <tbody style="background: white;">`;
+    
+    let no = 1;
+    let found = false;
+
+    for (let i = 1; i < rawSheetData.length; i++) {
+        const row = rawSheetData[i];
+        const rowRT = row[8] ? parseInt(row[8].toString().replace(/\D/g, "")) : 0;
+
+        if (rowRT === rtNum) {
+            found = true;
+            let tglLahir = "-";
+            if (row[4]) {
+                let d = new Date(row[4]);
+                if (d instanceof Date && !isNaN(d.getTime())) {
+                    tglLahir = d.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                } else {
+                    tglLahir = row[4]; 
+                }
+            }
+
+            // 3. Render Baris (Fungsi showDetailWarga tetap aman)
+            tableHtml += `
+                <tr style="transition: all 0.2s;">
+                    <td class="py-3 px-4 text-muted">${no++}</td>
+                    <td class="py-3 px-3 font-weight-bold text-uppercase">
+                        <a href="javascript:void(0)" onclick="showDetailWarga(${i})" style="color: #4e73df; text-decoration: none; border-bottom: 1px dashed transparent;">
+                            ${row[2] || '-'}
+                        </a>
+                    </td>
+                    <td class="py-3 px-3">${row[3] || '-'}</td>
+                    <td class="py-3 px-3">${tglLahir}</td>
+                    <td class="py-3 px-3"><span class="badge badge-light border">${row[10] || '-'}</span></td>
+                    <td class="py-3 px-3"><b class="${row[6] === 'L' || row[6] === 'LAKI-LAKI' ? 'text-primary' : 'text-danger'}">${row[6] || '-'}</b></td>
+                    <td class="py-3 px-4" style="min-width: 250px;"><small class="text-muted">${row[7] || '-'}</small></td>
+                </tr>`;
+        }
+    }
+
+    if (!found) {
+        tableHtml += '<tr><td colspan="7" class="text-center p-5 text-muted">Tidak ada data warga ditemukan untuk wilayah ini.</td></tr>';
+    }
+    
+    tableHtml += `</tbody></table></div></div>`;
+    return tableHtml;
+}
+
+// FUNGSI FILTER SEARCH (Wajib ada biar input search jalan)
+function filterTable() {
+    const input = document.getElementById("searchInput");
+    const filter = input.value.toLowerCase();
+    const table = document.querySelector(".table-custom");
+    const tr = table.getElementsByTagName("tr");
+
+    for (let i = 1; i < tr.length; i++) {
+        const tdNama = tr[i].getElementsByTagName("td")[1];
+        const tdAlamat = tr[i].getElementsByTagName("td")[6];
+        if (tdNama || tdAlamat) {
+            const txtNama = tdNama.textContent || tdNama.innerText;
+            const txtAlamat = tdAlamat.textContent || tdAlamat.innerText;
+            if (txtNama.toLowerCase().indexOf(filter) > -1 || txtAlamat.toLowerCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
+}
+
+    function setModalDefault() {
+        $('#modal-title-text').text("Informasi Detail");
+        $('#modal-dynamic-content').html("<p>Detail agenda kerja bakti akan diupdate oleh admin.</p>");
+    }
+
+    function loadRT(rtName) {
+    currentActiveRT = rtName;
+    
+    // 1. Reset tampilan section
+    $('#home-section, #banner-section').hide();
+    $('#stats-section').show(); 
+    window.scrollTo(0, 0); 
+    
+    // 2. Set Judul
+    $('#title-rt').text('Informasi Wilayah ' + rtName);
+
+    // 3. Hitung Statistik (Gak ada yang dirubah)
+    const rtNum = parseInt(rtName.replace(/\D/g, ""));
+    let rtStats = { total: 0, pria: 0, wanita: 0 };
+    
+    for (let i = 1; i < rawSheetData.length; i++) {
+        const row = rawSheetData[i];
+        const rowRT = row[8] ? parseInt(row[8].toString().replace(/\D/g, "")) : 0;
+        if (rowRT === rtNum) {
+            rtStats.total++;
+            const jk = row[6] ? row[6].toString().toUpperCase().trim() : "";
+            if (jk === 'L' || jk === 'LAKI-LAKI') rtStats.pria++;
+            if (jk === 'P' || jk === 'PEREMPUAN') rtStats.wanita++;
+        }
+    }
+    
+    // 4. Update Angka
+    $('#v-total').text(rtStats.total);
+    $('#v-pria').text(rtStats.pria);
+    $('#v-wanita').text(rtStats.wanita);
+    
+    // 5. PERBAIKAN TAMPILAN AGAR PROPORSIONAL (GAK MEPET)
+    const tableHTML = getRTTableHTML(rtName);
+    
+    // Polesan UI biar menarik & mewah
+    const uiBaru = `
+        <div class="container mt-2 mb-5"> <div class="row justify-content-center">
+                <div class="col-12 px-md-4">
+                    <div class="card border-0 shadow-lg" style="border-radius: 25px; overflow: hidden; background: #fff;">
+                        
+                        <div class="card-header border-0 bg-white pt-4 px-4">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h5 class="font-weight-bold mb-0" style="color: #2d3436; font-size: 1.25rem;">
+                                        <i class="fas fa-database mr-2 text-primary"></i>Data Penduduk Wilayah
+                                    </h5>
+                                    <p class="text-muted small mb-0">Manajemen data warga ${rtName} terverifikasi</p>
+                                </div>
+                                <span class="badge badge-primary px-3 py-2" style="border-radius: 10px;">
+                                    ${rtStats.total} Jiwa Terdaftar
+                                </span>
+                            </div>
+                            <hr class="mt-3 mb-0">
+                        </div>
+                        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-3 px-4 pt-4">
+    <h5 class="font-weight-bold mb-3 mb-md-0" style="color: #2d3436;">
+        <i class="fas fa-list-ul mr-2 text-primary"></i>Daftar Penduduk
+    </h5>
+    
+    <div class="search-box" style="position: relative; width: 100%; max-width: 300px;">
+        <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #adb5bd;"></i>
+        <input type="text" id="searchInput" onkeyup="filterTable()" class="form-control border-0 shadow-sm" 
+               placeholder="Cari Nama / Alamat..." 
+               style="padding-left: 45px; border-radius: 12px; height: 45px; background: #f8fafc;">
+    </div>
+</div>
+
+<div id="table-wrapper">
+    </div>
+
+                        <div class="card-body p-0">
+                            <div class="table-responsive" style="padding: 10px 25px 25px 25px;">
+                                ${tableHTML}
+                            </div>
+                        </div>
+                        
+                        <div class="card-footer bg-light border-0 py-3 text-center">
+                            <small class="text-muted italic">
+                                <i class="fas fa-lock mr-1"></i> Data terproteksi oleh sistem Dashboard RW 01
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    `;
+    
+    // Masukin ke wrapper
+    $('#table-wrapper').html(uiBaru);
+
+    // 6. FIX DROPDOWN (PENTING)
+    setTimeout(() => {
+        if (window.jQuery && typeof $('.dropdown-toggle').dropdown === 'function') {
+            $('.dropdown-toggle').dropdown('update');
+        }
+    }, 200);
+}
+function filterTable() {
+    // Ambil input dan ubah ke huruf kecil biar gak sensitif (case-insensitive)
+    const input = document.getElementById("searchInput");
+    const filter = input.value.toLowerCase();
+    const table = document.querySelector("#table-wrapper table");
+    
+    // Jika tabel belum di-render, stop
+    if (!table) return;
+
+    const tr = table.getElementsByTagName("tr");
+
+    // Mulai dari index 1 karena index 0 adalah header tabel
+    for (let i = 1; i < tr.length; i++) {
+        const row = tr[i];
+        // Kita cari di kolom Nama (index 1) dan kolom Alamat (index 6)
+        const tdNama = row.getElementsByTagName("td")[1];
+        const tdAlamat = row.getElementsByTagName("td")[6];
+
+        if (tdNama || tdAlamat) {
+            const textNama = tdNama.textContent || tdNama.innerText;
+            const textAlamat = tdAlamat ? (tdAlamat.textContent || tdAlamat.innerText) : "";
+            
+            // Cek apakah ada kata yang cocok
+            if (textNama.toLowerCase().indexOf(filter) > -1 || textAlamat.toLowerCase().indexOf(filter) > -1) {
+                row.style.display = ""; // Munculkan
+                row.style.animation = "fadeIn 0.3s"; // Tambahin efek dikit biar smooth
+            } else {
+                row.style.display = "none"; // Sembunyikan
+            }
+        }
+    }
+}
+    function updateBiodataWarga(formData, fileData) {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName("Sheet1"); // Pastikan nama sheet sesuai
+    const data = sheet.getDataRange().getValues();
+    
+    let rowIndex = -1;
+    // Cari baris berdasarkan NIK (Kolom A) atau Nama (Kolom C)
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0].toString() === formData.nik.toString()) {
+        rowIndex = i + 1;
+        break;
+      }
+    }
+
+    if (rowIndex === -1) throw new Error("Data warga tidak ditemukan.");
+
+    // 1. Upload Foto jika ada
+    if (fileData) {
+      const folderId = "15ODH-msuT8iTr70ehFjiSEJPO1dkFqDZ"; // Masukkan ID Folder Drive yang sama dengan Banner
+      const folder = DriveApp.getFolderById(folderId);
+      const blob = Utilities.newBlob(Utilities.base64Decode(fileData.data), fileData.mimeType, "FOTO_" + formData.nama + "_" + formData.nik);
+      const file = folder.createFile(blob);
+      file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+      
+      // Simpan link foto di Kolom Foto (Misal kolom M / indeks 12)
+      sheet.getRange(rowIndex, 14).setValue(file.getUrl()); 
+    }
+
+    // 2. Update Data Lain (Misal Pekerjaan di kolom L dan Pendidikan di kolom M)
+    sheet.getRange(rowIndex, 12).setValue(formData.pekerjaan);
+    sheet.getRange(rowIndex, 13).setValue(formData.pendidikan);
+
+    return { success: true, message: "Biodata berhasil diperbarui!" };
+  } catch (e) {
+    return { success: false, message: e.toString() };
+  }
+}
+
+    function processGlobalStatsLocally() {
+    let stats = { total: 0, pria: 0, wanita: 0, rt1_l: 0, rt1_p: 0, rt2_l: 0, rt2_p: 0, rt3_l: 0, rt3_p: 0, rt4_l: 0, rt4_p: 0 };
+    for (let i = 1; i < rawSheetData.length; i++) {
+        const row = rawSheetData[i];
+        if (!row[1]) continue; 
+        const jk = row[6] ? row[6].toString().toUpperCase().trim() : "";
+        const rt = parseInt(row[8] ? row[8].toString().replace(/\D/g, "") : "0");
+        stats.total++;
+        let isL = (jk === 'L' || jk === 'LAKI-LAKI');
+        let isP = (jk === 'P' || jk === 'PEREMPUAN');
+        if (isL) stats.pria++;
+        if (isP) stats.wanita++;
+        if (rt === 1) { if(isL) stats.rt1_l++; if(isP) stats.rt1_p++; }
+        else if (rt === 2) { if(isL) stats.rt2_l++; if(isP) stats.rt2_p++; }
+        else if (rt === 3) { if(isL) stats.rt3_l++; if(isP) stats.rt3_p++; }
+        else if (rt === 4) { if(isL) stats.rt4_l++; if(isP) stats.rt4_p++; }
+    }
+    $('#g-total').text(stats.total);
+    $('#g-pria').text(stats.pria);
+    $('#g-wanita').text(stats.wanita);
+    drawGlobalChart(stats);
+}
+
+let chGlobal;
+function drawGlobalChart(d) {
+    const ctx = document.getElementById('globalChart').getContext('2d');
+    if(chGlobal) chGlobal.destroy();
+    chGlobal = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['RT 01', 'RT 02', 'RT 03', 'RT 04'],
+            datasets: [
+                { label: 'Laki-Laki', data: [d.rt1_l, d.rt2_l, d.rt3_l, d.rt4_l], backgroundColor: '#3b82f6', borderRadius: 10 },
+                { label: 'Perempuan', data: [d.rt1_p, d.rt2_p, d.rt3_p, d.rt4_p], backgroundColor: '#ec4899', borderRadius: 10 }
+            ]
+        },
+        options: {
+            maintainAspectRatio: false,
+            plugins: { 
+                legend: { position: 'bottom' }, 
+                datalabels: { anchor: 'end', align: 'top', formatter: (v) => v > 0 ? v : '' } 
+            },
+            scales: { y: { display: false, beginAtZero: true }, x: { grid: { display: false } } },
+            onClick: (e, activeEls) => {
+                if (activeEls.length > 0) {
+                    const idx = activeEls[0].index;
+                    const rtTerpilih = (idx + 1);
+
+                    // PROTEKSI LOGIN DI SINI
+                    if (typeof currentUser === 'undefined' || !currentUser) {
+                        // Kalau belum login, kasih tau pakenya modal peringatan
+                        showLoginRequiredModal(); 
+                    } else {
+                        // Kalau sudah login, baru panggil tabelnya
+                        showPopUpTabelWarga(rtTerpilih);
+                    }
+                }
+            }
+        }
+    });
+}
+
+// FUNGSI BUAT BIKIN TABEL WARGA DI POP-UP
+function showPopUpTabelWarga(rt) {
+    // 1. Tetap pakai modal-xl biar lega
+    $('.modal-dialog').addClass('modal-xl'); 
+
+    // 2. Bungkus pakai card dan p-4 (padding luar) biar gak ciuman sama tembok modal
+    let html = `
+        <div class="p-4" style="background-color: #f8f9fa;">
+            <div class="card shadow-sm border-0" style="border-radius: 15px; overflow: hidden;">
+                <div class="card-body p-0">
+                    <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                        <table class="table table-hover mb-0" style="width: 100%; white-space: nowrap;">
+                            <thead style="background-color: #ffffff; border-bottom: 2px solid #3b82f6; position: sticky; top: 0; z-index: 10;">
+                                <tr style="font-size: 13px; color: #4b5563; text-transform: uppercase; font-weight: 700;">
+                                    <th class="text-center" style="padding: 20px; width: 60px;">#</th>
+                                    <th style="padding: 20px;">Nama Lengkap</th>
+                                    <th class="text-center" style="padding: 20px;">L/P</th>
+                                    <th class="text-center" style="padding: 20px;">RT</th>
+                                    <th style="padding: 20px;">Alamat Rumah</th>
+                                </tr>
+                            </thead>
+                            <tbody style="font-size: 14px; background-color: #ffffff;">`;
+    
+    let no = 1;
+    for (let i = 1; i < rawSheetData.length; i++) {
+        const row = rawSheetData[i];
+        if (!row[2]) continue; 
+
+        const rtRow = parseInt(row[8] ? row[8].toString().replace(/\D/g, "") : "0");
+        
+        if (rtRow === rt) {
+            const jk = row[6] ? row[6].toString().toUpperCase().trim() : "-";
+            const badgeColor = (jk === 'L' || jk === 'LAKI-LAKI') ? '#3b82f6' : '#ec4899';
+            
+            html += `
+                <tr style="border-bottom: 1px solid #f3f4f6;">
+                    <td class="text-center text-muted" style="padding: 15px;">${no++}</td>
+                    <td style="padding: 15px;"><span style="color: #1f2937; font-weight: 600;">${row[2]}</span></td>
+                    <td class="text-center" style="padding: 15px;">
+                        <b style="color: ${badgeColor}">${jk.charAt(0)}</b>
+                    </td>
+                    <td class="text-center" style="padding: 15px;">
+                        <span class="badge badge-light border text-muted">RT 0${rtRow}</span>
+                    </td>
+                    <td style="padding: 15px; color: #6b7280;">${row[7] || '-'}</td>
+                </tr>`;
+        }
+    }
+
+    html += `</tbody></table></div></div></div></div>`;
+    
+    // Header modal dikasih margin biar sejajar sama card di bawahnya
+    $('#modal-title-text').html(`<div style="padding-left: 25px; padding-top: 10px;"><b>Data Wilayah RT 0${rt}</b></div>`);
+    
+    $('#modal-dynamic-content').html(html);
+    $('#infoModal').modal('show');
+}
+function showLoginRequiredModal(rtLabel) {
+    $('#modal-title-text').text("Akses Terbatas - " + rtLabel);
+    
+    let content = `
+        <div class="text-center p-4">
+            <div style="font-size: 4rem; margin-bottom: 20px;">🔒</div>
+            <h4 class="font-weight-bold">Ingin melihat detail warga ${rtLabel}?</h4>
+            <p class="text-muted">Mohon maaf, demi keamanan data penduduk, detail nama dan alamat hanya dapat dilihat oleh warga yang telah login.</p>
+            <div class="mt-4">
+                <button class="btn btn-primary px-5 py-3" onclick="$('#infoModal').modal('hide'); $('#loginModal').modal('show');">
+                    🔑 Login Sekarang
+                </button>
+            </div>
+            <p class="small text-muted mt-3">Gunakan No. KK sebagai username dan password.</p>
+        </div>
+    `;
+    
+    $('#modal-dynamic-content').html(content);
+    $('#infoModal').modal('show');
+}
+
+    function prosesUploadAdmin() {
+        const judul = $('#adm-judul').val();
+        const isi = $('#adm-isi').val();
+        const fileInput = document.getElementById('adm-file');
+        if (!judul || !isi) { alert("Isi judul dan pengumuman!"); return; }
+        
+        $('#loader-text').text("Menyimpan...");
+        $('#loader').show();
+        
+        const file = fileInput.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const fileData = { 
+                    data: e.target.result.split(',')[1], 
+                    mimeType: file.type, 
+                    fileName: file.name 
+                };
+                google.script.run.withSuccessHandler(res => { 
+                    $('#loader').hide(); 
+                    alert(res.message); 
+                    showHome(); 
+                }).processAdminUpdateWithFile({judul, isi}, fileData);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            google.script.run.withSuccessHandler(res => { 
+                $('#loader').hide(); 
+                alert(res.message); 
+                showHome(); 
+            }).processAdminUpdateWithFile({judul, isi}, null);
+        }
+    }
+</script>
+</body>
+</html>
