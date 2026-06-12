@@ -1149,25 +1149,54 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-  let rawSheetData = [];
+let rawSheetData = [];
 let currentUser = null;
 let currentActiveRT = '';
+
 Chart.register(ChartDataLabels);
 
-// GANTI DENGAN URL WEB APP HASIL DEPLOY APPS SCRIPT
 const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxGFHt_yiVB8zfYWEmS0Dgw-IlZGl7k0EXhU3YdfqxgTwWl3QSc5IK1rdgfGLTAKD26/exec";
 
 $(document).ready(function() {
 
+    console.log("Memulai load data...");
+
     fetch(WEBAPP_URL + "?action=rawData")
-        .then(response => response.json())
+        .then(response => {
+
+            console.log("Status Response:", response.status);
+
+            if (!response.ok) {
+                throw new Error("HTTP Error: " + response.status);
+            }
+
+            return response.json();
+        })
         .then(data => {
+
+            console.log("Data berhasil diterima:");
+            console.log(data);
+            console.log("Apakah Array?", Array.isArray(data));
 
             rawSheetData = data;
 
-            muatGambarStruktur();
+            if (!rawSheetData || rawSheetData.length === 0) {
+                throw new Error("Data kosong dari Spreadsheet");
+            }
 
-            processGlobalStatsLocally();
+            console.log("Jumlah Baris:", rawSheetData.length);
+
+            try {
+                muatGambarStruktur();
+            } catch (e) {
+                console.error("Error muatGambarStruktur():", e);
+            }
+
+            try {
+                processGlobalStatsLocally();
+            } catch (e) {
+                console.error("Error processGlobalStatsLocally():", e);
+            }
 
             $('#loader').fadeOut(800);
 
@@ -1181,7 +1210,10 @@ $(document).ready(function() {
             Swal.fire({
                 icon: 'error',
                 title: 'Gagal Memuat Data',
-                text: 'Data Spreadsheet tidak dapat diambil.'
+                html: `
+                    <b>Error:</b><br>
+                    ${error}
+                `
             });
 
         });
