@@ -1149,19 +1149,44 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    let rawSheetData = <?!= rawSheetData ?>; 
-    let currentUser = null;
-    let currentActiveRT = ''; // Menyimpan RT mana yang sedang dibuka
-    Chart.register(ChartDataLabels);
+     let rawSheetData = [];
+let currentUser = null;
+let currentActiveRT = '';
+Chart.register(ChartDataLabels);
 
-    $(document).ready(function() { 
-        // Panggil gambar struktur saat halaman dimuat
-        muatGambarStruktur();
-        
-        processGlobalStatsLocally();
-        $('#loader').fadeOut(800);
-        // ... (sisa kode lainnya)
-    });
+// GANTI DENGAN URL WEB APP HASIL DEPLOY APPS SCRIPT
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbziYng8fG9tbSnyu05X97QfdMiBFVmcOj-ncOJ_Klg_nZlyfbmshMjR_kBw3NvvTxIL/exec";
+
+$(document).ready(function() {
+
+    fetch(WEBAPP_URL + "?action=rawData")
+        .then(response => response.json())
+        .then(data => {
+
+            rawSheetData = data;
+
+            muatGambarStruktur();
+
+            processGlobalStatsLocally();
+
+            $('#loader').fadeOut(800);
+
+        })
+        .catch(error => {
+
+            console.error("Gagal mengambil data:", error);
+
+            $('#loader').fadeOut(800);
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal Memuat Data',
+                text: 'Data Spreadsheet tidak dapat diambil.'
+            });
+
+        });
+
+});
     
     function showPengajuanSurat(jenis) {
 
