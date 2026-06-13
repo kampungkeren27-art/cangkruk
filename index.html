@@ -259,17 +259,10 @@
                                 👋 Halo, <span id="nama-warga-login" class="text-success">Warga</span>
                             </span>
                         </div>
-                        
-                        <div class="nav-item" id="menu-keuangan-nav-item" style="display: block;">
-                            <a class="dropdown-item py-2 rounded font-weight-bold text-primary" href="javascript:void(0)" onclick="bukaMenuKeuanganKhusus(<?= isAdmin ? 'true' : 'false' ?>)" style="font-size: 0.85rem; background: rgba(0,123,255,0.05);">
-                                💰 KEUANGAN INTERNAL RT
-                            </a>
-                        </div>
-
+                    
                         <div class="nav-item" id="logout-nav-item" style="display:none;">
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item py-2 rounded text-muted" href="javascript:void(0)" onclick="logoutWarga()" style="font-size: 0.85rem;">
-                                Keluar
+                            <a class="dropdown-item" href="#" onclick="prosesLogoutSesiWargaTerkunci(); return false;">Keluar</a>
                             </a>
                         </div>
                     </div>
@@ -278,78 +271,7 @@
         </div>
     </div>
 </nav>
-
-
-<div class="modal fade" id="modalKeuanganKhusus" tabindex="-1" role="dialog" aria-labelledby="modalKeuanganLabel" aria-hidden="true" style="z-index: 1060;">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 15px 35px rgba(0,0,0,0.15);">
             
-            <div class="modal-header border-0 pt-4 px-4 pb-0 d-flex align-items-center justify-content-between">
-                <div class="d-flex align-items-center">
-                    <div class="bg-success-light text-success p-3 mr-3 d-flex align-items-center justify-content-center" style="border-radius: 14px; width: 50px; height: 50px; background: #e8f5e9;">
-                        <i class="fas fa-wallet fa-lg"></i>
-                    </div>
-                    <div>
-                        <h5 class="modal-title font-weight-bold text-dark mb-0" id="modalKeuanganLabel">Laporan Keuangan <span id="label-rt-aktif"></span></h5>
-                        <p class="small text-muted mb-0">Privat Admin RT: <span id="nama-admin-aktif" class="font-weight-bold text-dark"></span></p>
-                    </div>
-                </div>
-                <button type="button" class="close m-0 p-2" data-dismiss="modal" aria-label="Close" style="font-size: 1.6rem; outline: none !important;">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-
-            <div class="modal-body p-4">
-                <div id="modul-keuangan-rt" style="display: none;">
-                    
-                    <hr class="my-3" style="border-top: 1px dashed #e2e8f0;">
-
-                    <form id="formKeuanganRT" onsubmit="simpanKeuanganRT(event)">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="small font-weight-bold text-muted text-uppercase" style="letter-spacing: 0.5px;">Jenis Transaksi</label>
-                                <select id="keu-jenis" class="form-control form-control-lg" style="border-radius: 12px; font-size: 0.95rem;" required>
-                                    <option value="Pemasukan">Pemasukan (Kas, Sumbangan, Iuran)</option>
-                                    <option value="Pengeluaran">Pengeluaran (Logistik, Sosial, Operasional)</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="small font-weight-bold text-muted text-uppercase" style="letter-spacing: 0.5px;">Jumlah (Rp)</label>
-                                <input type="number" id="keu-jumlah" class="form-control form-control-lg" placeholder="Contoh: 250000" style="border-radius: 12px; font-size: 0.95rem;" required>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="small font-weight-bold text-muted text-uppercase" style="letter-spacing: 0.5px;">Keterangan / Detail Acara</label>
-                            <textarea id="keu-keterangan" class="form-control" rows="2" placeholder="Tulis detail alokasi dana secara rinci..." style="border-radius: 12px; font-size: 0.95rem;" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-success btn-lg btn-block font-weight-bold shadow-sm py-2" style="border-radius: 14px; background: #2da44e; border: none; font-size: 1rem;">
-                            <i class="fas fa-paper-plane mr-2"></i> Submit Laporan Keuangan
-                        </button>
-                    </form>
-
-                    <div class="mt-4 pt-2">
-                        <h6 class="font-weight-bold text-muted mb-3 text-uppercase" style="letter-spacing: 1px; font-size: 0.75rem;">Riwayat Kas Internal Wilayah</h6>
-                        <div class="table-responsive rounded-lg border" style="max-height: 280px; overflow-y: auto;">
-                            <table class="table table-sm table-hover mb-0" style="font-size: 0.9rem;">
-                                <thead class="bg-light text-muted sticky-top" style="z-index: 1;">
-                                    <tr>
-                                        <th class="p-3 border-0">Tanggal</th>
-                                        <th class="p-3 border-0">Jenis</th>
-                                        <th class="p-3 border-0">Jumlah</th>
-                                        <th class="p-3 border-0">Keterangan</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tabel-kas-body"></tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div>
 
 
 <div class="modal fade" id="modalSuratPengantarRT" tabindex="-1" role="dialog" aria-labelledby="modalSuratLabel" aria-hidden="true" style="z-index: 1060;">
@@ -947,194 +869,173 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="modalKeuangan" tabindex="-1" role="dialog" aria-labelledby="modalKeuanganLabel" aria-hidden="true" data-backdrop="static">
+
+<div id="btn-floating-keuangan" style="display: none; position: fixed; bottom: 30px; right: 30px; z-index: 9999;">
+    <button type="button" class="btn btn-warning text-dark font-weight-bold shadow-lg p-3 d-flex align-items-center" onclick="bukaSistemNeraca()" style="border-radius: 50px; border: 3px solid #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.3) !important;">
+        <i class="fas fa-balance-scale mr-2" style="font-size: 20px;"></i> 
+        <span style="letter-spacing: 0.5px;">NERACA KEUANGAN</span>
+    </button>
+</div>
+
+<div class="modal fade" id="modalNeracaKeuangan" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
-        <div class="modal-content" style="border-radius: 25px; border: none;">
-            <div class="modal-header bg-light pt-4 px-4 border-0" style="border-radius: 25px 25px 0 0;">
-                <h5 class="modal-title font-weight-bold text-dark" id="modalKeuanganLabel">
-                    💰 Manajemen & Laporan Keuangan Keasrian RW
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true" style="font-size: 1.8rem;">&times;</span>
+        <div class="modal-content" style="border-radius: 25px; border: none; box-shadow: 0 15px 40px rgba(0,0,0,0.4);">
+            <div class="modal-header bg-dark text-white p-4 border-0" style="border-radius: 25px 25px 0 0;">
+                <div>
+                    <h5 class="modal-title font-weight-bold mb-1">⚖️ Aplikasi Neraca & Transparansi Keuangan</h5>
+                    <small class="text-white-50" id="sub-title-neraca">Sistem Pelaporan Otomatis Terintegrasi RT/RW</small>
+                </div>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" style="font-size: 2rem;">&times;</span>
                 </button>
             </div>
-            <div class="modal-body p-4">
+            <div class="modal-body p-4 bg-light">
                 
-                <div id="section-input-kas-rt" style="display:none;">
-                    <h6 class="font-weight-bold text-primary mb-3"><i class="fas fa-plus-circle mr-2"></i>Input Laporan Kas Baru (<span id="label-rt-aktif">RT</span>)</h6>
-                    <form id="formInputKasRT" onsubmit="event.preventDefault(); aksiSimpanKasRT();">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label class="small font-weight-bold">Jenis Kas</label>
-                                    <select id="kas-kategori" class="form-control" style="border-radius:12px; height:45px;" required>
-                                        <option value="Pemasukan">Pemasukan (+)</option>
-                                        <option value="Penguelaran">Pengeluaran (-)</option>
-                                    </select>
-                                </div>
+                <div class="text-right mb-3">
+                    <button type="button" id="btn-pemicu-form-rt" class="btn btn-success font-weight-bold px-3 shadow-sm" onclick="pemicuToggleBukaTutupFormRT()" style="border-radius: 10px; display: none;">
+                        <i class="fas fa-plus-circle mr-1"></i> + Tambah Transaksi Kas Baru
+                    </button>
+                </div>
+
+                <div id="wrapper-form-rt" class="card border-0 p-4 shadow-sm mb-4" style="display: none; border-radius: 18px;">
+                    <h6 class="font-weight-bold text-dark mb-3"><i class="fas fa-pen-alt text-primary mr-2"></i> Form Pembukuan Mutasi Kas Baru - <span id="text-rt-pelapor" class="text-primary">RT</span></h6>
+                    <form id="formTransaksiRT" onsubmit="event.preventDefault(); eksekusiSimpanTransaksi();">
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <label class="small font-weight-bold text-muted">ARUS DANA</label>
+                                <select id="form-jenis" class="form-control" required style="border-radius:10px; height: 45px;">
+                                    <option value="Pemasukan">Pemasukan (+)</option>
+                                    <option value="Pengeluaran">Pengeluaran (-)</option>
+                                </select>
                             </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label class="small font-weight-bold">Nominal (Rp)</label>
-                                    <input type="number" id="kas-nominal" class="form-control" style="border-radius:12px; height:45px;" placeholder="Contoh: 50000" required>
-                                </div>
+                            <div class="form-group col-md-3">
+                                <label class="small font-weight-bold text-muted">POS AKUN NERACA</label>
+                                <select id="form-kategori" class="form-control" required style="border-radius:10px; height: 45px;">
+                                    <option value="Kas Lancar Lingkungan">Kas Lancar Lingkungan</option>
+                                    <option value="Iuran Wajib Bulanan">Iuran Wajib Bulanan</option>
+                                    <option value="Donasi / Sumbangan Sukarela">Donasi / Sumbangan Sukarela</option>
+                                    <option value="Beban Operasional RT">Beban Operasional RT</option>
+                                    <option value="Dana Sosial & Kematian">Dana Sosial & Kematian</option>
+                                    <option value="Pembangunan Fisik & Fasum">Pembangunan Fisik & Fasum</option>
+                                </select>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="small font-weight-bold">Keterangan / Keperluan</label>
-                                    <input type="text" id="kas-keterangan" class="form-control" style="border-radius:12px; height:45px;" placeholder="Contoh: Iuran Warga / Beli Sapu" required>
-                                </div>
+                            <div class="form-group col-md-3">
+                                <label class="small font-weight-bold text-muted">NOMINAL (RP)</label>
+                                <input type="number" id="form-nominal" class="form-control" placeholder="Contoh: 150000" required style="border-radius:10px; height: 45px;">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="small font-weight-bold text-muted">KETERANGAN DETIL</label>
+                                <input type="text" id="form-keterangan" class="form-control" placeholder="Contoh: Iuran Warga Lapangan" required style="border-radius:10px; height: 45px;">
                             </div>
                         </div>
-                        <div class="text-right mb-4">
-                            <button type="submit" class="btn btn-primary px-4" style="border-radius:12px;">Kirim Laporan Kas</button>
+                        <div class="text-right mt-2">
+                            <button type="button" class="btn btn-secondary font-weight-bold px-3 mr-2" onclick="pemicuToggleBukaTutupFormRT()" style="border-radius: 10px; height: 45px;">Batal</button>
+                            <button type="submit" class="btn btn-primary font-weight-bold px-4 shadow-sm" style="border-radius:10px; height: 45px;"><i class="fas fa-check-circle mr-2"></i>Laporkan Transaksi</button>
                         </div>
                     </form>
-                    <hr>
                 </div>
 
-                <div id="section-rekap-rw" style="display:none;" class="mb-4">
-                    <h6 class="font-weight-bold text-success mb-3"><i class="fas fa-chart-line mr-2"></i>Panel Rekap Kumulatif Seluruh RT (Akun RW)</h6>
+                <div id="section-rekap-rw" style="display:none;">
                     <div class="row text-center mb-4">
-                        <div class="col-md-4 mb-2">
-                            <div class="card bg-light border-0 p-3" style="border-radius:15px;">
-                                <small class="text-muted font-weight-bold">TOTAL PEMASUKAN ALL RT</small>
-                                <h4 id="rekap-total-masuk" class="font-weight-bold text-success mt-1">Rp 0</h4>
+                        <div class="col-md-4 mb-3">
+                            <div class="card border-0 shadow-sm p-3 text-left" style="border-radius:18px; border-left: 5px solid #28a745 !important; background: white;">
+                                <span class="text-muted small font-weight-bold text-uppercase">Total Akumulasi Pemasukan</span>
+                                <h3 id="rekap-total-masuk" class="font-weight-bold text-success mt-2">Rp 0</h3>
+                                <small class="text-muted">*Gabungan dana masuk seluruh RT</small>
                             </div>
                         </div>
-                        <div class="col-md-4 mb-2">
-                            <div class="card bg-light border-0 p-3" style="border-radius:15px;">
-                                <small class="text-muted font-weight-bold">TOTAL PENGELUARAN ALL RT</small>
-                                <h4 id="rekap-total-keluar" class="font-weight-bold text-danger mt-1">Rp 0</h4>
+                        <div class="col-md-4 mb-3">
+                            <div class="card border-0 shadow-sm p-3 text-left" style="border-radius:18px; border-left: 5px solid #dc3545 !important; background: white;">
+                                <span class="text-muted small font-weight-bold text-uppercase">Total Akumulasi Pengeluaran</span>
+                                <h3 id="rekap-total-keluar" class="font-weight-bold text-danger mt-2">Rp 0</h3>
+                                <small class="text-muted">*Gabungan dana keluar seluruh RT</small>
                             </div>
                         </div>
-                        <div class="col-md-4 mb-2">
-                            <div class="card bg-success text-white border-0 p-3" style="border-radius:15px;">
-                                <small class="text-white-50 font-weight-bold">SALDO BERSIH KAS GABUNGAN</small>
-                                <h4 id="rekap-saldo-bersih" class="font-weight-bold mt-1">Rp 0</h4>
+                        <div class="col-md-4 mb-3">
+                            <div class="card border-0 shadow-sm p-3 text-left text-white" style="border-radius:18px; background: linear-gradient(135deg, #1e3c72, #2a5298);">
+                                <span class="text-white-50 small font-weight-bold text-uppercase">Saldo Bersih Saat Ini</span>
+                                <h3 id="rekap-saldo-bersih" class="font-weight-bold mt-2">Rp 0</h3>
+                                <small class="text-white-50">*Netto kas konsolidasi RW</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:18px; background: white;">
+                        <h6 class="font-weight-bold text-dark mb-3"><i class="fas fa-chart-bar text-info mr-2"></i> Komparasi Ringkasan Buku Kas Antar RT</h6>
+                        <div id="wrapper-breakdown-rt" class="row"></div>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3">
+                        <div class="card border-0 shadow-sm" style="border-radius:18px; height:100%;">
+                            <div class="card-header bg-success text-white font-weight-bold p-3" style="border-radius:18px 18px 0 0;">
+                                <i class="fas fa-wallet mr-2"></i> SISI AKTIVA (PEMASUKAN KUMULATIF)
+                            </div>
+                            <div class="p-3 bg-white" style="border-radius: 0 0 18px 18px;">
+                                <table class="table table-sm table-hover table-borderless mb-0">
+                                    <tbody id="neraca-aktiva-rows" style="font-size: 13px;"></tbody>
+                                </table>
+                                <hr class="my-2">
+                                <div class="d-flex justify-content-between font-weight-bold px-2 text-success" style="font-size:15px;">
+                                    <span>TOTAL AKTIVA / DANA MASUK</span>
+                                    <span id="neraca-total-aktiva">Rp 0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card border-0 shadow-sm" style="border-radius:18px; height:100%;">
+                            <div class="card-header bg-danger text-white font-weight-bold p-3" style="border-radius:18px 18px 0 0;">
+                                <i class="fas fa-file-invoice-dollar mr-2"></i> SISI PASIVA (PENGELUARAN/ALOKASI AKUN)
+                            </div>
+                            <div class="p-3 bg-white" style="border-radius: 0 0 18px 18px;">
+                                <table class="table table-sm table-hover table-borderless mb-0">
+                                    <tbody id="neraca-pasiva-rows" style="font-size: 13px;"></tbody>
+                                </table>
+                                <hr class="my-2">
+                                <div class="d-flex justify-content-between font-weight-bold px-2 text-danger" style="font-size:15px;">
+                                    <span>TOTAL PASIVA / DANA KELUAR</span>
+                                    <span id="neraca-total-pasiva">Rp 0</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <h6 class="font-weight-bold text-muted mb-3 small text-uppercase" id="title-tabel-kas">📋 Histori Transaksi Laporan Kas</h6>
-                <div class="table-responsive" style="border-radius: 15px; border: 1px solid #eee; overflow: hidden;">
-                    <table class="table table-hover mb-0">
-                        <thead class="bg-light text-dark" style="font-size: 12px;">
-                            <tr>
-                                <th>TANGGAL</th>
-                                <th>RT</th>
-                                <th>JENIS</th>
-                                <th>KETERANGAN</th>
-                                <th class="text-right">NOMINAL</th>
-                                <th>PETUGAS</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabel-list-kas" style="font-size: 13px;">
-                            </tbody>
-                    </table>
-                </div>
-
-            </div>
-        </div>
-    </div>
-</div>
-<button type="button" class="btn btn-outline-primary px-3 py-2 font-weight-bold shadow-sm" data-toggle="modal" data-target="#modalKeuangan" onclick="inisialisasiMenuKeuangan()" style="border-radius:12px;">
-    <i class="fas fa-wallet mr-2"></i> Laporan Kas Keuangan
-</button>
-<div class="modal fade" id="infoModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-        <div class="modal-content" style="border-radius: 35px;">
-            <div class="modal-header border-0 px-4 pt-4">
-                <h5 class="modal-title font-weight-bold" id="modal-title-text">Informasi Detail</h5>
-                <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
-            </div>
-            <div class="modal-body p-4">
-                <div id="modal-dynamic-content"></div>
-            </div>
-        </div>
-    </div>
-</div>
-<div id="main-page-content">
-    <div id="home-wrapper">
-        
-        <div class="container mt-4">
-            <div class="row">
-                <div class="col-12">
-                    
-                    <div id="modul-keuangan-rt" class="card p-4 mb-4 border-0 shadow-sm" style="border-radius: 20px; display: none; background: #ffffff;">
-                        <div class="card-body p-0">
-                            
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="bg-success-light text-success p-3 mr-3 d-flex align-items-center justify-content-center" style="border-radius: 14px; width: 50px; height: 50px; background: #e8f5e9;">
-                                    <i class="fas fa-wallet fa-lg"></i>
-                                </div>
-                                <div>
-                                    <h5 class="font-weight-bold text-dark mb-0">Laporan Keuangan <span id="label-rt-aktif"></span></h5>
-                                    <p class="small text-muted mb-0">Privat Admin RT: <span id="nama-admin-aktif" class="font-weight-bold text-dark"></span></p>
-                                </div>
-                            </div>
-                            
-                            <hr class="my-3" style="border-top: 1px dashed #e2e8f0;">
-
-                            <form id="formKeuanganRT" onsubmit="simpanKeuanganRT(event)">
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label class="small font-weight-bold text-muted text-uppercase" style="letter-spacing: 0.5px;">Jenis Transaksi</label>
-                                        <select id="keu-jenis" class="form-control form-control-lg" style="border-radius: 12px; font-size: 0.95rem;" required>
-                                            <option value="Pemasukan">Pemasukan (Kas, Sumbangan, Iuran)</option>
-                                            <option value="Pengeluaran">Pengeluaran (Logistik, Sosial, Operasional)</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="small font-weight-bold text-muted text-uppercase" style="letter-spacing: 0.5px;">Jumlah (Rp)</label>
-                                        <input type="number" id="keu-jumlah" class="form-control form-control-lg" placeholder="Contoh: 250000" style="border-radius: 12px; font-size: 0.95rem;" required>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="small font-weight-bold text-muted text-uppercase" style="letter-spacing: 0.5px;">Keterangan / Detail Acara</label>
-                                    <textarea id="keu-keterangan" class="form-control" rows="2" placeholder="Tulis detail alokasi dana secara rinci..." style="border-radius: 12px; font-size: 0.95rem;" required></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-success btn-lg btn-block font-weight-bold shadow-sm py-2" style="border-radius: 14px; background: #2da44e; border: none; font-size: 1rem;">
-                                    <i class="fas fa-paper-plane mr-2"></i> Submit Laporan Keuangan
-                                </button>
-                            </form>
-
-                            <div class="mt-4 pt-2">
-                                <h6 class="font-weight-bold text-muted mb-3 text-uppercase" style="letter-spacing: 1px; font-size: 0.75rem;">Riwayat Kas Internal Wilayah</h6>
-                                <div class="table-responsive rounded-lg border">
-                                    <table class="table table-sm table-hover mb-0" style="font-size: 0.9rem;">
-                                        <thead class="bg-light text-muted">
-                                            <tr>
-                                                <th class="p-3 border-0">Tanggal</th>
-                                                <th class="p-3 border-0">Jenis</th>
-                                                <th class="p-3 border-0">Jumlah</th>
-                                                <th class="p-3 border-0">Keterangan</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="tabel-kas-body">
-                                            </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                        </div>
+                <div id="box-saldo-internal" class="alert alert-warning border-0 p-3 shadow-sm d-flex justify-content-between align-items-center mb-4" style="border-radius:15px; background: #fff3cd;">
+                    <div>
+                        <h6 class="font-weight-bold mb-1 text-dark">💰 Sisa Kas Bersih Saat Ini (Ekuitas/Saldo Buku)</h6>
+                        <small class="text-muted">Kalkulasi akhir dari Total Aktiva dikurangi Total Pasiva internal</small>
                     </div>
-
-                   
-                        
-                      
-
+                    <h3 class="font-weight-bold mb-0 text-dark" id="neraca-saldo-internal-text">Rp 0</h3>
                 </div>
+
+                <div class="card border-0 shadow-sm p-4" style="border-radius:18px; background: white;">
+                    <h6 class="font-weight-bold mb-3 text-secondary text-uppercase tracking-wider" style="font-size:12px;" id="title-tabel-kas"><i class="fas fa-history mr-2"></i>Log Jurnal Transaksi</h6>
+                    <div class="table-responsive" style="max-height: 350px; border-radius:12px; border: 1px solid #e9ecef;">
+                        <table class="table table-striped table-hover mb-0" style="font-size: 12px; vertical-align: middle;">
+                            <thead class="bg-secondary text-white sticky-top">
+                                <tr>
+                                    <th class="p-3">ID (A)</th>
+                                    <th class="p-3">TANGGAL (B)</th>
+                                    <th class="p-3">RT (C)</th>
+                                    <th class="p-3">JENIS (D)</th>
+                                    <th class="p-3">KATEGORI AKUN (E)</th>
+                                    <th class="p-3">KETERANGAN (F)</th>
+                                    <th class="p-3 text-right">NOMINAL (G)</th>
+                                    <th class="p-3">PETUGAS (H)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="neraca-log-jurnal" style="font-size: 13px; color: #495057;"></tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
         </div>
-
     </div>
 </div>
-
-
-
-
 <div id="loader">
     <div class="spinner-border text-success" style="width: 3rem; height: 3rem; border-width: 0.35em;"></div>
     <h6 class="mt-4 font-weight-bold text-dark" id="loader-text">Memproses Data RW 01...</h6>
@@ -1147,6 +1048,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://ssl.gstatic.com/accessibility/javascript/robot/acrobat.js"></script>
 
 <script>
 let rawSheetData = [];
@@ -1160,6 +1062,7 @@ const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxGFHt_yiVB8zfYWEmS0
 $(document).ready(function() {
 
     console.log("Memulai load data...");
+    tampilkanTombolKeuanganSesuaiSesi();
 
     fetch(WEBAPP_URL + "?action=rawData")
         .then(response => {
@@ -1276,123 +1179,6 @@ $(document).ready(function() {
     $('#modal-title-text').text(judul);
     $('#modal-dynamic-content').html(html);
     $('#infoModal').modal('show');
-}
-
-// Fungsi yang dijalankan pertama kali saat tombol Laporan Kas diklik
-function inisialisasiMenuKeuangan() {
-    if (!currentUser) {
-        Swal.fire({ icon: 'error', title: 'Akses Ditolak', text: 'Anda harus login terlebih dahulu!' });
-        return;
-    }
-
-    // A. JIKA YANG LOGIN ADALAH AKUN RW
-    if (currentUser.kk === "3515162501090114" || currentUser.role === 'admin') {
-        $('#section-input-kas-rt').hide(); 
-        $('#section-rekap-rw').show();    
-        $('#title-tabel-kas').text("📋 JURNAL REKAP KAS KESELURUHAN (ALL RT)");
-        memuatDataRekapKasRW();
-    } 
-    // B. JIKA YANG LOGIN ADALAH PENGURUS RT
-    else if (currentUser.role === 'rt') {
-        $('#section-rekap-rw').hide();      
-        $('#section-input-kas-rt').show();  // Hanya Pengurus RT yang bisa melihat Form Input ini
-        $('#label-rt-aktif').text(currentUser.rt);
-        $('#title-tabel-kas').text("📋 HISTORI TRANSAKSI KAS INTERNAL - " + currentUser.rt);
-        memuatDataKasRT(currentUser.rt);
-    } 
-    // C. JIKA YANG LOGIN ADALAH WARGA BIASA
-    else {
-        $('#section-rekap-rw').hide();
-        $('#section-input-kas-rt').hide(); // Form input disembunyikan untuk warga biasa
-        $('#title-tabel-kas').text("📋 LAPORAN KAS INTERNAL TRANSPARAN - " + (currentUser.rt || "RT Anda"));
-        memuatDataKasRT(currentUser.rt);
-    }
-}
-
-// Handler penginputan kas baru oleh pengurus RT
-function aksiSimpanKasRT() {
-    const kategori = $('#kas-kategori').val();
-    const nominal = $('#kas-nominal').val();
-    const keterangan = $('#kas-keterangan').val();
-    const rtAsal = currentUser.rt;
-    const namaPetugas = currentUser.nama;
-
-    $('#loader-text').text("Mengirim Laporan...");
-    $('#loader').show();
-
-    google.script.run.withSuccessHandler(function(res) {
-        $('#loader').hide();
-        Swal.fire({ icon: 'success', title: 'Berhasil', text: res.message, timer: 2000, showConfirmButton: false });
-        $('#kas-nominal').val('');
-        $('#kas-keterangan').val('');
-        memuatDataKasRT(rtAsal); // Refresh tabel data internal RT
-    }).simpanKasRTBackend(kategori, keterangan, nominal, rtAsal, namaPetugas);
-}
-
-// Memuat data transaksi internal milik RT yang sedang aktif login
-function memuatDataKasRT(rtAsal) {
-    $('#tabel-list-kas').html('<tr><td colspan="6" class="text-center text-muted p-3">Memuat laporan kas...</td></tr>');
-    google.script.run.withSuccessHandler(function(jsonString) {
-        const data = JSON.parse(jsonString);
-        let htmlRows = "";
-        for (let i = data.length - 1; i >= 1; i--) {
-            const row = data[i];
-            const badge = row[3] === "Pemasukan" ? "badge-success" : "badge-danger";
-            htmlRows += `
-                <tr>
-                    <td>${row[1]}</td>
-                    <td><span class="badge badge-light px-2 py-1">${row[2]}</span></td>
-                    <td><span class="badge ${badge} px-2 py-1">${row[3]}</span></td>
-                    <td>${row[4]}</td>
-                    <td class="text-right font-weight-bold">Rp ${Number(row[5]).toLocaleString('id-ID')}</td>
-                    <td class="text-muted"><small>${row[6]}</small></td>
-                </tr>`;
-        }
-        if(data.length <= 1) htmlRows = '<tr><td colspan="6" class="text-center text-muted p-4">Belum ada catatan keuangan di RT ini.</td></tr>';
-        $('#tabel-list-kas').html(htmlRows);
-    }).getKasPerRTJSON(rtAsal);
-}
-
-// Memuat data keseluruhan dan menghitung total matematika rekap khusus Akun RW
-function memuatDataRekapKasRW() {
-    $('#tabel-list-kas').html('<tr><td colspan="6" class="text-center text-muted p-3">Menghitung akumulasi database kas seluruh RT...</td></tr>');
-    google.script.run.withSuccessHandler(function(jsonString) {
-        const data = JSON.parse(jsonString);
-        let htmlRows = "";
-        let totalPemasukan = 0;
-        let totalPenguelaran = 0;
-
-        for (let i = data.length - 1; i >= 1; i--) {
-            const row = data[i];
-            const nominalVal = Number(row[5]) || 0;
-            const kategori = row[3];
-
-            if (kategori === "Pemasukan") {
-                totalPemasukan += nominalVal;
-            } else {
-                totalPenguelaran += nominalVal;
-            }
-
-            const badge = kategori === "Pemasukan" ? "badge-success" : "badge-danger";
-            htmlRows += `
-                <tr>
-                    <td>${row[1]}</td>
-                    <td><span class="badge badge-dark px-2 py-1">${row[2]}</span></td>
-                    <td><span class="badge ${badge} px-2 py-1">${kategori}</span></td>
-                    <td>${row[4]}</td>
-                    <td class="text-right font-weight-bold">Rp ${nominalVal.toLocaleString('id-ID')}</td>
-                    <td class="text-muted"><small>${row[6]}</small></td>
-                </tr>`;
-        }
-
-        // Set nilai kalkulasi ke box summary RW atas
-        $('#rekap-total-masuk').text("Rp " + totalPemasukan.toLocaleString('id-ID'));
-        $('#rekap-total-keluar').text("Rp " + totalPenguelaran.toLocaleString('id-ID'));
-        $('#rekap-saldo-bersih').text("Rp " + (totalPemasukan - totalPenguelaran).toLocaleString('id-ID'));
-
-        if(data.length <= 1) htmlRows = '<tr><td colspan="6" class="text-center text-muted p-4">Belum ada satupun RT yang mengirim laporan keuangan.</td></tr>';
-        $('#tabel-list-kas').html(htmlRows);
-    }).getRekapKasRWJSON();
 }
 // =========================================================================
 // BACKEND SERVER: TIMPA FUNGSI INI DI CODE.GS KAMU
@@ -1524,7 +1310,8 @@ function prosesLogin() {
                 const jabatan = row[9] ? row[9].toString().trim().toLowerCase() : "";
                 let userRole = "warga"; 
                 
-                if (jabatan === "ketua rt" || jabatan === "pengurus rt") {
+                // OPTIMASI SENSITIVITAS TEKS: Menggunakan .includes() agar spasi/huruf besar-kecil di Sheets tidak bikin error
+                if (jabatan.includes("ketua rt") || jabatan.includes("pengurus rt")) {
                     userRole = "rt"; // Hak akses input keuangan RT masing-masing
                 }
 
@@ -1546,6 +1333,7 @@ function prosesLogin() {
         if (found) {
             $('#loginModal').modal('hide');
             updateUIAfterLogin();
+            tampilkanTombolKeuanganSesuaiSesi();
             
             if($('#stats-section').is(':visible') && currentActiveRT !== ''){
                loadRT(currentActiveRT);
@@ -1586,6 +1374,275 @@ function prosesLogin() {
         }
     }, 800);
 }
+function sikatLoginKeServer() {
+    const userTxt = $('#input-username').val();
+    const passTxt = $('#input-password').val();
+
+    $('#loader').show();
+
+    google.script.run.withSuccessHandler(function(response) {
+        $('#loader').hide();
+        
+        if (response.success) {
+            // 1. Simpan data profil dari tabel User ke variabel global aplikasi
+            currentUser = response.userProfile; 
+            
+            // 2. Simpan sesi ke memori browser agar saat di-refresh tidak log out
+            localStorage.setItem('solid_rw_user', JSON.stringify(currentUser));
+            
+            // 3. Tutup modal login & update tampilan dashboard utama Anda
+            $('#loginModal').modal('hide');
+            if (typeof updateUIAfterLogin === 'function') updateUIAfterLogin();
+            
+            // 4. JALANKAN PEMICU TOMBOL KEUANGAN MELAYANG 
+            tampilkanTombolKeuanganSesuaiSesi();
+            
+            Swal.fire({ icon: 'success', title: 'Berhasil Masuk', text: 'Selamat datang, ' + currentUser.nama, timer: 1500, showConfirmButton: false });
+        } else {
+            Swal.fire({ icon: 'error', title: 'Gagal Login', text: response.message });
+        }
+    }).prosesLoginAplikasi(userTxt, passTxt);
+}
+
+//KEUANGAN DISINI YA 
+// ========================================================================
+// CONTROLLER JAVASCRIPT - SINKRONISASI KOLOM KAS_RT (KOLOM A - H)
+// ========================================================================
+
+// 1. Memeriksa keberadaan sesi untuk menampilkan tombol melayang
+function tampilkanTombolKeuanganSesuaiSesi() {
+    if (typeof currentUser !== 'undefined' && currentUser) {
+        $('#btn-floating-keuangan').fadeIn();
+    } else {
+        $('#btn-floating-keuangan').hide();
+    }
+}
+
+
+// 2. Fungsi pembuka modal dan pembagi hak akses (Privasi Data)
+// ========================================================================
+// CONTROLLER UTAMA - SISTEM FORMULIR & NERACA LAJUR (KOLOM A - H)
+// ========================================================================
+
+// 1. Fungsi Pembuka Jendela Neraca & Pemicu Form Otomatis Sesuai Akun
+function bukaSistemNeraca() {
+    if (!currentUser) {
+        Swal.fire({ icon: 'error', title: 'Akses Ditolak', text: 'Sesi kosong, silakan login terlebih dahulu!' });
+        return;
+    }
+
+    $('#modalNeracaKeuangan').modal('show');
+
+    // Mengamankan pembacaan properti data agar toleran terhadap huruf besar/kecil
+    const valRT = currentUser.no_rt || currentUser.NO_RT || currentUser.rt || currentUser.RT || "3";
+    
+    // Satukan semua kemungkinan sumber text jabatan menjadi Huruf Kapital Besar
+    const valJabatan = (currentUser.jabatan || currentUser.JABATAN || currentUser.role || currentUser.ROLE || "").toString().toUpperCase();
+    const namaUser = (currentUser.nama || currentUser.NAMA || "").toString().toUpperCase();
+
+    // 1. KONDISI AKSES LEVEL RW (ADMIN UTAMA)
+    if (currentUser.role === 'admin' || currentUser.kk === "3515162501090114") {
+        $('#wrapper-form-rt').hide();
+        $('#box-saldo-internal').hide();
+        $('#section-rekap-rw').show();    
+        $('#sub-title-neraca').text("⚙️ Dashboard Executive Ketua RW - Memonitor Kas Konsolidasi Seluruh RT");
+        $('#title-tabel-kas').html('<i class="fas fa-history mr-2"></i>MASTER JURNAL LOG KONSOLIDASI (ALL RT)');
+        jalankanEnginePenghitungNeraca(true);
+    } 
+    // 2. KONDISI AKSES LEVEL KETUA RT (Bypass Validasi Nama Pak Didik)
+    else if (valJabatan.includes('KRT') || valJabatan.includes('KETUA RT') || valJabatan === 'RT' || namaUser.includes('DIDIK SUPRAPTO')) {
+        $('#section-rekap-rw').hide();
+        $('#box-saldo-internal').show();
+        $('#wrapper-form-rt').show(); // Menampilkan formulir input transaksi kas RT
+        $('#text-rt-pelapor').text(valRT);
+        $('#sub-title-neraca').text("🏡 Panel Internal Pengurus Unit - RT " + valRT);
+        $('#title-tabel-kas').html('<i class="fas fa-history mr-2"></i>BUKU KAS UTAMA TRANSAKSI INTERNAL - RT ' + valRT);
+        jalankanEnginePenghitungNeraca(false);
+    } 
+    // 3. KONDISI AKSES WARGA BIASA / JABATAN LAINNYA
+    else {
+        $('#section-rekap-rw').hide();
+        $('#wrapper-form-rt').hide();
+        $('#box-saldo-internal').show();
+        $('#sub-title-neraca').text("🔍 Transparansi Laporan Kas Warga - RT " + valRT);
+        $('#title-tabel-kas').html('<i class="fas fa-history mr-2"></i>AUDIT BUKU KAS TRANSPARAN WARGA - RT ' + valRT);
+        jalankanEnginePenghitungNeraca(false);
+    }
+}
+
+// 2. Menghubungkan ke server Apps Script
+function jalankanEnginePenghitungNeraca(isRW) {
+    $('#neraca-log-jurnal').html('<tr><td colspan="8" class="text-center p-4 text-muted"><i class="fas fa-spinner fa-spin mr-2"></i>Mengkalkulasi berkas akuntansi finansial...</td></tr>');
+    
+    const targetRT = currentUser.no_rt || currentUser.NO_RT || currentUser.rt || currentUser.RT || "3";
+
+    if (isRW) {
+        google.script.run.withSuccessHandler(function(jsonRes) {
+            renderKomponenLengkapAkuntansi(JSON.parse(jsonRes), true);
+        }).dapatkanMasterJurnalRW();
+    } else {
+        google.script.run.withSuccessHandler(function(jsonRes) {
+            renderKomponenLengkapAkuntansi(JSON.parse(jsonRes), false);
+        }).dapatkanJurnalTerfilterRT(targetRT);
+    }
+}
+
+// 3. Membaca data array Google Sheets urut kolom A - H dan menghitung neraca saldo
+function renderKomponenLengkapAkuntansi(data, isRW) {
+    // 🛡️ PROTEKSI UTAMA: Jika data di sheet Kas_RT kosong / hanya ada header
+    if (!data || data.length <= 1) {
+        $('#neraca-log-jurnal').html('<tr><td colspan="8" class="text-center text-muted p-4"><i class="fas fa-folder-open mr-2"></i>Belum ada data kas terekam di sheet Kas_RT.</td></tr>');
+        $('#neraca-aktiva-rows').html('<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
+        $('#neraca-pasiva-rows').html('<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
+        $('#neraca-total-aktiva').text("Rp 0");
+        $('#neraca-total-pasiva').text("Rp 0");
+        $('#neraca-saldo-internal-text').text("Rp 0");
+        
+        if (isRW) {
+            $('#rekap-total-masuk').text("Rp 0");
+            $('#rekap-total-keluar').text("Rp 0");
+            $('#rekap-saldo-bersih').text("Rp 0");
+            $('#wrapper-breakdown-rt').html('<div class="col-12 text-center text-muted">Tidak ada rekap data RT</div>');
+        }
+        return; // Hentikan fungsi di sini agar tidak crash finansial!
+    }
+
+    let htmlJurnal = "";
+    let mapAktiva = {};
+    let mapPasiva = {};
+    let grandPemasukan = 0;
+    let grandPengeluaran = 0;
+    let rincianPerRT = {}; 
+
+    for (let i = data.length - 1; i >= 1; i--) {
+        const row = data[i];
+        if (!row || row.length === 0) continue;
+        
+        const id = row[0] || "-";          
+        const tgl = row[1] || "-";          
+        const rt = row[2] || "-";    
+        const jenis = row[3] || "Pemasukan";        
+        const posAkun = row[4] || "Umum";      
+        const ket = row[5] || "-";          
+        const nominal = Number(row[6]) || 0; 
+        const petugas = row[7] || "-"; 
+
+        if (!rincianPerRT[rt]) {
+            rincianPerRT[rt] = { masuk: 0, keluar: 0 };
+        }
+
+        if (jenis === "Pemasukan") {
+            grandPemasukan += nominal;
+            rincianPerRT[rt].masuk += nominal;
+            mapAktiva[posAkun] = (mapAktiva[posAkun] || 0) + nominal;
+        } else {
+            grandPengeluaran += nominal;
+            rincianPerRT[rt].keluar += nominal;
+            mapPasiva[posAkun] = (mapPasiva[posAkun] || 0) + nominal;
+        }
+
+        const badgeJenis = jenis === "Pemasukan" ? "badge-success" : "badge-danger";
+        const iconJenis = jenis === "Pemasukan" ? "↑" : "↓";
+
+        htmlJurnal += `
+            <tr>
+                <td class="font-weight-bold text-muted">${id}</td>
+                <td>${tgl}</td>
+                <td><span class="badge badge-dark px-2 py-1">${rt}</span></td>
+                <td><span class="badge ${badgeJenis} px-2 py-1">${iconJenis} ${jenis}</span></td>
+                <td><small class="font-weight-bold text-primary">${posAkun}</small></td>
+                <td style="max-width: 250px; white-space: normal;">${escapeScriptHTML(ket)}</td>
+                <td class="text-right font-weight-bold text-dark">Rp ${nominal.toLocaleString('id-ID')}</td>
+                <td class="text-muted"><small>${petugas}</small></td>
+            </tr>`;
+    }
+
+    $('#neraca-log-jurnal').html(htmlJurnal);
+
+    let rowsAktiva = "";
+    for (let key in mapAktiva) {
+        rowsAktiva += `<tr><td class="py-1">🟢 ${key}</td><td class="text-right font-weight-bold text-dark py-1">Rp ${mapAktiva[key].toLocaleString('id-ID')}</td></tr>`;
+    }
+    $('#neraca-aktiva-rows').html(rowsAktiva || '<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
+
+    let rowsPasiva = "";
+    for (let key in mapPasiva) {
+        rowsPasiva += `<tr><td class="py-1">🔴 ${key}</td><td class="text-right font-weight-bold text-dark py-1">Rp ${mapPasiva[key].toLocaleString('id-ID')}</td></tr>`;
+    }
+    $('#neraca-pasiva-rows').html(rowsPasiva || '<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
+
+    $('#neraca-total-aktiva').text("Rp " + grandPemasukan.toLocaleString('id-ID'));
+    $('#neraca-total-pasiva').text("Rp " + grandPengeluaran.toLocaleString('id-ID'));
+    
+    const saldoBersih = grandPemasukan - grandPengeluaran;
+    $('#neraca-saldo-internal-text').text("Rp " + saldoBersih.toLocaleString('id-ID'));
+
+    if (isRW) {
+        $('#rekap-total-masuk').text("Rp " + grandPemasukan.toLocaleString('id-ID'));
+        $('#rekap-total-keluar').text("Rp " + grandPengeluaran.toLocaleString('id-ID'));
+        $('#rekap-saldo-bersih').text("Rp " + saldoBersih.toLocaleString('id-ID'));
+
+        let htmlRTWidget = "";
+        for (const rtKey in rincianPerRT) {
+            const hitungNetto = rincianPerRT[rtKey].masuk - rincianPerRT[rtKey].keluar;
+            const statusWarnaNetto = hitungNetto >= 0 ? "text-success" : "text-danger";
+            
+            htmlRTWidget += `
+                <div class="col-md-4 mb-3">
+                    <div class="p-3 rounded border bg-light" style="font-size:12px;">
+                        <h6 class="font-weight-bold text-dark border-bottom pb-2 mb-2"><i class="fas fa-home text-muted mr-1"></i> Rangkuman RT ${rtKey}</h6>
+                        <div class="d-flex justify-content-between mb-1"><span>Total Masuk:</span><span class="text-success font-weight-bold">Rp ${rincianPerRT[rtKey].masuk.toLocaleString('id-ID')}</span></div>
+                        <div class="d-flex justify-content-between mb-1"><span>Total Keluar:</span><span class="text-danger font-weight-bold">Rp ${rincianPerRT[rtKey].keluar.toLocaleString('id-ID')}</span></div>
+                        <div class="d-flex justify-content-between pt-1 border-top mt-2"><strong>Saldo Bersih:</strong><strong class="${statusWarnaNetto}">Rp ${hitungNetto.toLocaleString('id-ID')}</strong></div>
+                    </div>
+                </div>`;
+        }
+        $('#wrapper-breakdown-rt').html(htmlRTWidget);
+    }
+}
+
+// 4. Mengirim data transaksi baru dari form RT ke server Google Sheets
+function eksekusiSimpanTransaksi() {
+    const jenis = $('#form-jenis').val();
+    const kat = $('#form-kategori').val();
+    const nominal = $('#form-nominal').val();
+    const ket = $('#form-keterangan').val();
+    
+    // Validasi input nominal agar tidak kosong sebelum dikirim ke server
+    if(!nominal || isNaN(nominal) || Number(nominal) <= 0) {
+        Swal.fire({ icon: 'warning', title: 'Data Tidak Valid', text: 'Silakan masukkan nilai nominal angka yang benar!' });
+        return;
+    }
+
+    $('#loader-text').text("Mengirim entri kas ke master jurnal neraca...");
+    $('#loader').show();
+
+    const targetRT = currentUser.no_rt || currentUser.NO_RT || currentUser.rt || currentUser.RT || "3";
+    const namaPetugas = currentUser.nama || currentUser.NAMA || "Pak Didik Suprapto";
+
+    // PERBAIKAN: Menyinkronkan urutan argumen agar sesuai dengan fungsi simpanTransaksiKasRT(jenis, kategori, keterangan, nominal, rtAsal, namaPetugas) di Code.gs
+    google.script.run.withSuccessHandler(function(res) {
+        $('#loader').hide(); 
+        if(res.success) {
+            Swal.fire({ icon: 'success', title: 'Pencatatan Berhasil', text: res.message, timer: 1500, showConfirmButton: false });
+            $('#form-nominal').val('');
+            $('#form-keterangan').val('');
+            
+            if (currentUser.role === 'admin' || currentUser.kk === "3515162501090114") {
+                jalankanEnginePenghitungNeraca(true);
+            } else {
+                jalankanEnginePenghitungNeraca(false);
+            }
+        } else {
+            Swal.fire({ icon: 'error', title: 'Gagal Menyimpan', text: res.message });
+        }
+    }).simpanTransaksiKasRT(jenis, kat, ket, Number(nominal), targetRT, namaPetugas);
+}
+
+// 5. Sanitasi karakter HTML berbahaya
+function escapeScriptHTML(str) {
+    return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+}
 
 // =========================================================================
 // LOGIKA BARU UNTUK MENJAGA SESI LOGIN SAAT REFRESH & AUTO-LOGOUT 1 JAM
@@ -1598,6 +1655,10 @@ window.addEventListener('DOMContentLoaded', function() {
 });
 
 // 1. MEMULIHKAN LOGIN SAAT REFRESH
+// ========================================================================
+// MANAGEMENT SESI LOGIN, TIMEOUT LENGKAP & INTEGRASI NEUARCA KEUANGAN
+// ========================================================================
+
 function periksaSesiLoginSaatRefresh() {
     var savedUser = localStorage.getItem('solid_rw_user');
     var savedTimestamp = localStorage.getItem('solid_rw_last_active');
@@ -1618,6 +1679,11 @@ function periksaSesiLoginSaatRefresh() {
             
             // Perbarui waktu aktivitas terakhir karena web baru dibuka lagi
             localStorage.setItem('solid_rw_last_active', waktuSekarang.toString());
+            
+            // 🌟 SISIPAN AMAN: Munculkan kembali tombol melayang kas neraca keuangan saat refresh 🌟
+            if (typeof tampilkanTombolKeuanganSesuaiSesi === 'function') {
+                tampilkanTombolKeuanganSesuaiSesi();
+            }
             
             // Jalankan fungsi UI bawaan web kamu agar tombol login berganti jadi profil
             setTimeout(function() {
@@ -1669,14 +1735,18 @@ function resetHitungMundurLogout() {
 function prosesLogoutSesiWargaTerkunci() {
     if (logoutTimer) clearTimeout(logoutTimer);
     
+    // 🧹 SAPU BERSIH SEMUA MEMORI LOGIN DI BROWSER
     localStorage.removeItem('solid_rw_user');
     localStorage.removeItem('solid_rw_last_active');
     
+    // Reset variabel internal aplikasi
     currentUser = null;
     if (typeof noKKAktif !== 'undefined') noKKAktif = null;
 
-    window.location.reload(); // Refresh halaman agar UI kembali ke posisi belum login
+    // Refresh halaman setelah memori benar-benar kosong bersih
+    window.location.reload(); 
 }
+
 // Cari fungsi logout lama di kodinganmu, lalu selipkan fungsi penghapus memori browser ini
 function fungsiLogoutLamaKamu() {
     // ... kodingan logout lamamu ...
@@ -1685,117 +1755,6 @@ function fungsiLogoutLamaKamu() {
     if (typeof prosesLogoutSesiWargaTerkunci === 'function') {
         prosesLogoutSesiWargaTerkunci();
     }
-}
-// CONTOH INTEGRASI DI SCRIPT LOGIN UTAMAMU:
-function setelahWargaBerhasilLogin(noKKUser) {
-    noKKAktif = noKKUser; // Simpan nomor KK aktif ke variabel global
-    
-    // Cek status ke sheet Daftar_Admin lewat server
-    google.script.run.withSuccessHandler(function(res) {
-        if (res.status === "Admin") {
-            // Jika dia terdaftar sebagai pengurus RT, tomboL menu keuangan di navbar KITA BUKA!
-            document.getElementById('menu-keuangan-nav-item').style.display = 'block';
-        } else {
-            // Jika warga biasa, sembunyikan menu keuangan tersebut
-            document.getElementById('menu-keuangan-nav-item').style.display = 'none';
-        }
-    }).getStatusAdminRT(noKKAktif);
-}
-
-// FUNGSI DIKLIK DARI NAVBAR
-function bukaMenuKeuanganKhusus(isMasterAdmin) {
-    // 1. Tampilkan Pop-up Modal Keuangan ke Layar secara paksa
-    $('#modalKeuanganKhusus').modal('show');
-
-    // 2. Jalankan pengecekan admin/warga bawaan kodemu asli (100% UTUH)
-    if (isMasterAdmin === true || isMasterAdmin === "true") {
-        document.getElementById('modul-keuangan-rt').style.display = 'block';
-        document.getElementById('label-rt-aktif').innerText = "ALL WILAYAH (RW)";
-        document.getElementById('nama-admin-aktif').innerText = "MASTER ADMIN RW";
-        if (typeof muatTabelKeuangan === "function") muatTabelKeuangan();
-        alert("Akses Master Admin RW Terbuka!");
-        return;
-    }
-    
-    if (!noKKAktif) {
-        alert("Gagal membuka! Sesi login warga/No. KK tidak terdeteksi. Silakan Login Warga terlebih dahulu.");
-        // Tutup modal kembali jika tidak lolos login awal
-        $('#modalKeuanganKhusus').modal('hide');
-        return;
-    }
-    initAutentikasiRT();
-}
-
-// PENTING: Variabel global penampung No. KK yang sedang aktif setelah login
-var noKKAktif = "3515162501090041"; 
-
-// JALANKAN INI SESAAT SETELAH USER BERHASIL LOGIN DI APLIKASIMU
-function initAutentikasiRT() {
-    if (!noKKAktif) return;
-    
-    google.script.run.withSuccessHandler(function(res) {
-        if (res.status === "Admin") {
-            // JIKA LOLOS: Buka gembok modul di dalam Pop-up
-            document.getElementById('modul-keuangan-rt').style.display = 'block';
-            document.getElementById('label-rt-aktif').innerText = res.rt;
-            document.getElementById('nama-admin-aktif').innerText = res.nama;
-            
-            // Muat data kas ke tabel pop-up
-            muatTabelKeuangan();
-        } else {
-            // JIKA BUKAN ADMIN: Sembunyikan modul dan beri peringatan
-            document.getElementById('modul-keuangan-rt').style.display = 'none';
-            $('#modalKeuanganKhusus').modal('hide');
-            alert("Akses Ditolak! Anda bukan Admin RT resmi.");
-        }
-    }).getStatusAdminRT(noKKAktif);
-}
-
-function muatTabelKeuangan() {
-    google.script.run.withSuccessHandler(function(dataKas) {
-        var html = "";
-        if (!dataKas || dataKas.length === 0) {
-            html = "<tr><td colspan='4' class='text-center text-muted py-4 small'>Belum ada catatan pembukuan kas masuk atau keluar untuk wilayah RT ini.</td></tr>";
-        } else {
-            dataKas.forEach(function(item) {
-                var warnaTeks = item.jenis === "Pemasukan" ? "text-success" : "text-danger";
-                var penanda = item.jenis === "Pemasukan" ? "+" : "-";
-                html += `<tr style="border-bottom: 1px solid #f1f5f9;">
-                    <td class="p-3 align-middle text-muted">${item.tanggal}</td>
-                    <td class="p-3 align-middle"><span class="badge ${item.jenis === 'Pemasukan' ? 'badge-success' : 'badge-danger'} px-2 py-1">${item.jenis}</span></td>
-                    <td class="p-3 align-middle font-weight-bold ${warnaTeks}">${penanda} Rp ${Number(item.jumlah).toLocaleString('id-ID')}</td>
-                    <td class="p-3 align-middle text-dark small font-weight-500">${item.keterangan}</td>
-                </tr>`;
-            });
-        }
-        document.getElementById('tabel-kas-body').innerHTML = html;
-    }).getKeuanganPrivatRT(noKKAktif);
-}
-
-function simpanKeuanganRT(e) {
-    e.preventDefault();
-    
-    if(!noKKAktif) {
-        alert("Gagal menyimpan! Sesi login tidak valid.");
-        return;
-    }
-    
-    var dataKeuangan = {
-        jenis: document.getElementById('keu-jenis').value,
-        jumlah: document.getElementById('keu-jumlah').value,
-        keterangan: document.getElementById('keu-keterangan').value,
-        tanggal: new Date().toLocaleDateString('id-ID')
-    };
-
-    google.script.run.withSuccessHandler(function(response) {
-        if(response === "Sukses") {
-            alert("Laporan keuangan internal RT berhasil dikirim!");
-            document.getElementById('formKeuanganRT').reset();
-            muatTabelKeuangan(); // Refresh data tabel real-time di dalam pop-up
-        } else {
-            alert(response);
-        }
-    }).tambahLaporanKeuanganPrivat(dataKeuangan, noKKAktif);
 }
 
 // KEMBALIKAN FUNGSIONALITAS SHOWHOME ASLI KAMU TANPA GANGGUAN DISPLAY
@@ -1841,60 +1800,6 @@ function getStatusAdminRT(noKK) {
   }
   
   return { status: "Bukan Admin", rt: null };
-}
-
-// 2. FUNGSI UNTUK MENGAMBIL DATA KEUANGAN (Hanya milik RT yang bersangkutan)
-function getKeuanganPrivatRT(noKK) {
-  var cekAdmin = getStatusAdminRT(noKK);
-  
-  if (cekAdmin.status !== "Admin") {
-    return []; // Jika bukan admin, kunci data (kembalikan array kosong)
-  }
-  
-  var sheetKeuangan = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Keuangan_RT");
-  var dataKeuangan = sheetKeuangan.getDataRange().getValues();
-  var hasilFilter = [];
-  
-  for (var i = 1; i < dataKeuangan.length; i++) {
-    // Hanya ambil baris data yang kolom RT-nya cocok dengan wilayah RT si admin
-    if (dataKeuangan[i][0].toString().trim() === cekAdmin.rt.toString().trim()) {
-      hasilFilter.push({
-        tanggal: dataKeuangan[i][1],
-        jenis: dataKeuangan[i][2],
-        jumlah: dataKeuangan[i][3],
-        keterangan: dataKeuangan[i][4]
-      });
-    }
-  }
-  
-  return hasilFilter;
-}
-
-// 3. FUNGSI UNTUK MENYIMPAN LAPORAN KEUANGAN BARU---------------------------------------------------------------------------------------------------
-function tambahLaporanKeuanganPrivat(obj, noKK) {
-  try {
-    var cekAdmin = getStatusAdminRT(noKK);
-    
-    if (cekAdmin.status !== "Admin") {
-      throw new Error("Akses ditolak! Anda bukan admin RT resmi.");
-    }
-    
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Keuangan_RT");
-    
-    var rowBaru = [
-      cekAdmin.rt, // RT otomatis dikunci oleh server berdasarkan No KK, bukan ketikan user
-      obj.tanggal,     
-      obj.jenis,       
-      Number(obj.jumlah), 
-      obj.keterangan,  
-      cekAdmin.nama + " (KK: " + noKK + ")"
-    ];
-    
-    sheet.appendRow(rowBaru);
-    return "Sukses";
-  } catch(err) {
-    return "Gagal: " + err.toString();
-  }
 }
 
     function updateUIAfterLogin() {
@@ -2682,7 +2587,10 @@ function tampilkanKurvaUmurSampingStatistik() {
         }
     });
 }
-
+// Fungsi animasi untuk membuka dan menutup formulir transaksi internal RT
+function pemicuToggleBukaTutupFormRT() {
+    $('#wrapper-form-rt').slideToggle(300);
+}
     function prosesUploadAdmin() {
         const judul = $('#adm-judul').val();
         const isi = $('#adm-isi').val();
