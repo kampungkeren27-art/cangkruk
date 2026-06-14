@@ -1484,47 +1484,57 @@ function bukaSistemNeraca() {
 // =========================================================================
 
 function jalankanEnginePenghitungNeraca(isRW) {
-    // 1. Tampilkan status loading di tabel
-    $('#neraca-log-jurnal').html('<tr><td colspan="8" class="text-center p-4 text-muted"><i class="fas fa-spinner fa-spin mr-2"></i>Mengkalkulasi berkas akuntansi finansial...</td></tr>');
+    // 1. Tampilkan status loading awal
+    $('#neraca-log-jurnal').html('<tr><td colspan="8" class="text-center p-4 text-muted"><i class="fas fa-spinner fa-spin mr-2"></i>Mengkalkulasi berkas akuntansi finansial Cloud...</td></tr>');
     
-    // 2. Ambil data RT secara aman (jika kosong, default ke RT 3)
+    // 2. Deteksi otomatis nomor unit RT warga yang aktif
     let targetRT = "3";
     if (typeof currentUser !== 'undefined' && currentUser) {
         let nomorRTX = currentUser.no_rt || currentUser.NO_RT || currentUser.rt || currentUser.RT;
         if (nomorRTX) targetRT = nomorRTX.toString().replace(/\D/g, "").trim();
     }
     
-    const aksiQuery = isRW ? "dapatkanMasterJurnalRW" : "dapatkanJurnalTerfilterRT";
-    
-    // 3. URL Web App Google Script Anda
+    // URL Web App Google Script Anda
     const URL_WEB_APP_SERVER = "https://script.google.com/macros/s/AKfycbxGFHt_yiVB8zfYWEmS0Dgw-IlZGl7k0EXhU3YdfqxgTwWl3QSc5IK1rdgfGLTAKD26/exec";
     
-    // 4. Jembatan data menggunakan AJAX murni lintas domain
+    // 3. Tembak jalur baru menggunakan dataType "jsonp" agar anti blokir CORS / Error 400
     $.ajax({
         url: URL_WEB_APP_SERVER,
         type: "GET",
         data: {
-            action: aksiQuery,
-            rt: targetRT
+            action: "ambilKasDinamis" // Menembak fungsi penyelamat baru
         },
         crossDomain: true,
-        dataType: "json",
-        success: function(jsonRes) {
-            console.log("Data kas sukses mendarat:", jsonRes);
-            // Lempar data ke fungsi pembuat tabel bawaan Anda
-            if (typeof renderKomponenLengkapAkuntansi === 'function') {
-                renderKomponenLengkapAkuntansi(jsonRes, isRW);
+        dataType: "jsonp", // Menggunakan jembatan JSONP murni lintas server
+        success: function(responDinamis) {
+            console.log("Koneksi sukses! Data Kas_RT dinamis berhasil didapat:", responDinamis);
+            
+            if (responDinamis && responDinamis.length > 0) {
+                // Jalankan fungsi pengisian tabel bawaan Anda menggunakan data riil
+                renderKomponenLengkapAkuntansi(responDinamis, isRW);
+            } else {
+                $('#neraca-log-jurnal').html('<tr><td colspan="8" class="text-center text-muted p-4"><i class="fas fa-folder-open mr-2"></i>Data Kas_RT kosong di Google Sheets.</td></tr>');
             }
         },
         error: function(xhr, status, error) {
-            console.error("Gagal memuat neraca:", error);
-            $('#neraca-log-jurnal').html('<tr><td colspan="8" class="text-center text-danger p-4"><i class="fas fa-exclamation-triangle mr-2"></i>Gagal memuat atau mengalkulasi data neraca finansial dari cloud server.</td></tr>');
+            console.error("Gagal memuat neraca dinamis:", error);
+            $('#neraca-log-jurnal').html('<tr><td colspan="8" class="text-center text-danger p-4"><i class="fas fa-exclamation-triangle mr-2"></i>Gagal mengambil data dari server cloud.</td></tr>');
         }
     });
 }
 
 // 3. Membaca data array Google Sheets urut kolom A - H dan menghitung neraca saldo
 function renderKomponenLengkapAkuntansi(data, isRW) {
+    // -------------------------------------------------------------------------
+    // HAK AKSES KETUA RW (KRW): Otomatis Buka Semua Data Jika Jabatan = KRW
+    // -------------------------------------------------------------------------
+    if (typeof currentUser !== 'undefined' && currentUser) {
+        let jabatanUser = currentUser.jabatan || currentUser.JABATAN || "";
+        if (jabatanUser.toString().trim().toUpperCase() === "KRW") {
+            isRW = true; // Paksa buka status akses RW untuk melihat neraca gabungan
+        }
+    }
+
     // 🛡️ PROTEKSI UTAMA: Jika data di sheet Kas_RT kosong / hanya ada header
     if (!data || data.length <= 1) {
         $('#neraca-log-jurnal').html('<tr><td colspan="8" class="text-center text-muted p-4"><i class="fas fa-folder-open mr-2"></i>Belum ada data kas terekam di sheet Kas_RT.</td></tr>');
@@ -1594,7 +1604,24 @@ function renderKomponenLengkapAkuntansi(data, isRW) {
         if (!row || row.length === 0) continue;
         
         const id = row[0] || "-";          // Kolom A
-        const tgl = row[1] || "-";         // Kolom B
+        
+        // 🟢 PROSES NORMALISASI TANGGAL ISO MENJADI FORMAT ANGKA RINGKAS (DD/MM/YYYY)
+        let tglRaw = row[1] || "-";         // Kolom B
+        let tgl = tglRaw;
+        if (tglRaw && tglRaw !== "-" && tglRaw.toString().includes("T")) {
+            try {
+                let dateObj = new Date(tglRaw);
+                if (!isNaN(dateObj.getTime())) {
+                    let d = String(dateObj.getDate()).padStart(2, '0');
+                    let m = String(dateObj.getMonth() + 1).padStart(2, '0');
+                    let y = dateObj.getFullYear();
+                    tgl = `${d}/${m}/${y}`;
+                }
+            } catch (err) {
+                tgl = tglRaw; // Cadangan jika konversi crash
+            }
+        }
+        
         const rt = row[2] || "-";          // Kolom C
         const jenis = row[3] || "Pemasukan"; // Kolom D
         const posAkun = row[4] || "Umum";   // Kolom E (KATEGORI_AKUN)
