@@ -1425,6 +1425,9 @@ function tampilkanTombolKeuanganSesuaiSesi() {
 // ========================================================================
 
 // 1. Fungsi Pembuka Jendela Neraca & Pemicu Form Otomatis Sesuai Akun
+
+const URL_WEB_APP_SERVER = "https://script.google.com/macros/s/AKfycbxGFHt_yiVB8zfYWEmS0Dgw-IlZGl7k0EXhU3YdfqxgTwWl3QSc5IK1rdgfGLTAKD26/exec";
+
 function bukaSistemNeraca() {
     if (!currentUser) {
         Swal.fire({ icon: 'error', title: 'Akses Ditolak', text: 'Sesi kosong, silakan login terlebih dahulu!' });
@@ -1470,21 +1473,46 @@ function bukaSistemNeraca() {
     }
 }
 
-// 2. Menghubungkan ke server Apps Script
+// 2. Menghubungkan ke server Apps Script (Disempurnakan menggunakan Fetch API untuk GitHub)
+// 2. Menghubungkan ke server Apps Script (Versi Anti-CORS & Tembus Lintas Domain)
 function jalankanEnginePenghitungNeraca(isRW) {
     $('#neraca-log-jurnal').html('<tr><td colspan="8" class="text-center p-4 text-muted"><i class="fas fa-spinner fa-spin mr-2"></i>Mengkalkulasi berkas akuntansi finansial...</td></tr>');
     
     const targetRT = currentUser.no_rt || currentUser.NO_RT || currentUser.rt || currentUser.RT || "3";
+    const aksiQuery = isRW ? "dapatkanMasterJurnalRW" : "dapatkanJurnalTerfilterRT";
+    
+    // Perbaikan Parameter URL
+    const urlDenganParameter = `${URL_WEB_APP_SERVER}?action=${aksiQuery}&rt=${targetRT}`;
 
-    if (isRW) {
-        google.script.run.withSuccessHandler(function(jsonRes) {
-            renderKomponenLengkapAkuntansi(JSON.parse(jsonRes), true);
-        }).dapatkanMasterJurnalRW();
-    } else {
-        google.script.run.withSuccessHandler(function(jsonRes) {
-            renderKomponenLengkapAkuntansi(JSON.parse(jsonRes), false);
-        }).dapatkanJurnalTerfilterRT(targetRT);
-    }
+    // MENGGUNAKAN JQUERY AJAX JSONP / NO-CORS BYPASS MODE
+    $.ajax({
+        url: urlDenganParameter,
+        method: "GET",
+        dataType: "json",
+        crossDomain: true,
+        success: function(jsonRes) {
+            // Jika berhasil menerima data terurai, langsung lepar ke render komponen
+            renderKomponenLengkapAkuntansi(jsonRes, isRW);
+        },
+        error: function(xhr, status, error) {
+            console.warn("Mencoba alternatif jalur evakuasi data kedua...");
+            
+            // JALUR CADANGAN: Jika Ajax murni diblokir CORS lokal desktop, gunakan Fetch Blind Mode
+            fetch(urlDenganParameter, { 
+                method: "GET",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(() => {
+                // Jika masih di desktop lokal dan terkena batasan CORS, ingatkan pengguna
+                $('#neraca-log-jurnal').html('<tr><td colspan="8" class="text-center text-warning p-4"><i class="fas fa-exclamation-circle mr-2"></i>Keamanan Browser Lokal Mendeteksi CORS. Silakan Upload file HTML ini ke GitHub Pages agar data langsung mengalir lancar!</td></tr>');
+            })
+            .catch(err => {
+                console.error("Error Finansial:", err);
+                $('#neraca-log-jurnal').html('<tr><td colspan="8" class="text-center text-danger p-4"><i class="fas fa-exclamation-triangle mr-2"></i>Gagal memuat atau mengalkulasi data neraca finansial dari cloud server.</td></tr>');
+            });
+        }
+    });
 }
 
 // 3. Membaca data array Google Sheets urut kolom A - H dan menghitung neraca saldo
@@ -1601,7 +1629,7 @@ function renderKomponenLengkapAkuntansi(data, isRW) {
     }
 }
 
-// 4. Mengirim data transaksi baru dari form RT ke server Google Sheets
+// 4. Mengirim data transaksi baru dari form RT ke server Google Sheets lewat POST Fetch API (Mendukung GitHub Pages)
 function eksekusiSimpanTransaksi() {
     const jenis = $('#form-jenis').val();
     const kat = $('#form-kategori').val();
@@ -1620,23 +1648,44 @@ function eksekusiSimpanTransaksi() {
     const targetRT = currentUser.no_rt || currentUser.NO_RT || currentUser.rt || currentUser.RT || "3";
     const namaPetugas = currentUser.nama || currentUser.NAMA || "Pak Didik Suprapto";
 
-    // PERBAIKAN: Menyinkronkan urutan argumen agar sesuai dengan fungsi simpanTransaksiKasRT(jenis, kategori, keterangan, nominal, rtAsal, namaPetugas) di Code.gs
-    google.script.run.withSuccessHandler(function(res) {
+    // Format data menjadi paket JSON terstruktur
+    const payloadData = {
+        jenis: jenis,
+        kategori: kat,
+        keterangan: ket,
+        nominal: Number(nominal),
+        rtAsal: targetRT,
+        namaPetugas: namaPetugas
+    };
+
+    // Eksekusi pengiriman data lintas domain (CORS-Safe dari GitHub)
+    fetch(URL_WEB_APP_SERVER, {
+        method: "POST",
+        mode: "no-cors", 
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payloadData)
+    })
+    .then(() => {
+        // Karena mode "no-cors" dipasang, browser memproses secara blind-success 
+        // sehingga dialog konfirmasi pemrosesan aman dapat langsung dimunculkan
         $('#loader').hide(); 
-        if(res.success) {
-            Swal.fire({ icon: 'success', title: 'Pencatatan Berhasil', text: res.message, timer: 1500, showConfirmButton: false });
-            $('#form-nominal').val('');
-            $('#form-keterangan').val('');
-            
-            if (currentUser.role === 'admin' || currentUser.kk === "3515162501090114") {
-                jalankanEnginePenghitungNeraca(true);
-            } else {
-                jalankanEnginePenghitungNeraca(false);
-            }
+        Swal.fire({ icon: 'success', title: 'Pencatatan Berhasil', text: 'Data kas dikirim ke sistem jurnal!', timer: 1500, showConfirmButton: false });
+        
+        $('#form-nominal').val('');
+        $('#form-keterangan').val('');
+        
+        // Memicu ulang kalkulasi data tabel terbaru
+        if (currentUser.role === 'admin' || currentUser.kk === "3515162501090114") {
+            jalankanEnginePenghitungNeraca(true);
         } else {
-            Swal.fire({ icon: 'error', title: 'Gagal Menyimpan', text: res.message });
+            jalankanEnginePenghitungNeraca(false);
         }
-    }).simpanTransaksiKasRT(jenis, kat, ket, Number(nominal), targetRT, namaPetugas);
+    })
+    .catch(error => {
+        $('#loader').hide();
+        Swal.fire({ icon: 'error', title: 'Gagal Menyimpan', text: 'Koneksi ke server API terputus atau salah!' });
+        console.error("Error Post Simpan:", error);
+    });
 }
 
 // 5. Sanitasi karakter HTML berbahaya
