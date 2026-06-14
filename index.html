@@ -1475,42 +1475,50 @@ function bukaSistemNeraca() {
 
 // 2. Menghubungkan ke server Apps Script (Disempurnakan menggunakan Fetch API untuk GitHub)
 // 2. Menghubungkan ke server Apps Script (Versi Anti-CORS & Tembus Lintas Domain)
+// =========================================================================
+// FRONTEND ENGINE FINANSIAL (PEMBERSIH PARAMETER BAD REQUEST 400)
+// =========================================================================
+
+// =========================================================================
+// FRONTEND ENGINE FINANSIAL (ANTI-ERROR 400 BAD REQUEST)
+// =========================================================================
+
 function jalankanEnginePenghitungNeraca(isRW) {
+    // 1. Tampilkan status loading di tabel
     $('#neraca-log-jurnal').html('<tr><td colspan="8" class="text-center p-4 text-muted"><i class="fas fa-spinner fa-spin mr-2"></i>Mengkalkulasi berkas akuntansi finansial...</td></tr>');
     
-    const targetRT = currentUser.no_rt || currentUser.NO_RT || currentUser.rt || currentUser.RT || "3";
+    // 2. Ambil data RT secara aman (jika kosong, default ke RT 3)
+    let targetRT = "3";
+    if (typeof currentUser !== 'undefined' && currentUser) {
+        let nomorRTX = currentUser.no_rt || currentUser.NO_RT || currentUser.rt || currentUser.RT;
+        if (nomorRTX) targetRT = nomorRTX.toString().replace(/\D/g, "").trim();
+    }
+    
     const aksiQuery = isRW ? "dapatkanMasterJurnalRW" : "dapatkanJurnalTerfilterRT";
     
-    // Perbaikan Parameter URL
-    const urlDenganParameter = `${URL_WEB_APP_SERVER}?action=${aksiQuery}&rt=${targetRT}`;
-
-    // MENGGUNAKAN JQUERY AJAX JSONP / NO-CORS BYPASS MODE
+    // 3. URL Web App Google Script Anda
+    const URL_WEB_APP_SERVER = "https://script.google.com/macros/s/AKfycbxGFHt_yiVB8zfYWEmS0Dgw-IlZGl7k0EXhU3YdfqxgTwWl3QSc5IK1rdgfGLTAKD26/exec";
+    
+    // 4. Jembatan data menggunakan AJAX murni lintas domain
     $.ajax({
-        url: urlDenganParameter,
-        method: "GET",
-        dataType: "json",
+        url: URL_WEB_APP_SERVER,
+        type: "GET",
+        data: {
+            action: aksiQuery,
+            rt: targetRT
+        },
         crossDomain: true,
+        dataType: "json",
         success: function(jsonRes) {
-            // Jika berhasil menerima data terurai, langsung lepar ke render komponen
-            renderKomponenLengkapAkuntansi(jsonRes, isRW);
+            console.log("Data kas sukses mendarat:", jsonRes);
+            // Lempar data ke fungsi pembuat tabel bawaan Anda
+            if (typeof renderKomponenLengkapAkuntansi === 'function') {
+                renderKomponenLengkapAkuntansi(jsonRes, isRW);
+            }
         },
         error: function(xhr, status, error) {
-            console.warn("Mencoba alternatif jalur evakuasi data kedua...");
-            
-            // JALUR CADANGAN: Jika Ajax murni diblokir CORS lokal desktop, gunakan Fetch Blind Mode
-            fetch(urlDenganParameter, { 
-                method: "GET",
-                mode: "no-cors",
-                headers: { "Content-Type": "application/json" }
-            })
-            .then(() => {
-                // Jika masih di desktop lokal dan terkena batasan CORS, ingatkan pengguna
-                $('#neraca-log-jurnal').html('<tr><td colspan="8" class="text-center text-warning p-4"><i class="fas fa-exclamation-circle mr-2"></i>Keamanan Browser Lokal Mendeteksi CORS. Silakan Upload file HTML ini ke GitHub Pages agar data langsung mengalir lancar!</td></tr>');
-            })
-            .catch(err => {
-                console.error("Error Finansial:", err);
-                $('#neraca-log-jurnal').html('<tr><td colspan="8" class="text-center text-danger p-4"><i class="fas fa-exclamation-triangle mr-2"></i>Gagal memuat atau mengalkulasi data neraca finansial dari cloud server.</td></tr>');
-            });
+            console.error("Gagal memuat neraca:", error);
+            $('#neraca-log-jurnal').html('<tr><td colspan="8" class="text-center text-danger p-4"><i class="fas fa-exclamation-triangle mr-2"></i>Gagal memuat atau mengalkulasi data neraca finansial dari cloud server.</td></tr>');
         }
     });
 }
@@ -1529,10 +1537,50 @@ function renderKomponenLengkapAkuntansi(data, isRW) {
         if (isRW) {
             $('#rekap-total-masuk').text("Rp 0");
             $('#rekap-total-keluar').text("Rp 0");
-            $('#rekap-saldo-bersih').text("Rp 0");
+            $('#rekap-saldo-total').text("Rp 0");
             $('#wrapper-breakdown-rt').html('<div class="col-12 text-center text-muted">Tidak ada rekap data RT</div>');
         }
         return; // Hentikan fungsi di sini agar tidak crash finansial!
+    }
+
+    // -------------------------------------------------------------------------
+    // SYSTEM FILTER DATA: Memastikan data disaring berdasarkan RT user yang aktif jika bukan RW
+    // -------------------------------------------------------------------------
+    let targetRTActive = "3"; // Nilai standar cadangan jika tidak terbaca
+    if (typeof currentUser !== 'undefined' && currentUser) {
+        let nomorRTX = currentUser.no_rt || currentUser.NO_RT || currentUser.rt || currentUser.RT;
+        if (nomorRTX) {
+            targetRTActive = nomorRTX.toString().replace(/\D/g, "").trim(); 
+        }
+    }
+
+    let dataProses = [];
+    const headerAwal = data[0];
+    dataProses.push(headerAwal);
+
+    if (isRW) {
+        // Jika level RW, proses seluruh 896 baris data tanpa terkecuali
+        dataProses = data;
+    } else {
+        // Jika level RT, saring hanya baris data yang kolom RT-nya (kolom indeks ke-2) cocok
+        for (let k = 1; k < data.length; k++) {
+            if (!data[k] || data[k].length === 0) continue;
+            let nilaiKolomRT = data[k][2] ? data[k][2].toString().replace(/\D/g, "").trim() : "";
+            if (nilaiKolomRT === targetRTActive) {
+                dataProses.push(data[k]);
+            }
+        }
+    }
+
+    // Jika setelah disaring ternyata tidak ada data kas yang cocok untuk RT tersebut
+    if (dataProses.length <= 1) {
+        $('#neraca-log-jurnal').html('<tr><td colspan="8" class="text-center text-muted p-4"><i class="fas fa-folder-open mr-2"></i>Tidak ada data kas terekam untuk unit RT Anda.</td></tr>');
+        $('#neraca-aktiva-rows').html('<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
+        $('#neraca-pasiva-rows').html('<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
+        $('#neraca-total-aktiva').text("Rp 0");
+        $('#neraca-total-pasiva').text("Rp 0");
+        $('#neraca-saldo-internal-text').text("Rp 0");
+        return;
     }
 
     let htmlJurnal = "";
@@ -1542,8 +1590,9 @@ function renderKomponenLengkapAkuntansi(data, isRW) {
     let grandPengeluaran = 0;
     let rincianPerRT = {}; 
 
-    for (let i = data.length - 1; i >= 1; i--) {
-        const row = data[i];
+    // Pemrosesan menggunakan dataProses yang sudah lolos filter keamanan
+    for (let i = dataProses.length - 1; i >= 1; i--) {
+        const row = dataProses[i];
         if (!row || row.length === 0) continue;
         
         const id = row[0] || "-";          
