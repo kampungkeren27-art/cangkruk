@@ -1537,16 +1537,16 @@ function renderKomponenLengkapAkuntansi(data, isRW) {
         if (isRW) {
             $('#rekap-total-masuk').text("Rp 0");
             $('#rekap-total-keluar').text("Rp 0");
-            $('#rekap-saldo-total').text("Rp 0");
+            $('#rekap-saldo-bersih').text("Rp 0");
             $('#wrapper-breakdown-rt').html('<div class="col-12 text-center text-muted">Tidak ada rekap data RT</div>');
         }
-        return; // Hentikan fungsi di sini agar tidak crash finansial!
+        return; 
     }
 
     // -------------------------------------------------------------------------
-    // SYSTEM FILTER DATA: Memastikan data disaring berdasarkan RT user yang aktif jika bukan RW
+    // DETEKSI AKURASI USER RT (Berdasarkan Kolom C / Indeks 2 di Gambar Anda)
     // -------------------------------------------------------------------------
-    let targetRTActive = "3"; // Nilai standar cadangan jika tidak terbaca
+    let targetRTActive = "3"; 
     if (typeof currentUser !== 'undefined' && currentUser) {
         let nomorRTX = currentUser.no_rt || currentUser.NO_RT || currentUser.rt || currentUser.RT;
         if (nomorRTX) {
@@ -1559,12 +1559,11 @@ function renderKomponenLengkapAkuntansi(data, isRW) {
     dataProses.push(headerAwal);
 
     if (isRW) {
-        // Jika level RW, proses seluruh 896 baris data tanpa terkecuali
         dataProses = data;
     } else {
-        // Jika level RT, saring hanya baris data yang kolom RT-nya (kolom indeks ke-2) cocok
         for (let k = 1; k < data.length; k++) {
             if (!data[k] || data[k].length === 0) continue;
+            // Membaca Kolom RT (Indeks 2) sesuai gambar Excel Anda
             let nilaiKolomRT = data[k][2] ? data[k][2].toString().replace(/\D/g, "").trim() : "";
             if (nilaiKolomRT === targetRTActive) {
                 dataProses.push(data[k]);
@@ -1572,9 +1571,8 @@ function renderKomponenLengkapAkuntansi(data, isRW) {
         }
     }
 
-    // Jika setelah disaring ternyata tidak ada data kas yang cocok untuk RT tersebut
     if (dataProses.length <= 1) {
-        $('#neraca-log-jurnal').html('<tr><td colspan="8" class="text-center text-muted p-4"><i class="fas fa-folder-open mr-2"></i>Tidak ada data kas terekam untuk unit RT Anda.</td></tr>');
+        $('#neraca-log-jurnal').html('<tr><td colspan="8" class="text-center text-muted p-4"><i class="fas fa-folder-open mr-2"></i>Tidak ada data kas terekam untuk unit RT ' + targetRTActive + '.</td></tr>');
         $('#neraca-aktiva-rows').html('<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
         $('#neraca-pasiva-rows').html('<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
         $('#neraca-total-aktiva').text("Rp 0");
@@ -1590,25 +1588,29 @@ function renderKomponenLengkapAkuntansi(data, isRW) {
     let grandPengeluaran = 0;
     let rincianPerRT = {}; 
 
-    // Pemrosesan menggunakan dataProses yang sudah lolos filter keamanan
+    // LOOPING UTAMA DATA SESUAI STRUKTUR GAMBAR ANDA (INDERS 0 SAMPAI 7)
     for (let i = dataProses.length - 1; i >= 1; i--) {
         const row = dataProses[i];
         if (!row || row.length === 0) continue;
         
-        const id = row[0] || "-";          
-        const tgl = row[1] || "-";          
-        const rt = row[2] || "-";    
-        const jenis = row[3] || "Pemasukan";        
-        const posAkun = row[4] || "Umum";      
-        const ket = row[5] || "-";          
-        const nominal = Number(row[6]) || 0; 
-        const petugas = row[7] || "-"; 
+        const id = row[0] || "-";          // Kolom A
+        const tgl = row[1] || "-";         // Kolom B
+        const rt = row[2] || "-";          // Kolom C
+        const jenis = row[3] || "Pemasukan"; // Kolom D
+        const posAkun = row[4] || "Umum";   // Kolom E (KATEGORI_AKUN)
+        const ket = row[5] || "-";          // Kolom F
+        
+        // Proteksi Pembersihan Angka Korektif (Kolom G)
+        let nominalRaw = row[6] ? row[6].toString().replace(/[^0-9.-]/g, "") : "0";
+        const nominal = Number(nominalRaw) || 0; 
+        
+        const petugas = row[7] || "-";     // Kolom H
 
         if (!rincianPerRT[rt]) {
             rincianPerRT[rt] = { masuk: 0, keluar: 0 };
         }
 
-        if (jenis === "Pemasukan") {
+        if (jenis === "Pemasukan" || jenis.toString().toLowerCase().trim() === "pemasukan") {
             grandPemasukan += nominal;
             rincianPerRT[rt].masuk += nominal;
             mapAktiva[posAkun] = (mapAktiva[posAkun] || 0) + nominal;
@@ -1618,8 +1620,8 @@ function renderKomponenLengkapAkuntansi(data, isRW) {
             mapPasiva[posAkun] = (mapPasiva[posAkun] || 0) + nominal;
         }
 
-        const badgeJenis = jenis === "Pemasukan" ? "badge-success" : "badge-danger";
-        const iconJenis = jenis === "Pemasukan" ? "↑" : "↓";
+        const badgeJenis = (jenis === "Pemasukan" || jenis.toString().toLowerCase().trim() === "pemasukan") ? "badge-success" : "badge-danger";
+        const iconJenis = (jenis === "Pemasukan" || jenis.toString().toLowerCase().trim() === "pemasukan") ? "↑" : "↓";
 
         htmlJurnal += `
             <tr>
@@ -1677,7 +1679,6 @@ function renderKomponenLengkapAkuntansi(data, isRW) {
         $('#wrapper-breakdown-rt').html(htmlRTWidget);
     }
 }
-
 // 4. Mengirim data transaksi baru dari form RT ke server Google Sheets lewat POST Fetch API (Mendukung GitHub Pages)
 function eksekusiSimpanTransaksi() {
     const jenis = $('#form-jenis').val();
