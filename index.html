@@ -212,20 +212,7 @@
                     </div>
                 </li>
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle btn btn-light rounded-pill px-4 py-2 mt-1 mt-lg-0 shadow-sm mx-1" 
-                       href="javascript:void(0)" id="navbarSurat" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
-                       style="font-size: 0.85rem; color: var(--primary-dark) !important;">
-                         Pengajuan Surat
-                    </a>
-                    <div class="dropdown-menu border-0 shadow-lg p-3" aria-labelledby="navbarSurat">
-                        <a class="dropdown-item py-3 rounded mb-1 font-weight-bold text-success" href="javascript:void(0)" onclick="bukaModalSuratPengantarRT()" style="background: rgba(40, 167, 69, 0.05);">📝 Surat Pengantar RT</a>
-                        
-                        <a class="dropdown-item py-3 rounded mb-1" href="javascript:void(0)" onclick="showPengajuanSurat('domisili')">🏠 Surat Domisili</a>
-                        <a class="dropdown-item py-3 rounded mb-1" href="javascript:void(0)" onclick="showPengajuanSurat('usaha')">💼 Surat Usaha</a>
-                        <a class="dropdown-item py-3 rounded" href="javascript:void(0)" onclick="showPengajuanSurat('lainnya')">📑 Surat Lainnya</a>
-                    </div>                                         
-                </li>
+               
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle btn btn-primary text-white rounded-pill px-4 py-2 mt-1 mt-lg-0 shadow-sm mx-1" 
@@ -234,12 +221,6 @@
                          👤 AKSES MENU
                     </a>
                     <div class="dropdown-menu dropdown-menu-right border-0 shadow-lg p-3" aria-labelledby="navAkses" style="min-width: 230px;">
-                        <? if (isAdmin) { ?>
-                        <div class="nav-item">
-                            <a class="dropdown-item py-2 rounded mb-1 font-weight-bold" href="javascript:void(0)" onclick="showAdminPage()" style="font-size: 0.85rem; color: var(--primary-dark) !important;">
-                                ⚙️ DASHBOARD ADMIN
-                            </a>
-                        </div>
                         <? } else { ?>
                         <div class="nav-item">
                             <a class="dropdown-item py-2 rounded mb-1" href="https://accounts.google.com/ServiceLogin" target="_top" style="font-size: 0.85rem;">
@@ -261,9 +242,10 @@
                         </div>
                     
                         <div class="nav-item" id="logout-nav-item" style="display:none;">
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#" onclick="prosesLogoutSesiWargaTerkunci(); return false;">Keluar</a>
-                            </a>
+                           <div class="dropdown-divider"></div>
+                             <a class="dropdown-item text-danger" href="#" onclick="logoutWarga(); return false;">
+                           <i class="fas fa-sign-out-alt mr-2"></i>Keluar
+                              </a>
                         </div>
                     </div>
                 </li>
@@ -274,59 +256,11 @@
             
 
 
-<div class="modal fade" id="modalSuratPengantarRT" tabindex="-1" role="dialog" aria-labelledby="modalSuratLabel" aria-hidden="true" style="z-index: 1060;">
-    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
-        <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 15px 35px rgba(0,0,0,0.15);">
-            
-            <div class="modal-header border-0 pt-4 px-4 pb-0 d-flex align-items-center justify-content-between">
-                <div class="d-flex align-items-center">
-                    <div class="bg-primary-light text-primary p-3 mr-3 d-flex align-items-center justify-content-center" style="border-radius: 14px; width: 50px; height: 50px; background: #e3f2fd;">
-                        <i class="fas fa-file-alt fa-lg"></i>
-                    </div>
-                    <div>
-                        <h5 class="modal-title font-weight-bold text-dark mb-0" id="modalSuratLabel">Surat Pengantar RT</h5>
-                        <p class="small text-muted mb-0">Status Wilayah: <span id="label-rt-warga" class="font-weight-bold text-primary">Deteksi Otomatis</span></p>
-                    </div>
-                </div>
-                <button type="button" class="close m-0 p-2" data-dismiss="modal" aria-label="Close" style="font-size: 1.6rem; outline: none !important;">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-
-            <div class="modal-body p-4">
-                <form id="formSuratPengantarRT" onsubmit="simpanPengajuanSuratRT(event)">
-                    
-                    <div class="mb-3">
-                        <label class="small font-weight-bold text-muted text-uppercase" style="letter-spacing: 0.5px;">Nama Lengkap Pemohon</label>
-                        <input type="text" id="surat-nama" class="form-control form-control-lg" placeholder="Masukkan nama sesuai KTP" style="border-radius: 12px; font-size: 0.95rem;" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="small font-weight-bold text-muted text-uppercase" style="letter-spacing: 0.5px;">Keperluan / Tujuan Surat</label>
-                        <textarea id="surat-keperluan" class="form-control" rows="3" placeholder="Contoh: Pengurusan KTP, Surat Pengantar Nikah, SKCK, dll..." style="border-radius: 12px; font-size: 0.95rem;" required></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="small font-weight-bold text-muted text-uppercase" style="letter-spacing: 0.5px;">Keterangan Tambahan (Opsional)</label>
-                        <input type="text" id="surat-keterangan" class="form-control form-control-lg" placeholder="Catatan tambahan jika ada..." style="border-radius: 12px; font-size: 0.95rem;">
-                    </div>
-
-                    <button type="submit" id="btnSubmitSurat" class="btn btn-primary btn-lg btn-block font-weight-bold shadow-sm py-2" style="border-radius: 14px; background: var(--primary); border: none; font-size: 1rem;">
-                        <i class="fas fa-paper-plane mr-2"></i> Kirim Pengajuan ke RT
-                    </button>
-                </form>
-            </div>
-
-        </div>
-    </div>
-</div>
-
 <div id="main-page-content">
     <div id="home-wrapper">
         <div id="banner-section" class="hero-banner">
             <div class="container">
                 <div class="row"> 
-                    
                     <div class="col-12">
                         <div class="mb-3">
                             <div class="d-inline-block bg-white p-2 shadow-sm" style="border-radius: 16px; width: 130px; height: 130px;">
@@ -339,7 +273,6 @@
                         <h1 class="font-weight-bold" style="line-height: 1.2;">SOLID RW <br>RW 01, Desa Ganting</h1>
                         <p class="mb-0 text-white-50">WebApps Informasi Digital Kependudukan RW.01 Desa Ganting</p>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -349,18 +282,28 @@
                 <div class="row">
                     <div class="col-lg-8">
                         <h6 class="font-weight-bold text-muted mb-3" style="letter-spacing: 1px;">PENGUMUMAN TERBARU</h6>
+                        
                         <div class="card p-3 mb-5 shadow-sm border-0" style="border-radius: 20px;">
                             <div class="overflow-hidden rounded" style="border-radius: 22px;">
-                                <img id="main-news-img" src="https://picsum.photos/id/11/800/450" class="news-img">
+                                <img id="main-news-img" src="https://picsum.photos/id/11/800/450" class="news-img" style="width: 100%; object-fit: cover;">
                             </div>
                             <div class="card-body px-2">
                                 <div class="d-flex align-items-center mb-3">
-                                    <span class="badge badge-success px-3 py-2 rounded-pill mr-3">KEGIATAN WARGA</span>
-                                    <small id="main-news-date" class="text-muted font-weight-bold">Hari Ini</small>
+                                    <span id="main-news-badge" class="badge badge-success px-3 py-2 rounded-pill mr-3">MEMUAT...</span>
+                                    <small id="main-news-date" class="text-muted font-weight-bold">-</small>
                                 </div>
-                                <h2 id="main-news-title" class="font-weight-bold mb-3">Agenda Kerja Bakti Akbar Wilayah</h2>
-                                <p id="main-news-desc" class="text-muted mb-4 lead" style="font-size: 1rem;">Mengundang seluruh Bapak/Ibu warga RW 01 untuk berpartisipasi dalam pembersihan lingkungan serentak.</p>
-                                <button class="btn btn-primary px-5" data-toggle="modal" data-target="#infoModal" onclick="setModalDefault()">Lihat Rincian Agenda</button>
+                                <h2 id="main-news-title" class="font-weight-bold mb-3">Memuat informasi terbaru...</h2>
+                                <p id="main-news-desc" class="text-muted mb-4 lead" style="font-size: 1rem;">Silakan tunggu sebentar, sistem sedang menarik data pengumuman warga.</p>
+                                
+                                <div class="d-flex flex-wrap" style="gap: 12px;">
+                                    <button class="btn btn-primary px-4" data-toggle="modal" data-target="#infoModal" onclick="setModalDefault()">Lihat Rincian Agenda</button>
+                                    
+                                    <div id="menu-dashboard-admin" style="display: none !important; d-inline-block;">
+    <button type="button" class="btn btn-info font-weight-bold px-4 py-2 text-white shadow-sm" style="border-radius: 12px;" onclick="bukaDashboardManajemenBerita()">
+        📊 Dashboard Berita
+    </button>
+</div>
+                                </div>
                             </div>
                         </div>
 
@@ -394,61 +337,141 @@
                                 </div>
                                 <p class="small mb-0 font-weight-bold text-dark opacity-75">Tamu lebih dari 24 jam wajib lapor Ketua RT.</p>
                             </div>
-
-                            
                         </div>
                         
-                        
                         <div class="card p-4 bg-dark text-white shadow-lg border-0" style="border-radius: 25px;">
-    <h5 class="font-weight-bold mb-1"><i class="fas fa-phone-alt text-danger mr-2"></i>Layanan Bantuan</h5>
-    <p class="small opacity-75 mb-4">Telepon Darurat Warga Desa Ganting.</p>
-    
-    <div class="d-flex flex-column" style="gap: 12px;">
-        <a href="https://wa.me/6281525855470" target="_blank" class="btn btn-outline-light btn-block rounded-lg font-weight-bold text-left px-4 py-2 m-0">
-            <div class="d-flex align-items-center">
-                <i class="fab fa-whatsapp mr-3 text-success fa-lg"></i>
-                <div>
-                    <div style="font-size: 1rem; line-height: 1.2;">BabinKamtibmas</div>
-                    <span class="small opacity-75 font-weight-normal" style="letter-spacing: 0.5px;">0815-2585-5470</span>
-                </div>
-            </div>
-        </a>
+                            <h5 class="font-weight-bold mb-1"><i class="fas fa-phone-alt text-danger mr-2"></i>Layanan Bantuan</h5>
+                            <p class="small opacity-75 mb-4">Telepon Darurat Warga Desa Ganting.</p>
+                            
+                            <div class="d-flex flex-column" style="gap: 12px;">
+                                <a href="https://wa.me/6281525855470" target="_blank" class="btn btn-outline-light btn-block rounded-lg font-weight-bold text-left px-4 py-2 m-0">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fab fa-whatsapp mr-3 text-success fa-lg"></i>
+                                        <div>
+                                            <div style="font-size: 1rem; line-height: 1.2;">BabinKamtibmas</div>
+                                            <span class="small opacity-75 font-weight-normal" style="letter-spacing: 0.5px;">0815-2585-5470</span>
+                                        </div>
+                                    </div>
+                                </a>
 
-        <a href="https://wa.me/6281334679116" target="_blank" class="btn btn-outline-light btn-block rounded-lg font-weight-bold text-left px-4 py-2 m-0">
-            <div class="d-flex align-items-center">
-                <i class="fab fa-whatsapp mr-3 text-success fa-lg"></i>
-                <div>
-                    <div style="font-size: 1rem; line-height: 1.2;">Babinsa</div>
-                    <span class="small opacity-75 font-weight-normal" style="letter-spacing: 0.5px;">0813-3467-9116</span>
-                </div>
-            </div>
-        </a>
+                                <a href="https://wa.me/6281334679116" target="_blank" class="btn btn-outline-light btn-block rounded-lg font-weight-bold text-left px-4 py-2 m-0">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fab fa-whatsapp mr-3 text-success fa-lg"></i>
+                                        <div>
+                                            <div style="font-size: 1rem; line-height: 1.2;">Babinsa</div>
+                                            <span class="small opacity-75 font-weight-normal" style="letter-spacing: 0.5px;">0813-3467-9116</span>
+                                        </div>
+                                    </div>
+                                </a>
 
-        <a href="tel:110" class="btn btn-outline-light btn-block rounded-lg font-weight-bold text-left px-4 py-2 m-0">
-            <div class="d-flex align-items-center">
-                <i class="fas fa-shield-alt mr-3 text-primary fa-lg"></i>
-                <div>
-                    <div style="font-size: 1rem; line-height: 1.2;">Kepolisian</div>
-                    <span class="badge badge-danger mt-1 px-2 py-0.5" style="font-size: 0.75rem;">Panggil 110</span>
-                </div>
-            </div>
-        </a>
+                                <a href="tel:110" class="btn btn-outline-light btn-block rounded-lg font-weight-bold text-left px-4 py-2 m-0">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-shield-alt mr-3 text-primary fa-lg"></i>
+                                        <div>
+                                            <div style="font-size: 1rem; line-height: 1.2;">Kepolisian</div>
+                                            <span class="badge badge-danger mt-1 px-2 py-0.5" style="font-size: 0.75rem;">Panggil 110</span>
+                                        </div>
+                                    </div>
+                                </a>
 
-        <a href="tel:112" class="btn btn-outline-light btn-block rounded-lg font-weight-bold text-left px-4 py-2 m-0">
-            <div class="d-flex align-items-center">
-                <i class="fas fa-ambulance mr-3 text-warning fa-lg"></i>
-                <div>
-                    <div style="font-size: 1rem; line-height: 1.2;">Pemkab (Siaga)</div>
-                    <span class="badge badge-warning text-dark mt-1 px-2 py-0.5" style="font-size: 0.75rem;">Panggil 112</span>
-                </div>
-            </div>
-        </a>
-    </div>
-</div>
+                                <a href="tel:112" class="btn btn-outline-light btn-block rounded-lg font-weight-bold text-left px-4 py-2 m-0">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-ambulance mr-3 text-warning fa-lg"></i>
+                                        <div>
+                                            <div style="font-size: 1rem; line-height: 1.2;">Pemkab (Siaga)</div>
+                                            <span class="badge badge-warning text-dark mt-1 px-2 py-0.5" style="font-size: 0.75rem;">Panggil 112</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<div id="admin-page-content" class="container mt-4" style="display: none; position: relative; z-index: 10;">
+    <div class="card p-4 border-0 shadow-lg" style="border-radius: 25px;">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4" style="gap: 15px;">
+            <div>
+                <h4 class="font-weight-bold text-dark mb-1">📰 Manajemen Informasi & Berita</h4>
+                <p class="text-muted small mb-0">Kelola informasi, tambah berita baru, atau perbarui pengumuman warga RW 01.</p>
+            </div>
+            <div class="d-flex" style="gap: 10px;">
+                <button type="button" class="btn btn-primary px-4 py-2 font-weight-bold shadow-sm" style="border-radius: 12px;" onclick="bukaModalBeritaBaru()">
+                    ➕ Tambah Berita Baru
+                </button>
+                <button type="button" class="btn btn-light border px-4 py-2 font-weight-bold" style="border-radius: 12px;" onclick="kembaliKeBeranda()">
+                    ⬅️ Kembali Ke Beranda
+                </button>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover mb-0" style="min-width: 600px;">
+                <thead class="bg-light text-secondary small font-weight-bold">
+                    <tr>
+                        <th style="width: 12%;">ID BERITA</th>
+                        <th style="width: 20%;">KATEGORI</th>
+                        <th style="width: 48%;">JUDUL PENGUMUMAN</th>
+                        <th style="width: 20%;" class="text-center">AKSI</th>
+                    </tr>
+                </thead>
+                <tbody id="tabel-list-berita">
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">Memuat data terbaru dari Sheets...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalAdminBerita" tabindex="-1" role="dialog" aria-labelledby="modalAdminBeritaLabel" aria-hidden="true" style="border-radius: 25px; z-index: 9999;">
+    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 25px;">
+            <div class="modal-header border-0 pt-4 px-4 d-flex align-items-center justify-content-between">
+                <h4 class="font-weight-bold mb-0" id="modalAdminBeritaLabel">Formulir Pengisian Berita</h4>
+                <button type="button" class="close" data-dismiss="modal" style="outline: none;">
+                    <span aria-hidden="true" style="font-size: 1.8rem;">×</span>
+                </button>
+            </div>
+            <div class="modal-body px-4 pb-4">
+                <form id="adminForm">
+                    <input type="hidden" id="adm-id-berita">
+                    
+                    <div class="form-group mb-3">
+                        <label class="small font-weight-bold text-muted">KATEGORI BERITA</label>
+                        <select id="adm-kategori" class="form-control" style="height: 45px; border-radius: 12px;">
+                            <option value="Edaran Resmi">Edaran Resmi</option>
+                            <option value="Kegiatan Warga">Kegiatan Warga / Kerja Bakti</option>
+                            <option value="Keamanan & Ketertiban">Keamanan & Ketertiban</option>
+                            <option value="Informasi Umum">Informasi Umum</option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="small font-weight-bold text-muted">JUDUL PENGUMUMAN</label>
+                        <input type="text" id="adm-judul" class="form-control" placeholder="Contoh: Kerja Bakti Akbar" style="border-radius: 12px; height: 45px;">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="small font-weight-bold text-muted">ISI PENGUMUMAN</label>
+                        <textarea id="adm-isi" class="form-control" rows="4" placeholder="Detail rincian..." style="border-radius: 12px;"></textarea>
+                    </div>
+                    <div class="form-group mb-4">
+                        <label class="small font-weight-bold text-muted">UPLOAD FOTO (OPSIONAL)</label>
+                        <input type="file" class="form-control-file" id="adm-file" accept="image/*">
+                    </div>
+                    <button type="button" onclick="prosesUploadAdmin()" id="btn-admin-save" class="btn btn-primary btn-block py-3 font-weight-bold shadow" style="border-radius: 15px;">
+                        Simpan & Publikasikan
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
     </div> <div id="struktur-section" class="container mt-4 mb-5" style="display:none;">
         <div class="card border-0 shadow-sm rounded-lg overflow-hidden">
             <div class="card-header bg-white border-0 pt-4 px-4">
@@ -816,38 +839,7 @@
         </div>
     </div>
 
-    <div id="admin-page-content" style="display:none;" class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="d-flex align-items-center mb-4">
-                    <button class="btn btn-white shadow-sm border-0 mr-3 p-0 rounded-circle d-flex align-items-center justify-content-center" onclick="showHome()" style="width:45px; height:45px; background: white;">
-                        <span style="font-size: 1.2rem; color: var(--primary); font-weight: bold;">←</span>
-                    </button>
-                    <h2 class="font-weight-bold mb-0">Update Informasi Web</h2>
-                </div>
-                <div class="card p-5 shadow-lg border-0" style="border-radius: 35px;">
-                    <form id="adminForm">
-                        <div class="form-group mb-3">
-                            <label class="small font-weight-bold">Judul Pengumuman</label>
-                            <input type="text" id="adm-judul" class="form-control admin-form-input" placeholder="Contoh: Kerja Bakti Akbar">
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="small font-weight-bold">Isi Pengumuman</label>
-                            <textarea id="adm-isi" class="form-control admin-form-input" rows="4" placeholder="Tuliskan detail pengumuman di sini..."></textarea>
-                        </div>
-                        <div class="form-group mb-4">
-                            <label class="small font-weight-bold">Upload Foto</label>
-                            <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="adm-file" accept="image/*">
-                                <label class="custom-file-label" for="adm-file">Pilih gambar...</label>
-                            </div>
-                        </div>
-                        <button type="button" onclick="prosesUploadAdmin()" id="btn-admin-save" class="btn btn-primary btn-block py-3 shadow-lg">Publikasikan Informasi</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 </div> <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content" style="border-radius: 30px;">
@@ -877,23 +869,46 @@
     </button>
 </div>
 
+
+<div class="tab-content" id="kontenTabNeracaRW">
+
+
 <div class="modal fade" id="modalNeracaKeuangan" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
         <div class="modal-content" style="border-radius: 25px; border: none; box-shadow: 0 15px 40px rgba(0,0,0,0.4);">
             <div class="modal-header bg-dark text-white p-4 border-0" style="border-radius: 25px 25px 0 0;">
                 <div>
-                    <h5 class="modal-title font-weight-bold mb-1">⚖️ Aplikasi Neraca & Transparansi Keuangan</h5>
+                    <h5 class="modal-title font-weight-bold mb-1">⚖️ Neraca & Transparansi Keuangan RW.01</h5>
                     <small class="text-white-50" id="sub-title-neraca">Sistem Pelaporan Otomatis Terintegrasi RT/RW</small>
                 </div>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true" style="font-size: 2rem;">&times;</span>
                 </button>
             </div>
+            <div class="row mb-3 style-cetak-hide">
+                <div class="col-12">
+                    <ul class="nav nav-pills nav-fill bg-light p-1 rounded" id="tabNeracaRW" role="tablist" style="border: 1px solid #dee2e6;">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active font-weight-bold p-3 rounded" id="nav-rw-pribadi-tab" data-toggle="tab" data-target="#konten-rw-pribadi" type="button" role="tab" aria-selected="true">
+                                🏢 1. Kas Internal RW Pribadi
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link font-weight-bold p-3 rounded" id="nav-rt-kumulatif-tab" data-toggle="tab" data-target="#konten-rt-kumulatif" type="button" role="tab" aria-selected="false">
+                                📊 2. Kumulatif / Konsolidasi All RT
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
             <div class="modal-body p-4 bg-light">
                 
                 <div class="text-right mb-3">
                     <button type="button" id="btn-pemicu-form-rt" class="btn btn-success font-weight-bold px-3 shadow-sm" onclick="pemicuToggleBukaTutupFormRT()" style="border-radius: 10px; display: none;">
                         <i class="fas fa-plus-circle mr-1"></i> + Tambah Transaksi Kas Baru
+                    </button>
+                    <button type="button" class="btn btn-danger font-weight-bold px-3 shadow-sm ml-2" onclick="eksporKeuanganKePDF()" style="border-radius: 10px;">
+                        <i class="fas fa-file-pdf mr-1"></i> Export PDF / Cetak Jurnal
                     </button>
                 </div>
 
@@ -914,7 +929,8 @@
                                     <option value="Kas Lancar Lingkungan">Kas Lancar Lingkungan</option>
                                     <option value="Iuran Wajib Bulanan">Iuran Wajib Bulanan</option>
                                     <option value="Donasi / Sumbangan Sukarela">Donasi / Sumbangan Sukarela</option>
-                                    <option value="Beban Operasional RT">Beban Operasional RT</option>
+                                    <option value="Beban Operasional RT">Iuran Pembangunan Tanah Pribadi</option>
+                                    <option value="Beban Operasional RT">Iuran Pembangunan Tanah Kavling</option>
                                     <option value="Dana Sosial & Kematian">Dana Sosial & Kematian</option>
                                     <option value="Pembangunan Fisik & Fasum">Pembangunan Fisik & Fasum</option>
                                 </select>
@@ -970,7 +986,7 @@
                     <div class="col-md-6 mb-3">
                         <div class="card border-0 shadow-sm" style="border-radius:18px; height:100%;">
                             <div class="card-header bg-success text-white font-weight-bold p-3" style="border-radius:18px 18px 0 0;">
-                                <i class="fas fa-wallet mr-2"></i> SISI AKTIVA (PEMASUKAN KUMULATIF)
+                                <i class="fas fa-wallet mr-2"></i> SISI (PEMASUKAN KUMULATIF)
                             </div>
                             <div class="p-3 bg-white" style="border-radius: 0 0 18px 18px;">
                                 <table class="table table-sm table-hover table-borderless mb-0">
@@ -978,7 +994,7 @@
                                 </table>
                                 <hr class="my-2">
                                 <div class="d-flex justify-content-between font-weight-bold px-2 text-success" style="font-size:15px;">
-                                    <span>TOTAL AKTIVA / DANA MASUK</span>
+                                    <span>TOTAL DANA MASUK</span>
                                     <span id="neraca-total-aktiva">Rp 0</span>
                                 </div>
                             </div>
@@ -987,7 +1003,7 @@
                     <div class="col-md-6 mb-3">
                         <div class="card border-0 shadow-sm" style="border-radius:18px; height:100%;">
                             <div class="card-header bg-danger text-white font-weight-bold p-3" style="border-radius:18px 18px 0 0;">
-                                <i class="fas fa-file-invoice-dollar mr-2"></i> SISI PASIVA (PENGELUARAN/ALOKASI AKUN)
+                                <i class="fas fa-file-invoice-dollar mr-2"></i> SISI (PENGELUARAN/ALOKASI AKUN)
                             </div>
                             <div class="p-3 bg-white" style="border-radius: 0 0 18px 18px;">
                                 <table class="table table-sm table-hover table-borderless mb-0">
@@ -995,7 +1011,7 @@
                                 </table>
                                 <hr class="my-2">
                                 <div class="d-flex justify-content-between font-weight-bold px-2 text-danger" style="font-size:15px;">
-                                    <span>TOTAL PASIVA / DANA KELUAR</span>
+                                    <span>TOTAL DANA KELUAR</span>
                                     <span id="neraca-total-pasiva">Rp 0</span>
                                 </div>
                             </div>
@@ -1006,7 +1022,7 @@
                 <div id="box-saldo-internal" class="alert alert-warning border-0 p-3 shadow-sm d-flex justify-content-between align-items-center mb-4" style="border-radius:15px; background: #fff3cd;">
                     <div>
                         <h6 class="font-weight-bold mb-1 text-dark">💰 Sisa Kas Bersih Saat Ini (Ekuitas/Saldo Buku)</h6>
-                        <small class="text-muted">Kalkulasi akhir dari Total Aktiva dikurangi Total Pasiva internal</small>
+                        <small class="text-muted">Kalkulasi akhir dari Total Pemasukan dikurangi Total Pengeluaran internal</small>
                     </div>
                     <h3 class="font-weight-bold mb-0 text-dark" id="neraca-saldo-internal-text">Rp 0</h3>
                 </div>
@@ -1057,7 +1073,7 @@ let currentActiveRT = '';
 
 Chart.register(ChartDataLabels);
 
-const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxGFHt_yiVB8zfYWEmS0Dgw-IlZGl7k0EXhU3YdfqxgTwWl3QSc5IK1rdgfGLTAKD26/exec";
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxADW-wf-uWrOs95bNwqpf_gWKm9yNViuLXxI0BtMEZ8UanBtptRi-_50CkNK3xUSVR/exec";
 
 $(document).ready(function() {
 
@@ -1122,155 +1138,6 @@ $(document).ready(function() {
         });
 
 });
-    
-    function showPengajuanSurat(jenis) {
-
-    if (!currentUser) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Login Diperlukan',
-            text: 'Silakan login warga terlebih dahulu'
-        });
-        $('#loginModal').modal('show');
-        return;
-    }
-
-    let judul = '';
-
-    switch(jenis) {
-        case 'domisili':
-            judul = 'Pengajuan Surat Domisili';
-            break;
-
-        case 'usaha':
-            judul = 'Pengajuan Surat Keterangan Usaha';
-            break;
-
-        case 'skck':
-            judul = 'Pengajuan Surat Pengantar SKCK';
-            break;
-
-        default:
-            judul = 'Pengajuan Surat';
-    }
-
-    const html = `
-        <div class="p-3">
-            <div class="alert alert-success rounded-xl">
-                <b>Data Pemohon</b><br>
-                Nama : ${currentUser.nama}<br>
-                RT : ${currentUser.rt}<br>
-                No. KK : ${currentUser.kk}
-            </div>
-
-            <div class="form-group">
-                <label class="font-weight-bold">Keperluan Surat</label>
-                <textarea id="keperluanSurat" class="form-control rounded-xl" rows="4"
-                placeholder="Contoh: Persyaratan administrasi pekerjaan"></textarea>
-            </div>
-
-            <button class="btn btn-primary btn-block rounded-pill mt-3"
-                onclick="submitPengajuanSurat('${jenis}')">
-                📤 Kirim Pengajuan
-            </button>
-        </div>
-    `;
-
-    $('#modal-title-text').text(judul);
-    $('#modal-dynamic-content').html(html);
-    $('#infoModal').modal('show');
-}
-// =========================================================================
-// BACKEND SERVER: TIMPA FUNGSI INI DI CODE.GS KAMU
-// =========================================================================
-function ambilProfilWargaOtomatis(noKK) {
-  try {
-    // Pastikan No KK ada dan tidak kosong
-    if (!noKK) {
-      return { status: "Gagal", message: "Sesi login tidak terdeteksi di server." };
-    }
-
-    // Sambungkan ke Spreadsheet menggunakan ID dan nama Sheet milikmu
-    // Pastikan SPREADSHEET_ID dan SHEET_NAME (misal 'RW01') sudah dideklarasikan di atas
-    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-    const sheet = ss.getSheetByName(SHEET_NAME); 
-    
-    if (!sheet) {
-      return { status: "Gagal", message: "Sheet database '" + SHEET_NAME + "' tidak ditemukan!" };
-    }
-
-    const data = sheet.getDataRange().getValues();
-    const header = data[0]; // Baris 1 (Nama-nama Kolom)
-
-    // DETEKSI KOLOM SECARA DINAMIS (Biar anti-salah indeks meskipun kolom bergeser)
-    const idxKK = header.map(function(t) { return t.toString().toUpperCase().trim(); }).indexOf("NO_KK");
-    const idxNIK = header.map(function(t) { return t.toString().toUpperCase().trim(); }).indexOf("NIK");
-    const idxNama = header.map(function(t) { return t.toString().toUpperCase().trim(); }).indexOf("NAMA");
-    const idxLahir = header.map(function(t) { return t.toString().toUpperCase().trim(); }).indexOf("TEMPAT_TGL_LAHIR");
-    const idxJK = header.map(function(t) { return t.toString().toUpperCase().trim(); }).indexOf("JENIS_KELAMIN");
-    const idxAgama = header.map(function(t) { return t.toString().toUpperCase().trim(); }).indexOf("AGAMA");
-    const idxAlamat = header.map(function(t) { return t.toString().toUpperCase().trim(); }).indexOf("ALAMAT");
-    const idxRT = header.map(function(t) { return t.toString().toUpperCase().trim(); }).indexOf("RT");
-
-    // Bersihkan format No KK yang dicari (jadikan string murni tanpa spasi)
-    const cariNoKK = noKK.toString().trim();
-
-    // Looping scan seluruh baris warga (dimulai dari baris kedua / indeks 1)
-    for (let i = 1; i < data.length; i++) {
-      // Ambil nilai KK di sheet berdasarkan indeks dinamis atau fallback default kolom B (indeks 1)
-      let kkWargaDiSheet = data[i][idxKK !== -1 ? idxKK : 1];
-      kkWargaDiSheet = kkWargaDiSheet ? kkWargaDiSheet.toString().trim() : "";
-      
-      // SINKRONISASI: COCOKKAN NO KK WARGA
-      if (kkWargaDiSheet === cariNoKK) {
-        
-        // Ambil data wilayah RT (default kolom I / indeks 8 jika deteksi dinamis gagal)
-        let rtWarga = data[i][idxRT !== -1 ? idxRT : 8];
-        rtWarga = rtWarga ? rtWarga.toString().trim() : "RT 01";
-        
-        // Standarisasi tulisan RT agar rapi (misal dari "1" atau "01" dibikin otomatis jadi "RT 01")
-        if (!rtWarga.toUpperCase().includes("RT")) {
-          let angka = rtWarga.replace(/\D/g, "");
-          rtWarga = "RT " + (angka.length === 1 ? "0" + angka : angka);
-        }
-
-        // KEMBALIKAN DATA ASLI WARGA YANG LOGIN KE JAVASCRIPT
-        return {
-          status: "Sukses",
-          nama: data[i][idxNama !== -1 ? idxNama : 2] ? data[i][idxNama !== -1 ? idxNama : 2].toString().trim() : "Warga Tanpa Nama",
-          nik: data[i][idxNIK !== -1 ? idxNIK : 0] ? data[i][idxNIK !== -1 ? idxNIK : 0].toString().trim() : "-",
-          lahir: data[i][idxLahir !== -1 ? idxLahir : 3] ? data[i][idxLahir !== -1 ? idxLahir : 3].toString().trim() : "-",
-          jk: data[i][idxJK !== -1 ? idxJK : 4] ? data[i][idxJK !== -1 ? idxJK : 4].toString().trim() : "-",
-          agama: data[i][idxAgama !== -1 ? idxAgama : 6] ? data[i][idxAgama !== -1 ? idxAgama : 6].toString().trim() : "-",
-          alamat: data[i][idxAlamat !== -1 ? idxAlamat : 7] ? data[i][idxAlamat !== -1 ? idxAlamat : 7].toString().trim() : "-",
-          rt: rtWarga
-        };
-      }
-    }
-    
-    // Jika looping selesai tapi tidak ada No KK yang cocok
-    return { status: "Gagal", message: "Data No. KK (" + cariNoKK + ") Anda belum terdaftar di database RW01." };
-
-  } catch (err) {
-    return { status: "Gagal", message: "Eror Server: " + err.toString() };
-  }
-}
-    function muatGambarStruktur() {
-        const fileID = "1mzgcz-aq7H_nK2tjQIPnmVUxB3UwvUjg";
-        google.script.run.withSuccessHandler(function(base64Data) {
-            if (base64Data) {
-                // Masukkan gambar ke area preview di dashboard
-                $('#img-preview-struktur').attr('src', base64Data);
-            }
-        }).getFileAsBase64(fileID);
-    }
-
-    // --- FUNGSI LOGIN & LOGOUT ---
-    // =========================================================================
-// VARIABLE GLOBAL TAMBAHAN (DURASI TIMER 1 JAM)
-// =========================================================================
-var logoutTimer = null;
-const WAKTU_TIMEOUT = 60 * 60 * 1000; // 1 Jam dalam milidetik
 
 function prosesLogin() {
     const kk = $('#login-kk').val();
@@ -1339,7 +1206,7 @@ function prosesLogin() {
                loadRT(currentActiveRT);
             }
             
-            // ⬇️ TAMBAHAN LOGIKA BARU: Simpan sesi login ke memori browser agar tahan refresh ⬇️
+            // ⬇️ SIMPAN SESI LOGIN KE MEMORI BROWSER AGAR TAHAN REFRESH ⬇️
             var waktuSekarang = new Date().getTime().toString();
             localStorage.setItem('solid_rw_user', JSON.stringify(currentUser));
             localStorage.setItem('solid_rw_last_active', waktuSekarang);
@@ -1352,6 +1219,21 @@ function prosesLogin() {
             // Jalankan hitung mundur 1 jam otomatis
             resetHitungMundurLogout();
             // ⬆️===========================================================================⬆️
+
+            // -----------------------------------------------------------------
+            // FIX KONTROL MENU: Mendobrak paksa gembok !important di HTML
+            // -----------------------------------------------------------------
+            const menuAdmin = document.getElementById('menu-dashboard-admin');
+            if (menuAdmin && currentUser && currentUser.role) {
+                const userRole = currentUser.role.toLowerCase().trim();
+                if (userRole === "admin" || userRole === "rt" || userRole === "rw") {
+                    // Menggunakan setProperty inline-block !important agar gembok CSS jebol
+                    menuAdmin.style.setProperty('display', 'inline-block', 'important');
+                } else {
+                    menuAdmin.style.setProperty('display', 'none', 'important');
+                }
+            }
+            // -----------------------------------------------------------------
 
             // SISIPAN REDIRECT AUTOMATIS KHUSUS ADMIN RW
             if (currentUser.role === 'admin') {
@@ -1374,6 +1256,7 @@ function prosesLogin() {
         }
     }, 800);
 }
+
 function sikatLoginKeServer() {
     const userTxt = $('#input-username').val();
     const passTxt = $('#input-password').val();
@@ -1396,6 +1279,20 @@ function sikatLoginKeServer() {
             
             // 4. JALANKAN PEMICU TOMBOL KEUANGAN MELAYANG 
             tampilkanTombolKeuanganSesuaiSesi();
+
+            // -----------------------------------------------------------------
+            // DI SINI LOGIKA KONTROL MENU UNTUK JALUR LOGIN MANAJEMEN SERVER
+            // -----------------------------------------------------------------
+            const menuAdmin = document.getElementById('menu-dashboard-admin');
+            if (menuAdmin && currentUser && currentUser.role) {
+                const userRole = currentUser.role.toLowerCase().trim();
+                if (userRole === "admin" || userRole === "rt" || userRole === "rw") {
+                    menuAdmin.style.display = "block"; // Munculkan jika Admin RW/RT
+                } else {
+                    menuAdmin.style.display = "none";  // Sembunyikan jika warga biasa
+                }
+            }
+            // -----------------------------------------------------------------
             
             Swal.fire({ icon: 'success', title: 'Berhasil Masuk', text: 'Selamat datang, ' + currentUser.nama, timer: 1500, showConfirmButton: false });
         } else {
@@ -1404,7 +1301,6 @@ function sikatLoginKeServer() {
     }).prosesLoginAplikasi(userTxt, passTxt);
 }
 
-//KEUANGAN DISINI YA 
 // ========================================================================
 // CONTROLLER JAVASCRIPT - SINKRONISASI KOLOM KAS_RT (KOLOM A - H)
 // ========================================================================
@@ -1418,15 +1314,12 @@ function tampilkanTombolKeuanganSesuaiSesi() {
     }
 }
 
-
 // 2. Fungsi pembuka modal dan pembagi hak akses (Privasi Data)
 // ========================================================================
 // CONTROLLER UTAMA - SISTEM FORMULIR & NERACA LAJUR (KOLOM A - H)
 // ========================================================================
 
-// 1. Fungsi Pembuka Jendela Neraca & Pemicu Form Otomatis Sesuai Akun
-
-const URL_WEB_APP_SERVER = "https://script.google.com/macros/s/AKfycbxGFHt_yiVB8zfYWEmS0Dgw-IlZGl7k0EXhU3YdfqxgTwWl3QSc5IK1rdgfGLTAKD26/exec";
+const URL_WEB_APP_SERVER = "https://script.google.com/macros/s/AKfycbxADW-wf-uWrOs95bNwqpf_gWKm9yNViuLXxI0BtMEZ8UanBtptRi-_50CkNK3xUSVR/exec";
 
 function bukaSistemNeraca() {
     if (!currentUser) {
@@ -1443,19 +1336,22 @@ function bukaSistemNeraca() {
     const valJabatan = (currentUser.jabatan || currentUser.JABATAN || currentUser.role || currentUser.ROLE || "").toString().toUpperCase();
     const namaUser = (currentUser.nama || currentUser.NAMA || "").toString().toUpperCase();
 
-    // 1. KONDISI AKSES LEVEL RW (ADMIN UTAMA)
+    // 1. KONDISI AKSES LEVEL RW (ADMIN UTAMA) -> BISA MONITOR & INPUT ANGGARAN MANDIRI RW
     if (currentUser.role === 'admin' || currentUser.kk === "3515162501090114") {
         $('#wrapper-form-rt').hide();
-        $('#box-saldo-internal').hide();
+        $('#box-saldo-internal').show();  // 🌟 SEKARANG DI-SHOW: Untuk menampilkan Saldo Mandiri Internal RW
         $('#section-rekap-rw').show();    
-        $('#sub-title-neraca').text("⚙️ Dashboard Executive Ketua RW - Memonitor Kas Konsolidasi Seluruh RT");
-        $('#title-tabel-kas').html('<i class="fas fa-history mr-2"></i>MASTER JURNAL LOG KONSOLIDASI (ALL RT)');
+        $('#btn-pemicu-form-rt').show();  // 🌟 JANGAN DIKURANGI: Malah dibuka akses tombol form-nya untuk Admin RW
+        $('#text-rt-pelapor').text("RW (Pusat)"); // Berubah teks pendukung formulir jadi RW
+        $('#sub-title-neraca').text("⚙️ Dashboard Executive Ketua RW - Input Anggaran RW & Memonitor Kas Konsolidasi Seluruh RT");
+        $('#title-tabel-kas').html('<i class="fas fa-history mr-2"></i>MASTER JURNAL LOG KONSOLIDASI (ALL RT & RW)');
         jalankanEnginePenghitungNeraca(true);
     } 
     // 2. KONDISI AKSES LEVEL KETUA RT (Bypass Validasi Nama Pak Didik)
     else if (valJabatan.includes('KRT') || valJabatan.includes('KETUA RT') || valJabatan === 'RT' || namaUser.includes('DIDIK SUPRAPTO')) {
         $('#section-rekap-rw').hide();
         $('#box-saldo-internal').show();
+        $('#btn-pemicu-form-rt').show(); 
         $('#wrapper-form-rt').show(); // Menampilkan formulir input transaksi kas RT
         $('#text-rt-pelapor').text(valRT);
         $('#sub-title-neraca').text("🏡 Panel Internal Pengurus Unit - RT " + valRT);
@@ -1465,6 +1361,7 @@ function bukaSistemNeraca() {
     // 3. KONDISI AKSES WARGA BIASA / JABATAN LAINNYA
     else {
         $('#section-rekap-rw').hide();
+        $('#btn-pemicu-form-rt').hide();
         $('#wrapper-form-rt').hide();
         $('#box-saldo-internal').show();
         $('#sub-title-neraca').text("🔍 Transparansi Laporan Kas Warga - RT " + valRT);
@@ -1472,16 +1369,6 @@ function bukaSistemNeraca() {
         jalankanEnginePenghitungNeraca(false);
     }
 }
-
-// 2. Menghubungkan ke server Apps Script (Disempurnakan menggunakan Fetch API untuk GitHub)
-// 2. Menghubungkan ke server Apps Script (Versi Anti-CORS & Tembus Lintas Domain)
-// =========================================================================
-// FRONTEND ENGINE FINANSIAL (PEMBERSIH PARAMETER BAD REQUEST 400)
-// =========================================================================
-
-// =========================================================================
-// FRONTEND ENGINE FINANSIAL (ANTI-ERROR 400 BAD REQUEST)
-// =========================================================================
 
 function jalankanEnginePenghitungNeraca(isRW) {
     // 1. Tampilkan status loading awal
@@ -1494,23 +1381,16 @@ function jalankanEnginePenghitungNeraca(isRW) {
         if (nomorRTX) targetRT = nomorRTX.toString().replace(/\D/g, "").trim();
     }
     
-    // URL Web App Google Script Anda
-    const URL_WEB_APP_SERVER = "https://script.google.com/macros/s/AKfycbxGFHt_yiVB8zfYWEmS0Dgw-IlZGl7k0EXhU3YdfqxgTwWl3QSc5IK1rdgfGLTAKD26/exec";
-    
-    // 3. Tembak jalur baru menggunakan dataType "jsonp" agar anti blokir CORS / Error 400
+    // 3. Tembak jalur menggunakan dataType "jsonp"
     $.ajax({
         url: URL_WEB_APP_SERVER,
         type: "GET",
-        data: {
-            action: "ambilKasDinamis" // Menembak fungsi penyelamat baru
-        },
+        data: { action: "ambilKasDinamis" },
         crossDomain: true,
-        dataType: "jsonp", // Menggunakan jembatan JSONP murni lintas server
+        dataType: "jsonp", 
         success: function(responDinamis) {
             console.log("Koneksi sukses! Data Kas_RT dinamis berhasil didapat:", responDinamis);
-            
             if (responDinamis && responDinamis.length > 0) {
-                // Jalankan fungsi pengisian tabel bawaan Anda menggunakan data riil
                 renderKomponenLengkapAkuntansi(responDinamis, isRW);
             } else {
                 $('#neraca-log-jurnal').html('<tr><td colspan="8" class="text-center text-muted p-4"><i class="fas fa-folder-open mr-2"></i>Data Kas_RT kosong di Google Sheets.</td></tr>');
@@ -1523,19 +1403,15 @@ function jalankanEnginePenghitungNeraca(isRW) {
     });
 }
 
-// 3. Membaca data array Google Sheets urut kolom A - H dan menghitung neraca saldo
 function renderKomponenLengkapAkuntansi(data, isRW) {
-    // -------------------------------------------------------------------------
-    // HAK AKSES KETUA RW (KRW): Otomatis Buka Semua Data Jika Jabatan = KRW
-    // -------------------------------------------------------------------------
+    // HAK AKSES KETUA RW (KRW)
     if (typeof currentUser !== 'undefined' && currentUser) {
         let jabatanUser = currentUser.jabatan || currentUser.JABATAN || "";
         if (jabatanUser.toString().trim().toUpperCase() === "KRW") {
-            isRW = true; // Paksa buka status akses RW untuk melihat neraca gabungan
+            isRW = true; 
         }
     }
 
-    // 🛡️ PROTEKSI UTAMA: Jika data di sheet Kas_RT kosong / hanya ada header
     if (!data || data.length <= 1) {
         $('#neraca-log-jurnal').html('<tr><td colspan="8" class="text-center text-muted p-4"><i class="fas fa-folder-open mr-2"></i>Belum ada data kas terekam di sheet Kas_RT.</td></tr>');
         $('#neraca-aktiva-rows').html('<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
@@ -1547,66 +1423,42 @@ function renderKomponenLengkapAkuntansi(data, isRW) {
         if (isRW) {
             $('#rekap-total-masuk').text("Rp 0");
             $('#rekap-total-keluar').text("Rp 0");
-            $('#rekap-saldo-bersih').text("Rp 0");
+            $('#rekap-saldo-internal-text').text("Rp 0");
             $('#wrapper-breakdown-rt').html('<div class="col-12 text-center text-muted">Tidak ada rekap data RT</div>');
         }
         return; 
     }
 
-    // -------------------------------------------------------------------------
-    // DETEKSI AKURASI USER RT (Berdasarkan Kolom C / Indeks 2 di Gambar Anda)
-    // -------------------------------------------------------------------------
     let targetRTActive = "3"; 
     if (typeof currentUser !== 'undefined' && currentUser) {
         let nomorRTX = currentUser.no_rt || currentUser.NO_RT || currentUser.rt || currentUser.RT;
         if (nomorRTX) {
-            targetRTActive = nomorRTX.toString().replace(/\D/g, "").trim(); 
-        }
-    }
-
-    let dataProses = [];
-    const headerAwal = data[0];
-    dataProses.push(headerAwal);
-
-    if (isRW) {
-        dataProses = data;
-    } else {
-        for (let k = 1; k < data.length; k++) {
-            if (!data[k] || data[k].length === 0) continue;
-            // Membaca Kolom RT (Indeks 2) sesuai gambar Excel Anda
-            let nilaiKolomRT = data[k][2] ? data[k][2].toString().replace(/\D/g, "").trim() : "";
-            if (nilaiKolomRT === targetRTActive) {
-                dataProses.push(data[k]);
+            if (currentUser.role === 'admin' || currentUser.kk === "3515162501090114") {
+                targetRTActive = nomorRTX.toString().trim();
+            } else {
+                targetRTActive = nomorRTX.toString().replace(/\D/g, "").trim(); 
             }
         }
     }
 
-    if (dataProses.length <= 1) {
-        $('#neraca-log-jurnal').html('<tr><td colspan="8" class="text-center text-muted p-4"><i class="fas fa-folder-open mr-2"></i>Tidak ada data kas terekam untuk unit RT ' + targetRTActive + '.</td></tr>');
-        $('#neraca-aktiva-rows').html('<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
-        $('#neraca-pasiva-rows').html('<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
-        $('#neraca-total-aktiva').text("Rp 0");
-        $('#neraca-total-pasiva').text("Rp 0");
-        $('#neraca-saldo-internal-text').text("Rp 0");
-        return;
-    }
+    // 🌟 VARIABEL DITARUH DI SINI LAGI AGAR GRAFIK UTAMA TIDAK IKUT TER-RESET 
+    let htmlJurnalRW = "";
+    let htmlJurnalRTKumulatif = "";
+    let htmlJurnalRTSpesifik = "";
 
-    let htmlJurnal = "";
-    let mapAktiva = {};
-    let mapPasiva = {};
-    let grandPemasukan = 0;
-    let grandPengeluaran = 0;
+    let rwAktiva = {}, rwPasiva = {};
+    let rtAktiva = {}, rtPasiva = {};
+
+    let rwPemasukan = 0, rwPengeluaran = 0;
+    let rtPemasukanKumulatif = 0, rtPengeluaranKumulatif = 0;
     let rincianPerRT = {}; 
 
-    // LOOPING UTAMA DATA SESUAI STRUKTUR GAMBAR ANDA (INDERS 0 SAMPAI 7)
-    for (let i = dataProses.length - 1; i >= 1; i--) {
-        const row = dataProses[i];
+    for (let i = data.length - 1; i >= 1; i--) {
+        const row = data[i];
         if (!row || row.length === 0) continue;
         
-        const id = row[0] || "-";          // Kolom A
-        
-        // 🟢 PROSES NORMALISASI TANGGAL ISO MENJADI FORMAT ANGKA RINGKAS (DD/MM/YYYY)
-        let tglRaw = row[1] || "-";         // Kolom B
+        const id = row[0] || "-";          
+        let tglRaw = row[1] || "-";         
         let tgl = tglRaw;
         if (tglRaw && tglRaw !== "-" && tglRaw.toString().includes("T")) {
             try {
@@ -1617,103 +1469,160 @@ function renderKomponenLengkapAkuntansi(data, isRW) {
                     let y = dateObj.getFullYear();
                     tgl = `${d}/${m}/${y}`;
                 }
-            } catch (err) {
-                tgl = tglRaw; // Cadangan jika konversi crash
-            }
+            } catch (err) { tgl = tglRaw; }
         }
         
-        const rt = row[2] || "-";          // Kolom C
-        const jenis = row[3] || "Pemasukan"; // Kolom D
-        const posAkun = row[4] || "Umum";   // Kolom E (KATEGORI_AKUN)
-        const ket = row[5] || "-";          // Kolom F
-        
-        // Proteksi Pembersihan Angka Korektif (Kolom G)
+        const rt = row[2] ? row[2].toString().trim() : "-";          
+        const jenis = row[3] || "Pemasukan"; 
+        const posAkun = row[4] || "Umum";   
+        const ket = row[5] || "-";          
         let nominalRaw = row[6] ? row[6].toString().replace(/[^0-9.-]/g, "") : "0";
         const nominal = Number(nominalRaw) || 0; 
-        
-        const petugas = row[7] || "-";     // Kolom H
+        const petugas = row[7] || "-";     
 
-        if (!rincianPerRT[rt]) {
-            rincianPerRT[rt] = { masuk: 0, keluar: 0 };
-        }
+        const isPemasukan = (jenis.toString().toLowerCase().trim() === "pemasukan");
+        const badgeJenis = isPemasukan ? "badge-success" : "badge-danger";
+        const iconJenis = isPemasukan ? "↑" : "↓";
+        const badgeRTWarna = rt.toUpperCase() === "RW" ? "badge-warning text-dark font-weight-bold" : "badge-dark";
 
-        if (jenis === "Pemasukan" || jenis.toString().toLowerCase().trim() === "pemasukan") {
-            grandPemasukan += nominal;
-            rincianPerRT[rt].masuk += nominal;
-            mapAktiva[posAkun] = (mapAktiva[posAkun] || 0) + nominal;
-        } else {
-            grandPengeluaran += nominal;
-            rincianPerRT[rt].keluar += nominal;
-            mapPasiva[posAkun] = (mapPasiva[posAkun] || 0) + nominal;
-        }
-
-        const badgeJenis = (jenis === "Pemasukan" || jenis.toString().toLowerCase().trim() === "pemasukan") ? "badge-success" : "badge-danger";
-        const iconJenis = (jenis === "Pemasukan" || jenis.toString().toLowerCase().trim() === "pemasukan") ? "↑" : "↓";
-
-        htmlJurnal += `
+        let barisHTML = `
             <tr>
                 <td class="font-weight-bold text-muted">${id}</td>
                 <td>${tgl}</td>
-                <td><span class="badge badge-dark px-2 py-1">${rt}</span></td>
+                <td><span class="badge ${badgeRTWarna} px-2 py-1">${rt}</span></td>
                 <td><span class="badge ${badgeJenis} px-2 py-1">${iconJenis} ${jenis}</span></td>
                 <td><small class="font-weight-bold text-primary">${posAkun}</small></td>
                 <td style="max-width: 250px; white-space: normal;">${escapeScriptHTML(ket)}</td>
                 <td class="text-right font-weight-bold text-dark">Rp ${nominal.toLocaleString('id-ID')}</td>
                 <td class="text-muted"><small>${petugas}</small></td>
             </tr>`;
+
+        if (rt.toUpperCase() === "RW") {
+            if (isPemasukan) {
+                rwPemasukan += nominal;
+                rwAktiva[posAkun] = (rwAktiva[posAkun] || 0) + nominal;
+            } else {
+                rwPengeluaran += nominal;
+                rwPasiva[posAkun] = (rwPasiva[posAkun] || 0) + nominal;
+            }
+            htmlJurnalRW += barisHTML;
+        } else {
+            if (isPemasukan) {
+                rtPemasukanKumulatif += nominal;
+                rtAktiva[posAkun] = (rtAktiva[posAkun] || 0) + nominal;
+            } else {
+                rtPengeluaranKumulatif += nominal;
+                rtPasiva[posAkun] = (rtPasiva[posAkun] || 0) + nominal;
+            }
+
+            if (!rincianPerRT[rt]) { rincianPerRT[rt] = { masuk: 0, keluar: 0 }; }
+            if (isPemasukan) { rincianPerRT[rt].masuk += nominal; } else { rincianPerRT[rt].keluar += nominal; }
+
+            if (rt === targetRTActive || rt.replace(/\D/g, "") === targetRTActive) {
+                htmlJurnalRTSpesifik += barisHTML;
+            }
+            htmlJurnalRTKumulatif += barisHTML;
+        }
     }
 
-    $('#neraca-log-jurnal').html(htmlJurnal);
+    // Bungkus data kalkulasi ke dalam objek khusus untuk dikirim ke fungsi switch tampilan
+    const dataKalkulasi = {
+        htmlJurnalRW, htmlJurnalRTKumulatif, htmlJurnalRTSpesifik,
+        rwAktiva, rwPasiva, rtAktiva, rtPasiva,
+        rwPemasukan, rwPengeluaran, rtPemasukanKumulatif, rtPengeluaranKumulatif, rincianPerRT
+    };
 
-    let rowsAktiva = "";
-    for (let key in mapAktiva) {
-        rowsAktiva += `<tr><td class="py-1">🟢 ${key}</td><td class="text-right font-weight-bold text-dark py-1">Rp ${mapAktiva[key].toLocaleString('id-ID')}</td></tr>`;
+    if (currentUser.role === 'admin' || currentUser.kk === "3515162501090114") {
+        // Bind event nggae Nav-Pills asli bawaan HTML-mu
+        $(document).off('shown.bs.tab', '#tabNeracaRW button').on('shown.bs.tab', '#tabNeracaRW button', function() {
+            aplikasikanSwitchTampilanHalaman(dataKalkulasi);
+        });
     }
-    $('#neraca-aktiva-rows').html(rowsAktiva || '<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
 
-    let rowsPasiva = "";
-    for (let key in mapPasiva) {
-        rowsPasiva += `<tr><td class="py-1">🔴 ${key}</td><td class="text-right font-weight-bold text-dark py-1">Rp ${mapPasiva[key].toLocaleString('id-ID')}</td></tr>`;
+    if (!(currentUser.role === 'admin' || currentUser.kk === "3515162501090114")) {
+        $('#neraca-log-jurnal').html(htmlJurnalRTSpesifik || '<tr><td colspan="8" class="text-center text-muted p-3">Belum ada transaksi di RT anda</td></tr>');
+        
+        let rAktiva = ""; for (let key in rtAktiva) { rAktiva += `<tr><td class="py-1">🟢 ${key}</td><td class="text-right font-weight-bold text-dark py-1">Rp ${rtAktiva[key].toLocaleString('id-ID')}</td></tr>`; }
+        $('#neraca-aktiva-rows').html(rAktiva || '<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
+        let rPasiva = ""; for (let key in rtPasiva) { rPasiva += `<tr><td class="py-1">🔴 ${key}</td><td class="text-right font-weight-bold text-dark py-1">Rp ${rtPasiva[key].toLocaleString('id-ID')}</td></tr>`; }
+        $('#neraca-pasiva-rows').html(rPasiva || '<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
+
+        $('#neraca-total-aktiva').text("Rp " + rtPemasukanKumulatif.toLocaleString('id-ID'));
+        $('#neraca-total-pasiva').text("Rp " + rtPengeluaranKumulatif.toLocaleString('id-ID'));
+        $('#neraca-saldo-internal-text').text("Rp " + (rtPemasukanKumulatif - rtPengeluaranKumulatif).toLocaleString('id-ID'));
+    } else {
+        aplikasikanSwitchTampilanHalaman(dataKalkulasi);
     }
-    $('#neraca-pasiva-rows').html(rowsPasiva || '<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
+}
 
-    $('#neraca-total-aktiva').text("Rp " + grandPemasukan.toLocaleString('id-ID'));
-    $('#neraca-total-pasiva').text("Rp " + grandPengeluaran.toLocaleString('id-ID'));
-    
-    const saldoBersih = grandPemasukan - grandPengeluaran;
-    $('#neraca-saldo-internal-text').text("Rp " + saldoBersih.toLocaleString('id-ID'));
+// FUNGSI BERDIRI SENDIRI DENGAN OPER-OPERAN PARAMETER DATA AMAN
+function aplikasikanSwitchTampilanHalaman(dk) {
+    if (!dk) return;
 
-    if (isRW) {
-        $('#rekap-total-masuk').text("Rp " + grandPemasukan.toLocaleString('id-ID'));
-        $('#rekap-total-keluar').text("Rp " + grandPengeluaran.toLocaleString('id-ID'));
-        $('#rekap-saldo-bersih').text("Rp " + saldoBersih.toLocaleString('id-ID'));
+    // Deteksi jika Nav-Pills Tab "Kas Internal RW" sing di-klik / aktif
+    const isPribadiActive = $('#nav-rw-pribadi-tab').hasClass('active') || $('.nav-link:contains("Kas Internal RW")').hasClass('active') || $('#radio-rw-pribadi').is(':checked');
+
+    if (isPribadiActive || !(currentUser.role === 'admin' || currentUser.kk === "3515162501090114")) {
+        $('#title-tabel-kas').html('<i class="fas fa-history mr-2"></i>BUKU JURNAL TRANSAKSI INTERNAL (KHUSUS RW PRIBADI)');
+        $('#neraca-log-jurnal').html(dk.htmlJurnalRW || '<tr><td colspan="8" class="text-center text-muted p-3">Belum ada transaksi internal RW</td></tr>');
+        
+        $('#neraca-total-aktiva').text("Rp " + dk.rwPemasukan.toLocaleString('id-ID'));
+        $('#neraca-total-pasiva').text("Rp " + dk.rwPengeluaran.toLocaleString('id-ID'));
+        $('#neraca-saldo-internal-text').text("Rp " + (dk.rwPemasukan - dk.rwPengeluaran).toLocaleString('id-ID'));
+
+        let rAktiva = "";
+        for (let key in dk.rwAktiva) { rAktiva += `<tr><td class="py-1">🟢 ${key}</td><td class="text-right font-weight-bold text-dark py-1">Rp ${dk.rwAktiva[key].toLocaleString('id-ID')}</td></tr>`; }
+        $('#neraca-aktiva-rows').html(rAktiva || '<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
+
+        let rPasiva = "";
+        for (let key in dk.rwPasiva) { rPasiva += `<tr><td class="py-1">🔴 ${key}</td><td class="text-right font-weight-bold text-dark py-1">Rp ${dk.rwPasiva[key].toLocaleString('id-ID')}</td></tr>`; }
+        $('#neraca-pasiva-rows').html(rPasiva || '<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
+
+        $('#section-rekap-rw').hide(); 
+    } else {
+        $('#title-tabel-kas').html('<i class="fas fa-history mr-2"></i>MASTER LOG KONSOLIDASI (GABUNGAN DATA ALL RT)');
+        $('#neraca-log-jurnal').html(dk.htmlJurnalRTKumulatif || '<tr><td colspan="8" class="text-center text-muted p-3">Tidak ditemukan data kas RT</td></tr>');
+
+        $('#neraca-total-aktiva').text("Rp " + dk.rtPemasukanKumulatif.toLocaleString('id-ID'));
+        $('#neraca-total-pasiva').text("Rp " + dk.rtPengeluaranKumulatif.toLocaleString('id-ID'));
+        $('#neraca-saldo-internal-text').text("Rp " + (dk.rtPemasukanKumulatif - dk.rtPengeluaranKumulatif).toLocaleString('id-ID'));
+
+        let rAktiva = "";
+        for (let key in dk.rtAktiva) { rAktiva += `<tr><td class="py-1">🟢 ${key}</td><td class="text-right font-weight-bold text-dark py-1">Rp ${dk.rtAktiva[key].toLocaleString('id-ID')}</td></tr>`; }
+        $('#neraca-aktiva-rows').html(rAktiva || '<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
+
+        let rPasiva = "";
+        for (let key in dk.rtPasiva) { rPasiva += `<tr><td class="py-1">🔴 ${key}</td><td class="text-right font-weight-bold text-dark py-1">Rp ${dk.rtPasiva[key].toLocaleString('id-ID')}</td></tr>`; }
+        $('#neraca-pasiva-rows').html(rPasiva || '<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
+
+        $('#rekap-total-masuk').text("Rp " + dk.rtPemasukanKumulatif.toLocaleString('id-ID'));
+        $('#rekap-total-keluar').text("Rp " + dk.rtPengeluaranKumulatif.toLocaleString('id-ID'));
+        $('#rekap-saldo-bersih').text("Rp " + (dk.rtPemasukanKumulatif - dk.rtPengeluaranKumulatif).toLocaleString('id-ID'));
 
         let htmlRTWidget = "";
-        for (const rtKey in rincianPerRT) {
-            const hitungNetto = rincianPerRT[rtKey].masuk - rincianPerRT[rtKey].keluar;
-            const statusWarnaNetto = hitungNetto >= 0 ? "text-success" : "text-danger";
-            
+        for (const rtKey in dk.rincianPerRT) {
+            const hitungNetto = dk.rincianPerRT[rtKey].masuk - dk.rincianPerRT[rtKey].keluar;
             htmlRTWidget += `
                 <div class="col-md-4 mb-3">
-                    <div class="p-3 rounded border bg-light" style="font-size:12px;">
+                    <div class="p-3 rounded border bg-white shadow-sm" style="font-size:12px;">
                         <h6 class="font-weight-bold text-dark border-bottom pb-2 mb-2"><i class="fas fa-home text-muted mr-1"></i> Rangkuman RT ${rtKey}</h6>
-                        <div class="d-flex justify-content-between mb-1"><span>Total Masuk:</span><span class="text-success font-weight-bold">Rp ${rincianPerRT[rtKey].masuk.toLocaleString('id-ID')}</span></div>
-                        <div class="d-flex justify-content-between mb-1"><span>Total Keluar:</span><span class="text-danger font-weight-bold">Rp ${rincianPerRT[rtKey].keluar.toLocaleString('id-ID')}</span></div>
-                        <div class="d-flex justify-content-between pt-1 border-top mt-2"><strong>Saldo Bersih:</strong><strong class="${statusWarnaNetto}">Rp ${hitungNetto.toLocaleString('id-ID')}</strong></div>
+                        <div class="d-flex justify-content-between mb-1"><span>Total Masuk:</span><span class="text-success font-weight-bold">Rp ${dk.rincianPerRT[rtKey].masuk.toLocaleString('id-ID')}</span></div>
+                        <div class="d-flex justify-content-between mb-1"><span>Total Keluar:</span><span class="text-danger font-weight-bold">Rp ${dk.rincianPerRT[rtKey].keluar.toLocaleString('id-ID')}</span></div>
+                        <div class="d-flex justify-content-between pt-1 border-top mt-2"><strong>Saldo Bersih:</strong><strong class="${hitungNetto >= 0 ? 'text-success' : 'text-danger'}">Rp ${hitungNetto.toLocaleString('id-ID')}</strong></div>
                     </div>
                 </div>`;
         }
-        $('#wrapper-breakdown-rt').html(htmlRTWidget);
+        $('#wrapper-breakdown-rt').html(htmlRTWidget || '<div class="col-12 text-center text-muted">Belum ada rekap data per unit RT</div>');
+        $('#section-rekap-rw').show();
     }
 }
-// 4. Mengirim data transaksi baru dari form RT ke server Google Sheets lewat POST Fetch API (Mendukung GitHub Pages)
+
 function eksekusiSimpanTransaksi() {
     const jenis = $('#form-jenis').val();
     const kat = $('#form-kategori').val();
     const nominal = $('#form-nominal').val();
     const ket = $('#form-keterangan').val();
     
-    // Validasi input nominal agar tidak kosong sebelum dikirim ke server
     if(!nominal || isNaN(nominal) || Number(nominal) <= 0) {
         Swal.fire({ icon: 'warning', title: 'Data Tidak Valid', text: 'Silakan masukkan nilai nominal angka yang benar!' });
         return;
@@ -1722,10 +1631,14 @@ function eksekusiSimpanTransaksi() {
     $('#loader-text').text("Mengirim entri kas ke master jurnal neraca...");
     $('#loader').show();
 
-    const targetRT = currentUser.no_rt || currentUser.NO_RT || currentUser.rt || currentUser.RT || "3";
+    // 🌟 LOGIKA CERDAS: Mendeteksi jika yang menginput Admin RW, kunci data kolom RT sebagai "RW"
+    let targetRT = currentUser.no_rt || currentUser.NO_RT || currentUser.rt || currentUser.RT || "3";
+    if (currentUser.role === 'admin' || currentUser.kk === "3515162501090114") {
+        targetRT = "RW"; 
+    }
+
     const namaPetugas = currentUser.nama || currentUser.NAMA || "Pak Didik Suprapto";
 
-    // Format data menjadi paket JSON terstruktur
     const payloadData = {
         jenis: jenis,
         kategori: kat,
@@ -1735,7 +1648,6 @@ function eksekusiSimpanTransaksi() {
         namaPetugas: namaPetugas
     };
 
-    // Eksekusi pengiriman data lintas domain (CORS-Safe dari GitHub)
     fetch(URL_WEB_APP_SERVER, {
         method: "POST",
         mode: "no-cors", 
@@ -1743,15 +1655,15 @@ function eksekusiSimpanTransaksi() {
         body: JSON.stringify(payloadData)
     })
     .then(() => {
-        // Karena mode "no-cors" dipasang, browser memproses secara blind-success 
-        // sehingga dialog konfirmasi pemrosesan aman dapat langsung dimunculkan
         $('#loader').hide(); 
         Swal.fire({ icon: 'success', title: 'Pencatatan Berhasil', text: 'Data kas dikirim ke sistem jurnal!', timer: 1500, showConfirmButton: false });
         
         $('#form-nominal').val('');
         $('#form-keterangan').val('');
         
-        // Memicu ulang kalkulasi data tabel terbaru
+        // Auto-close form slide setelah menginput data demi kerapian UX
+        $('#wrapper-form-rt').slideUp();
+        
         if (currentUser.role === 'admin' || currentUser.kk === "3515162501090114") {
             jalankanEnginePenghitungNeraca(true);
         } else {
@@ -1765,96 +1677,111 @@ function eksekusiSimpanTransaksi() {
     });
 }
 
-// 5. Sanitasi karakter HTML berbahaya
 function escapeScriptHTML(str) {
     return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+}
+
+// 🌟 ARSITEKTUR TAMBAHAN: FUNGSI CETAK LAPORAN KEUANGAN KORPORAT KE PDF ELEGAN 🌟
+function eksporKeuanganKePDF() {
+    const stylePrintCSS = `
+        <style id="css-cetak-keuangan">
+            @media print {
+                body * { visibility: hidden; background: white !important; color: black !important; }
+                #modalNeracaKeuangan, #modalNeracaKeuangan .modal-content, #modalNeracaKeuangan .modal-body { 
+                    visibility: visible !important; position: absolute; left: 0; top: 0; width: 100%; max-height: none !important; overflow: visible !important; 
+                }
+                #modalNeracaKeuangan .modal-body { padding: 10px !important; }
+                .close, .btn, form, #wrapper-form-rt, .style-cetak-hide { display: none !important; }
+                .card { border: 1px solid #ddd !important; box-shadow: none !important; background: #fff !important; page-break-inside: avoid; }
+                .table-responsive { overflow: visible !important; max-height: none !important; }
+                table { page-break-inside: auto; width: 100% !important; }
+                tr { page-break-inside: avoid; page-break-after: auto; }
+                thead { display: table-header-group; background-color: #f2f2f2 !important; color: #000 !important; }
+                .badge { border: 1px solid #000; background: transparent !important; color: #000 !important; font-weight: bold; }
+                #section-rekap-rw, #box-saldo-internal { display: block !important; }
+            }
+        </style>
+    `;
+    $('#css-cetak-keuangan').remove();
+    $('head').append(stylePrintCSS);
+    window.print();
+}
+
+function pemicuToggleBukaTutupFormRT() {
+    $('#wrapper-form-rt').slideToggle();
 }
 
 // =========================================================================
 // LOGIKA BARU UNTUK MENJAGA SESI LOGIN SAAT REFRESH & AUTO-LOGOUT 1 JAM
 // =========================================================================
 
-// Fungsi otomatis jalan setiap kali web selesai dimuat / di-refresh oleh warga
 window.addEventListener('DOMContentLoaded', function() {
     periksaSesiLoginSaatRefresh();
     aturDetektorAktivitasWarga();
 });
 
-// 1. MEMULIHKAN LOGIN SAAT REFRESH
-// ========================================================================
-// MANAGEMENT SESI LOGIN, TIMEOUT LENGKAP & INTEGRASI NEUARCA KEUANGAN
-// ========================================================================
+if (typeof WAKTU_TIMEOUT === 'undefined') {
+    var WAKTU_TIMEOUT = 60 * 60 * 1000; 
+}
 
 function periksaSesiLoginSaatRefresh() {
     var savedUser = localStorage.getItem('solid_rw_user');
     var savedTimestamp = localStorage.getItem('solid_rw_last_active');
 
-    if (savedUser && savedTimestamp) {
-        var waktuSekarang = new Date().getTime();
-        
-        // Cek jika user sudah tidak aktif lebih dari 1 jam
-        if (waktuSekarang - parseInt(savedTimestamp) > WAKTU_TIMEOUT) {
-            prosesLogoutSesiWargaTerkunci();
-        } else {
-            // Sesi valid! Kembalikan data user ke dalam sistem web kamu
-            currentUser = JSON.parse(savedUser);
-            
-            if (typeof noKKAktif !== 'undefined') {
-                noKKAktif = currentUser.kk; // Tetap sinkron ke form surat
-            }
-            
-            // Perbarui waktu aktivitas terakhir karena web baru dibuka lagi
-            localStorage.setItem('solid_rw_last_active', waktuSekarang.toString());
-            
-            // 🌟 SISIPAN AMAN: Munculkan kembali tombol melayang kas neraca keuangan saat refresh 🌟
-            if (typeof tampilkanTombolKeuanganSesuaiSesi === 'function') {
-                tampilkanTombolKeuanganSesuaiSesi();
-            }
-            
-            // Jalankan fungsi UI bawaan web kamu agar tombol login berganti jadi profil
-            setTimeout(function() {
-                if (typeof updateUIAfterLogin === 'function') {
-                    updateUIAfterLogin();
-                }
-                if($('#stats-section').is(':visible') && currentActiveRT !== ''){
-                    loadRT(currentActiveRT);
-                }
-            }, 500); // beri delay sedikit agar rawSheetData siap dibaca
-            
-            resetHitungMundurLogout();
-        }
+    if (!savedUser || !savedTimestamp) {
+        console.log("ℹ️ Sesi kosong, user memang belum login.");
+        return; 
     }
-}
 
-// 2. DETEKTOR PERGERAKAN WARGA (Reset ulang waktu 1 jam tiap ada aktivitas)
-function aturDetektorAktivitasWarga() {
-    var events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
-    events.forEach(function(namaEvent) {
-        document.addEventListener(namaEvent, perbaruiWaktuAktivitasTerakhir, true);
-    });
-}
-
-function perbaruiWaktuAktivitasTerakhir() {
-    if (localStorage.getItem('solid_rw_user')) {
-        var waktuSekarang = new Date().getTime().toString();
-        localStorage.setItem('solid_rw_last_active', waktuSekarang);
-        resetHitungMundurLogout();
-    }
-}
-
-function resetHitungMundurLogout() {
-    if (logoutTimer) clearTimeout(logoutTimer);
+    var waktuSekarang = new Date().getTime();
     
-    logoutTimer = setTimeout(function() {
-        Swal.fire({
-            icon: 'info',
-            title: 'Sesi Berakhir',
-            text: 'Anda otomatis keluar sistem karena 1 jam tidak ada aktivitas.',
-            confirmButtonText: 'OK'
-        }).then(() => {
-            prosesLogoutSesiWargaTerkunci();
-        });
-    }, WAKTU_TIMEOUT);
+    if (waktuSekarang - parseInt(savedTimestamp) > WAKTU_TIMEOUT) {
+        console.log("⏰ Sesi kedaluwarsa, mengunci sistem...");
+        prosesLogoutSesiWargaTerkunci();
+        return;
+    } 
+
+    currentUser = JSON.parse(savedUser);
+    
+    if (typeof noKKAktif !== 'undefined' && currentUser) {
+        noKKAktif = currentUser.kk || currentUser.KK; 
+    }
+    
+    localStorage.setItem('solid_rw_last_active', waktuSekarang.toString());
+    
+    if (typeof tampilkanTombolKeuanganSesuaiSesi === 'function') {
+        tampilkanTombolKeuanganSesuaiSesi();
+    }
+
+    // 🌟 EKSEKUSI JITU HAK AKSES ADMIN BERITA
+    if (currentUser && (currentUser.role === 'admin' || currentUser.ROLE === 'admin' || currentUser.jabatan === 'ADMIN')) {
+        
+        // Jeda sedikit agar elemen HTML berita selesai di-render ke DOM, lalu DOBRAK!
+        setTimeout(function() {
+            // 💥 Mengubah style display secara paksa dengan menimpa nilai !important-nya
+            if ($('#menu-dashboard-admin').length > 0 && $('#menu-dashboard-admin')[0].style.setProperty) { 
+                $('#menu-dashboard-admin')[0].style.setProperty('display', 'inline-block', 'important');
+            } else {
+                $('#menu-dashboard-admin').css('cssText', 'display: inline-block !important;');
+            }
+            
+            console.log("🔓 Gembok !important pada Dashboard Berita berhasil dihancurkan!");
+        }, 400);
+    }
+    
+    setTimeout(function() {
+        if (typeof updateUIAfterLogin === 'function') {
+            updateUIAfterLogin();
+        }
+        
+        if($('#stats-section').is(':visible') && typeof currentActiveRT !== 'undefined' && currentActiveRT && currentActiveRT !== ''){
+            if (typeof loadRT === 'function') {
+                loadRT(currentActiveRT);
+            }
+        }
+    }, 500); 
+    
+    resetHitungMundurLogout();
 }
 
 // 3. FUNGSI LOGOUT TOTAL
@@ -1935,16 +1862,23 @@ function getStatusAdminRT(noKK) {
     }
 
     function logoutWarga() {
-        currentUser = null;
-        $('#login-nav-item').show();
-        $('#user-nav-item, #logout-nav-item').hide();
-        
-        // Muat ulang tabel (untuk memproteksi kembali jika user sedang buka data RT)
-        if($('#stats-section').is(':visible') && currentActiveRT !== ''){
-           loadRT(currentActiveRT);
-        }
-        showHome();
-    }
+    // 1. Matikan timer
+    if (typeof logoutTimer !== 'undefined' && logoutTimer) clearTimeout(logoutTimer);
+    
+    // 2. Hapus total memori di browser
+    localStorage.removeItem('solid_rw_user');
+    localStorage.removeItem('solid_rw_last_active');
+    currentUser = null;
+    if (typeof noKKAktif !== 'undefined') noKKAktif = "";
+
+    // 3. Sembunyikan elemen menu
+    $('#login-nav-item').show();
+    $('#user-nav-item, #logout-nav-item').hide();
+    
+    // 4. PAKSA REFRESH INSTAN TANPA PERLU MODAL SAMA SEKALI
+    // Menggunakan trik manipulasi URL agar browser tidak bisa menolak
+    window.location.href = window.location.pathname + '?loggedout=' + Date.now();
+}
     function showDetailWarga(index) {
     const data = rawSheetData[index];
     const profil = {
@@ -2717,39 +2651,466 @@ function tampilkanKurvaUmurSampingStatistik() {
 function pemicuToggleBukaTutupFormRT() {
     $('#wrapper-form-rt').slideToggle(300);
 }
-    function prosesUploadAdmin() {
-        const judul = $('#adm-judul').val();
-        const isi = $('#adm-isi').val();
-        const fileInput = document.getElementById('adm-file');
-        if (!judul || !isi) { alert("Isi judul dan pengumuman!"); return; }
-        
-        $('#loader-text').text("Menyimpan...");
-        $('#loader').show();
-        
-        const file = fileInput.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const fileData = { 
-                    data: e.target.result.split(',')[1], 
-                    mimeType: file.type, 
-                    fileName: file.name 
-                };
-                google.script.run.withSuccessHandler(res => { 
-                    $('#loader').hide(); 
-                    alert(res.message); 
-                    showHome(); 
-                }).processAdminUpdateWithFile({judul, isi}, fileData);
+    // =========================================================================
+// 🟢 GANTI FUNGSI prosesUploadAdmin() LAMA ANDA DENGAN BLOK KODE INI
+// =========================================================================
+// =========================================================================
+// 🟢 FUNGSI PROSES UPLOAD ADMIN (VERSI FINAL UNTUK POP-UP MODAL BARU)
+// =========================================================================
+// =========================================================================
+// 🟢 GANTI DENGAN VERSI ANTI-MACET INI (LOADER PASTI BERHENTI / REFRESH AMAN)
+// =========================================================================
+function prosesUploadAdmin() {
+    const idBerita = $('#adm-id-berita').val() || ""; 
+    const kategori = $('#adm-kategori').val() || "Informasi Umum";
+    const judul = $('#adm-judul').val();
+    const isi = $('#adm-isi').val();
+    const fileInput = document.getElementById('adm-file');
+    
+    if (!judul || !isi) { 
+        alert("Isi judul dan pengumuman!"); 
+        return; 
+    }
+    
+    // Aktifkan Loader
+    $('#loader-text').text(idBerita ? "Memperbarui..." : "Menyimpan...");
+    $('#loader').show();
+    
+    const file = fileInput.files[0];
+    
+    // Dipaksa string langsung agar tidak merujuk ke objek login yang rawan error/undefined
+    let namaPetugas = "ADMIN RW01"; 
+
+    const dataPaket = { idBerita, kategori, judul, isi, namaPetugas };
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const fileData = { 
+                data: e.target.result.split(',')[1], 
+                mimeType: file.type, 
+                fileName: file.name 
             };
-            reader.readAsDataURL(file);
-        } else {
+            
+            google.script.run.withSuccessHandler(res => { 
+                // AMAN: Matikan loader terlebih dahulu sebelum melakukan aksi lain
+                $('#loader').hide(); 
+                
+                alert(res.message || "Berhasil diproses!"); 
+                $('#modalAdminBerita').modal('hide');
+                
+                // Panggil refresh halaman, jika error abaikan agar loader tidak macet
+                try { showHome(); } catch(e) { window.location.reload(); }
+            })
+            .withFailureHandler(err => {
+                $('#loader').hide();
+                alert("Gagal koneksi ke server: " + err.toString());
+            })
+            .processAdminUpdateWithFile(dataPaket, fileData);
+        };
+        reader.readAsDataURL(file);
+    } else {
+        google.script.run.withSuccessHandler(res => { 
+            // AMAN: Matikan loader terlebih dahulu
+            $('#loader').hide(); 
+            
+            alert(res.message || "Berhasil diproses!"); 
+            $('#modalAdminBerita').modal('hide');
+            
+            try { showHome(); } catch(e) { window.location.reload(); }
+        })
+        .withFailureHandler(err => {
+            $('#loader').hide();
+            alert("Gagal koneksi ke server: " + err.toString());
+        })
+        .processAdminUpdateWithFile(dataPaket, null);
+    }
+}
+function editBeritaDariTabel(id, kategori, judul, isi) {
+    $('#adm-id-berita').val(id); 
+    $('#adm-kategori').val(kategori);
+    $('#adm-judul').val(judul);
+    $('#adm-isi').val(isi);
+    $('#adm-file').val(''); 
+    $('#btn-admin-save').text("Simpan Perubahan Berita");
+    $('#modalAdminBerita').modal('show');
+}
+
+// Fungsi Eksekusi Pengiriman Data ke Google Apps Script (Backend)
+function prosesUploadAdmin() {
+    const idBerita = $('#adm-id-berita').val() || ""; 
+    const kategori = $('#adm-kategori').val() || "Informasi Umum";
+    const judul = $('#adm-judul').val();
+    const isi = $('#adm-isi').val();
+    const fileInput = document.getElementById('adm-file');
+    
+    if (!judul || !isi) { 
+        alert("Isi judul dan pengumuman!"); 
+        return; 
+    }
+    
+    // Hidupkan Loader Jaringan
+    $('#loader-text').text(idBerita ? "Memperbarui..." : "Menyimpan...");
+    $('#loader').show();
+    
+    const file = fileInput.files[0];
+    const dataPaket = { idBerita, kategori, judul, isi, namaPetugas: "ADMIN RW01" };
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const fileData = { 
+                data: e.target.result.split(',')[1], 
+                mimeType: file.type, 
+                fileName: file.name 
+            };
+            
             google.script.run.withSuccessHandler(res => { 
                 $('#loader').hide(); 
-                alert(res.message); 
-                showHome(); 
-            }).processAdminUpdateWithFile({judul, isi}, null);
-        }
+                alert(res.message || "Berhasil diproses!"); 
+                $('#modalAdminBerita').modal('hide');
+                try { showHome(); } catch(e) { window.location.reload(); }
+            })
+            .withFailureHandler(err => {
+                $('#loader').hide();
+                alert("Gagal terhubung ke Google Sheets: " + err.toString());
+            })
+            .processAdminUpdateWithFile(dataPaket, fileData);
+        };
+        reader.readAsDataURL(file);
+    } else {
+        google.script.run.withSuccessHandler(res => { 
+            $('#loader').hide(); 
+            alert(res.message || "Berhasil diproses!"); 
+            $('#modalAdminBerita').modal('hide');
+            try { showHome(); } catch(e) { window.location.reload(); }
+        })
+        .withFailureHandler(err => {
+            $('#loader').hide();
+            alert("Gagal terhubung ke Google Sheets: " + err.toString());
+        })
+        .processAdminUpdateWithFile(dataPaket, null);
     }
+}
+
+// Fungsi Otomatis untuk Mengisi Data Baris Tabel Manajemen Berita
+function muatTabelBeritaAdmin(allValuesBerita) {
+    if (!allValuesBerita || allValuesBerita.length <= 1) {
+        $('#tabel-list-berita').html('<tr><td colspan="4" class="text-center text-muted py-4">Belum ada data berita.</td></tr>');
+        return;
+    }
+    
+    let htmlBaris = '';
+    for (let i = 1; i < allValuesBerita.length; i++) {
+        const row = allValuesBerita[i];
+        const id = row[0] || `BRT-${String(i).padStart(3, '0')}`;
+        const kategori = row[2] || 'Informasi Umum';
+        const judul = row[3] || 'Tanpa Judul';
+        const isi = row[4] || '';
+        
+        // Pembersihan karakter enter/kutip rawan crash JavaScript tombol inline
+        const isiAman = isi.replace(/['"]/g, '\\"').replace(/\n/g, ' ');
+
+        htmlBaris += `
+            <tr style="border-bottom: 1px solid #f8f9fa;">
+                <td class="align-middle font-weight-bold text-secondary small">${id}</td>
+                <td class="align-middle"><span class="badge badge-light text-dark px-2 py-1 border rounded-pill">${kategori}</span></td>
+                <td class="align-middle font-weight-bold text-dark">${judul}</td>
+                <td class="align-middle text-center">
+                    <button type="button" class="btn btn-sm btn-outline-warning text-dark font-weight-bold px-3 rounded-pill shadow-sm"
+                        onclick="editBeritaDariTabel('${id}', '${kategori}', '${judul}', '${isiAman}')">
+                        ✏️ Edit
+                    </button>
+                </td>
+            </tr>
+        `;
+    }
+    $('#tabel-list-berita').html(htmlBaris);
+}
+// 🟢 TARUH DI BAWAHNYA PAS: Fungsi pembantu saat tombol Edit ditekan oleh Pengurus
+function pemicuBukaFormEditBerita(id, kategori, judul, isi) {
+    // Masukkan data lama ke dalam kotak input formulir admin
+    $('#adm-id-berita').val(id);
+    $('#adm-kategori').val(kategori);
+    $('#adm-judul').val(judul);
+    $('#adm-isi').val(isi);
+    
+    // Munculkan pop-up modal input admin Anda
+    if($('#modalAdminForm').length) $('#modalAdminForm').modal('show');
+}
+// =========================================================================
+
+// =========================================================================
+// A. Fungsi mengisi Berita Utama Terkini di Halaman Depan (Beranda)
+// =========================================================================
+
+// =========================================================================
+// PENTING: Ganti URL di bawah ini dengan URL Web App Google Apps Script Anda
+// =========================================================================
+const API_URL = "https://script.google.com/macros/s/AKfycbxADW-wf-uWrOs95bNwqpf_gWKm9yNViuLXxI0BtMEZ8UanBtptRi-_50CkNK3xUSVR/exec"; 
+
+// =========================================================================
+// A. Fungsi mengisi Berita Utama Terkini di Halaman Depan (Beranda)
+// =========================================================================
+function muatBeritaUtamaDinamis(allValuesBerita) {
+    if (!allValuesBerita || allValuesBerita.length <= 1) {
+        $('#main-news-title').text("Belum Ada Pengumuman");
+        $('#main-news-desc').text("Saat ini belum ada informasi resmi yang diterbitkan oleh pengurus RW.");
+        $('#main-news-badge').text("INFORMASI VIA SHEETS KOSONG");
+        $('#main-news-date').text("-");
+        $('#main-news-img').attr('src', 'https://picsum.photos/id/11/800/450');
+        return;
+    }
+    
+    const barisTerakhir = allValuesBerita[allValuesBerita.length - 1];
+    
+    const id        = barisTerakhir[0] || '-';
+    const tanggal   = barisTerakhir[1] || 'Hari Ini'; 
+    const kategori  = barisTerakhir[2] || 'Informasi Umum'; 
+    const judul     = barisTerakhir[3] || 'Tanpa Judul'; 
+    const isi       = barisTerakhir[4] || ''; 
+    const urlGambar = barisTerakhir[5] || 'https://picsum.photos/id/11/800/450'; 
+    
+    $('#main-news-badge').text(kategori.toUpperCase());
+    $('#main-news-date').text(tanggal);
+    $('#main-news-title').text(judul);
+    
+    $('#main-news-desc').text(isi.length > 150 ? isi.substring(0, 150) + "..." : isi);
+    $('#main-news-img').attr('src', urlGambar);
+}
+
+// =========================================================================
+// B. Fungsi memetakan baris data dari Google Sheet masuk ke dalam Tabel Dashboard
+// =========================================================================
+function muatTabelBeritaAdmin(allValuesBerita) {
+    if (!allValuesBerita || allValuesBerita.length <= 1) {
+        $('#tabel-list-berita').html('<tr><td colspan="4" class="text-center text-muted py-4">Belum ada data berita di sheet. Silakan tambah baru!</td></tr>');
+        return;
+    }
+    
+    let htmlBaris = '';
+    
+    for (let i = 1; i < allValuesBerita.length; i++) {
+        const row = allValuesBerita[i];
+        
+        const id       = row[0] || `BRT-${String(i).padStart(3, '0')}`;
+        const kategori = row[2] || 'Informasi Umum';
+        const judul    = row[3] || 'Tanpa Judul';
+        const isi      = row[4] || '';
+        
+        const judulAman = btoa(unescape(encodeURIComponent(judul)));
+        const isiAman   = btoa(unescape(encodeURIComponent(isi)));
+
+        htmlBaris += `
+            <tr style="border-bottom: 1px solid #f8f9fa;">
+                <td class="align-middle font-weight-bold text-secondary small">${id}</td>
+                <td class="align-middle"><span class="badge badge-light text-dark px-2 py-1 border rounded-pill">${kategori}</span></td>
+                <td class="align-middle font-weight-bold text-dark">${judul}</td>
+                <td class="align-middle text-center">
+                    <button type="button" class="btn btn-sm btn-outline-warning text-dark font-weight-bold px-3 rounded-pill shadow-sm"
+                        onclick="siapkanEditBerita('${id}', '${kategori}', '${judulAman}', '${isiAman}')">
+                        ✏️ Edit
+                    </button>
+                </td>
+            </tr>
+        `;
+    }
+    $('#tabel-list-berita').html(htmlBaris);
+}
+
+// =========================================================================
+// C. Fungsi Navigasi & Pemanggilan Dashboard Berita Menggunakan API GET
+// =========================================================================
+function bukaDashboardManajemenBerita() {
+    $('#main-page-content').hide(); 
+    $('#admin-page-content').show(); 
+    $('#tabel-list-berita').html('<tr><td colspan="4" class="text-center text-muted py-4">⏳ Memuat data terbaru dari API G-Sheets...</td></tr>');
+    
+    // Memanggil API dengan parameter action agar ditangkap oleh doGet(e) Apps Script
+    fetch(`${API_URL}?action=ambilBeritaAPI`)
+        .then(response => response.json())
+        .then(result => {
+            if (result.status === "sukses") {
+                muatTabelBeritaAdmin(result.data);
+            } else {
+                alert("Gagal membaca database: " + result.message);
+                $('#tabel-list-berita').html(`<tr><td colspan="4" class="text-center text-danger py-4">Error: ${result.message}</td></tr>`);
+            }
+        })
+        .catch(err => {
+            alert("Koneksi API Error: " + err.toString());
+            $('#tabel-list-berita').html(`<tr><td colspan="4" class="text-center text-danger py-4">Gagal terhubung ke server API.</td></tr>`);
+        });
+}
+
+function kembaliKeBeranda() {
+    $('#admin-page-content').hide(); 
+    $('#main-page-content').show(); 
+    
+    fetch(`${API_URL}?action=ambilBeritaAPI`)
+        .then(response => response.json())
+        .then(result => {
+            if (result.status === "sukses") {
+                muatBeritaUtamaDinamis(result.data);
+            }
+        })
+        .catch(err => console.log("Gagal menyinkronkan beranda:", err));
+}
+
+// =========================================================================
+// D. Membuka Pop-up Modal Kosong untuk membuat Berita Baru
+// =========================================================================
+function bukaModalBeritaBaru() {
+    $('#adm-id-berita').val(''); 
+    $('#adm-kategori').val('Informasi Umum');
+    $('#adm-judul').val('');
+    $('#adm-isi').val('');
+    $('#adm-file').val(''); 
+    $('#btn-admin-save').prop('disabled', false).text("Publikasikan Berita Baru");
+    $('#modalAdminBerita').modal('show'); 
+}
+
+// =========================================================================
+// E. Membuka Pop-up Modal Terisi Data Lama untuk proses Update/Edit
+// =========================================================================
+function siapkanEditBerita(id, kategori, judulBase64, isiBase64) {
+    const judul = decodeURIComponent(escape(atob(judulBase64)));
+    const isi   = decodeURIComponent(escape(atob(isiBase64)));
+
+    $('#adm-id-berita').val(id); 
+    $('#adm-kategori').val(kategori);
+    $('#adm-judul').val(judul);
+    $('#adm-isi').val(isi);
+    $('#adm-file').val(''); 
+    $('#btn-admin-save').prop('disabled', false).text("Simpan Perubahan");
+    $('#modalAdminBerita').modal('show'); 
+}
+
+// =========================================================================
+// F. Pemrosesan Data Menggunakan API Fetch POST (Menghubungi doPost)
+// =========================================================================
+function prosesUploadAdmin() {
+    const idBerita  = $('#adm-id-berita').val() || ""; 
+    const kategori  = $('#adm-kategori').val() || "Informasi Umum";
+    const judul     = $('#adm-judul').val().trim();
+    const isi       = $('#adm-isi').val().trim();
+    const fileInput = document.getElementById('adm-file');
+    
+    if (!judul || !isi) { 
+        alert("Mohon isi judul dan konten pengumuman terlebih dahulu!"); 
+        return; 
+    }
+    
+    if (document.getElementById('loader')) { $('#loader').show(); }
+    $('#btn-admin-save').prop('disabled', true).text('Sedang memproses ke sistem...');
+    
+    const file = fileInput.files[0];
+    const dataPaket = { idBerita, kategori, judul, isi, namaPetugas: "ADMIN RW01" };
+
+    // Fungsi internal pengirim data terintegrasi CORS API POST
+    const kirimViaApiPost = (fileDataObj) => {
+        fetch(API_URL, {
+            method: 'POST',
+            mode: 'cors',
+            body: JSON.stringify({ 
+                action: "simpanBeritaAPI", 
+                dataPaket: dataPaket, 
+                fileData: fileDataObj 
+            })
+        })
+        .then(response => response.json())
+        .then(res => {
+            if (document.getElementById('loader')) { $('#loader').hide(); }
+            $('#btn-admin-save').prop('disabled', false);
+            
+            if (res.status === "sukses") {
+                alert(res.message || "Data berhasil disimpan!"); 
+                $('#modalAdminBerita').modal('hide');
+                bukaDashboardManajemenBerita(); 
+            } else {
+                alert("Gagal memproses: " + res.message);
+                $('#btn-admin-save').text(idBerita ? 'Simpan Perubahan' : 'Publikasikan Berita Baru');
+            }
+        })
+        .catch(err => {
+            if (document.getElementById('loader')) { $('#loader').hide(); }
+            $('#btn-admin-save').prop('disabled', false).text(idBerita ? 'Simpan Perubahan' : 'Publikasikan Berita Baru');
+            alert("Terjadi kesalahan jaringan/sistem API: " + err.toString());
+        });
+    };
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const fileDataObj = { data: e.target.result.split(',')[1], mimeType: file.type, fileName: file.name };
+            kirimViaApiPost(fileDataObj);
+        };
+        reader.readAsDataURL(file);
+    } else {
+        kirimViaApiPost(null);
+    }
+}
+
+// =========================================================================
+// G. Inisialisasi awal saat web app pertama kali dibuka oleh warga
+// =========================================================================
+$(document).ready(function() {
+    fetch(`${API_URL}?action=ambilBeritaAPI`)
+        .then(response => response.json())
+        .then(result => {
+            if (result.status === "sukses") {
+                muatBeritaUtamaDinamis(result.data);
+            }
+        })
+        .catch(err => console.log("Gagal memuat data awal via API:", err));
+});
+async function kirimBeritaKeBackend() {
+  let fileInput = document.getElementById('input-foto-berita').files[0];
+  let fotoUrlHasil = "";
+
+  if (fileInput) {
+    // 1. Upload ke Imgur secara anonim (Gratis & Instan)
+    let formDataImgur = new FormData();
+    formDataImgur.append("image", fileInput);
+
+    let responImgur = await fetch("https://api.imgur.com/3/image", {
+      method: "POST",
+      headers: { Authorization: "Client-ID 6e80b2b8cc9df3a" }, // Menggunakan Client-ID publik universal
+      body: formDataImgur
+    }).then(res => res.json());
+
+    if (responImgur.success) {
+      fotoUrlHasil = responImgur.data.link; // Mendapatkan link pendek, misal: https://i.imgur.com/xxxx.png
+    }
+  }
+
+  // 2. Kirim data paket berita seperti biasa ke Google Apps Script Anda
+  let payload = {
+    action: "simpanBeritaAPI",
+    dataPaket: {
+      idBerita: document.getElementById('id-berita').value,
+      judul: document.getElementById('judul-berita').value,
+      kategori: document.getElementById('kategori-berita').value,
+      isi: document.getElementById('isi-berita').value,
+      namaPetugas: "ADMIN",
+      fotoUrlDariFrontEnd: fotoUrlHasil // Link pendek masuk ke sini!
+    },
+    fileData: null // Set null saja agar backend Anda tidak terbebani file biner besar
+  };
+
+  // Tembak fetch ke API_URL Apps Script Anda seperti biasa
+  let response = await fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify(payload)
+  }).then(res => res.json());
+
+  if (response.status === "sukses") {
+     alert("✅ Berita berhasil disimpan!");
+  }
+}
+
+
+
 </script>
 </body>
 </html>
