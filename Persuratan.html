@@ -13,6 +13,9 @@
         .navbar-brand { font-weight: 700; }
         .card { border: none; border-radius: 12px; }
         
+        /* Proteksi layer ben gak kedap-kedip pas diredirect */
+        #content-wrapper { display: none; }
+
         @media print {
             body * { visibility: hidden; }
             #isi-surat-cetak, #isi-surat-cetak * { visibility: visible; }
@@ -22,56 +25,58 @@
 </head>
 <body>
 
-    <nav class="navbar navbar-light bg-white sticky-top shadow-sm mb-5">
-        <div class="container">
-            <a class="navbar-brand" href="index.html">
-                <span style="color: #007bff">●</span> SOLID <span style="font-weight:300; color: #6b7280;">RW</span>
-            </a>
-            <div>
-                <span id="badge-rt-login" class="badge badge-info p-2 font-weight-boldmr-2">Mendeteksi Wilayah...</span>
-                <a href="index.html" class="btn btn-light rounded-pill px-4 font-weight-bold btn-sm shadow-sm">
-                    🏠 Kembali ke Beranda
+    <div id="content-wrapper">
+        <nav class="navbar navbar-light bg-white sticky-top shadow-sm mb-5">
+            <div class="container">
+                <a class="navbar-brand" href="index.html">
+                    <span style="color: #007bff">●</span> SOLID <span style="font-weight:300; color: #6b7280;">RW</span>
                 </a>
+                <div>
+                    <span id="badge-rt-login" class="badge badge-info p-2 font-weight-bold mr-2">Mendeteksi...</span>
+                    <a href="index.html" class="btn btn-light rounded-pill px-4 font-weight-bold btn-sm shadow-sm">
+                        🏠 Kembali ke Beranda
+                    </a>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
 
-    <div class="container">
-        <div class="row mb-4 align-items-center">
-            <div class="col-md-8">
-                <h3 class="font-weight-bold text-dark mb-1">📩 Riwayat & Pengajuan Surat</h3>
-                <p class="text-muted small">Monitoring data pengajuan surat pengantar real-time Dusun Malang Desa Ganting</p>
+        <div class="container">
+            <div class="row mb-4 align-items-center">
+                <div class="col-md-8">
+                    <h3 class="font-weight-bold text-dark mb-1">📩 Riwayat Pribadi Anda</h3>
+                    <p class="text-muted small">Monitoring status data pengajuan milik Anda secara real-time</p>
+                </div>
+                <div class="col-md-4 text-md-right">
+                    <button class="btn btn-primary rounded-pill font-weight-bold px-4 shadow-sm py-2" data-toggle="modal" data-target="#modalFormPengantar">
+                        ➕ Buat Pengajuan Baru
+                    </button>
+                </div>
             </div>
-            <div class="col-md-4 text-md-right">
-                <button class="btn btn-primary rounded-pill font-weight-bold px-4 shadow-sm py-2" data-toggle="modal" data-target="#modalFormPengantar">
-                    ➕ Buat Pengajuan Baru
-                </button>
-            </div>
-        </div>
 
-        <div class="card shadow-sm overflow-hidden mb-5">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0 align-middle">
-                    <thead class="bg-light text-secondary font-weight-bold" style="font-size: 0.85rem;">
-                        <tr>
-                            <th>JENIS SURAT / ID</th>
-                            <th>NAMA PEMOHON</th>
-                            <th>STATUS ALUR</th>
-                            <th class="text-center">AKSI / VALIDATOR</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabel-surat-warga">
-                    </tbody>
-                </table>
+            <div class="card shadow-sm overflow-hidden mb-5">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead class="bg-light text-secondary font-weight-bold" style="font-size: 0.85rem;">
+                            <tr>
+                                <th>JENIS SURAT / ID</th>
+                                <th>NAMA PEMOHON</th>
+                                <th>STATUS ALUR</th>
+                                <th class="text-center">AKSI / VALIDATOR</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabel-surat-warga">
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="modalFormPengantar" tabindex="-1" role="dialog" aria-labelledby="modalFormLabel" aria-hidden="true">
+    <div class="modal fade" id="modalFormPengantar" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content border-0 shadow-lg">
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title font-weight-bold" id="modalFormLabel">Formulir Pengajuan Surat Pengantar</h5>
+                    <h5 class="modal-title font-weight-bold">Formulir Pengajuan Surat Pengantar</h5>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -81,12 +86,12 @@
                         <div class="row">
                             <div class="form-group col-md-12">
                                 <div class="alert alert-secondary small font-weight-bold text-dark bg-light border-0">
-                                    📍 Pengajuan Surat ini otomatis diteruskan ke: <span id="text-rt-terkunci" class="text-primary">Mendeteksi Akun RT...</span>
+                                    📍 Wilayah Anda: <span id="text-rt-terkunci" class="text-primary">Memuat...</span>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label class="font-weight-bold small">Nama Lengkap</label>
-                                <input type="text" id="p_nama" class="form-control" required placeholder="Contoh: Saiful Effendi">
+                                <input type="text" id="p_nama" class="form-control bg-light" readonly required>
                             </div>
                             <div class="form-group col-md-6">
                                 <label class="font-weight-bold small">Tempat, Tanggal Lahir</label>
@@ -151,9 +156,6 @@
     <script>
         const SPREADSHEET_API_URL = "https://script.google.com/macros/s/AKfycbxADW-wf-uWrOs95bNwqpf_gWKm9yNViuLXxI0BtMEZ8UanBtptRi-_50CkNK3xUSVR/exec";
 
-        // ============================================================================
-        // DATABASE KETUA RT MALANG GANTING (Sesuaikan karo jeneng asline, Bos)
-        // ============================================================================
         const DATA_KETUA_RT = {
             "001": "SAIFUL HIDAYAT",
             "002": "BAPAK BAMBANG JAYADI",
@@ -162,32 +164,44 @@
         };
 
         // ============================================================================
-        // DETEKSI AKUN LOGIN WARGA
+        // 🛡️ SECURITY ENGINE: CEK STATUS LOGIN WARGA (GATEKEEPER)
         // ============================================================================
-        // Sistem otomatis nyari data login warga. Kalau belum ada, fallback ke "001" buat keamanan kodingan
-        const USER_LOGIN_RT = localStorage.getItem("user_rt") || "001"; // contoh isi string: "001", "002"
+        // Moco session login warga sing disave pas login.
+        const LOGGED_USER_NAME = localStorage.getItem("user_nama"); 
+        const LOGGED_USER_RT = localStorage.getItem("user_rt"); // Kudu isine koyo: "001", "002"
+
+        // SENSOR PROTEKSI JALUR: Lek gak ono data login, langsung didupak metu!
+        if (!LOGGED_USER_NAME || !LOGGED_USER_RT) {
+            alert("🔒 Akses Ditolak! Sampeyan kudu login dhisik, Bos.");
+            window.location.href = "index.html"; // Tendang bali nyang halaman utama/login
+        } else {
+            // Lek lolos login, nembe konten di-buka
+            document.getElementById('content-wrapper').style.display = 'block';
+        }
 
         document.addEventListener("DOMContentLoaded", function() {
-            // Pasang text status login di interface
-            document.getElementById('badge-rt-login').innerText = `🔐 Wilayah Anda: RT.${USER_LOGIN_RT}`;
-            document.getElementById('text-rt-terkunci').innerText = `RT ${USER_LOGIN_RT} (Ketua RT: ${DATA_KETUA_RT[USER_LOGIN_RT] || 'Ketua RT'})`;
-            
-            renderTabelWargaCloud();
+            if (LOGGED_USER_RT) {
+                document.getElementById('badge-rt-login').innerText = `🔐 Akun: ${LOGGED_USER_NAME} (RT.${LOGGED_USER_RT})`;
+                document.getElementById('text-rt-terkunci').innerText = `RT ${LOGGED_USER_RT} (Ketua RT: ${DATA_KETUA_RT[LOGGED_USER_RT] || 'Ketua RT'})`;
+                document.getElementById('p_nama').value = LOGGED_USER_NAME; // Pasang otomatis jenenge warga
+                
+                renderTabelWargaCloud();
+            }
         });
 
-        // 1. API ENGINE: SUBMIT DATA
+        // 1. API ENGINE: POST DATA
         async function submitSuratKompleks(event) {
             event.preventDefault();
             const btnSubmit = event.target.querySelector('button[type="submit"]');
             const originalText = btnSubmit.innerHTML;
             btnSubmit.disabled = true;
-            btnSubmit.innerHTML = `<span>⏳ Mengirim ke Spreadsheet...</span>`;
+            btnSubmit.innerHTML = `<span>⏳ Mengirim...</span>`;
 
             const payload = {
                 action: "tambahSuratGanting",
                 id: 'GNT-' + Date.now(),
-                no_rt: USER_LOGIN_RT, // 👈 KIRIM NO RT AKUN LOGIN SECARA OTOMATIS
-                nama: document.getElementById('p_nama').value,
+                no_rt: LOGGED_USER_RT,
+                nama: LOGGED_USER_NAME, // Kunci nggae jeneng asline sing login
                 ttl: document.getElementById('p_ttl').value,
                 jk: document.getElementById('p_jk').value,
                 agama: document.getElementById('p_agama').value,
@@ -207,29 +221,28 @@
                     headers: { "Content-Type": "text/plain" },
                     body: JSON.stringify(payload)
                 });
-                
                 const result = await response.json();
                 if (result.status === "sukses" || result.success === true) {
                     $('#modalFormPengantar').modal('hide');
-                    alert('🚀 Sukses! Data masuk Spreadsheet Utama.');
+                    alert('🚀 Pengajuan Berhasil Dikirim!');
                     event.target.reset();
+                    document.getElementById('p_nama').value = LOGGED_USER_NAME;
                     renderTabelWargaCloud(); 
                 }
             } catch (error) {
-                console.error(error);
-                alert("❌ Waduh Bos, koneksi API Spreadsheet gembos!");
+                alert("❌ Koneksi API Gagal!");
             } finally {
                 btnSubmit.disabled = false;
                 btnSubmit.innerHTML = originalText;
             }
         }
 
-        // 2. API ENGINE: GET & FILTER REAL-TIME BERDASARKAN RT
+        // 2. API ENGINE: GET & FILTER RIWAYAT KHUSUS WARGA SING LOGIN
         async function renderTabelWargaCloud() {
             const tbody = document.getElementById('tabel-surat-warga');
             if (!tbody) return;
             
-            tbody.innerHTML = `<tr><td colspan="4" class="text-center py-5"><div class="spinner-border text-primary" role="status"></div><div class="text-muted small mt-2 font-weight-bold">Sinkronisasi Real-Time Google Sheets...</div></td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></td></tr>`;
 
             try {
                 const response = await fetch(SPREADSHEET_API_URL + "?action=ambilSuratGanting");
@@ -237,38 +250,35 @@
                 tbody.innerHTML = '';
                 
                 if (!dbSurat || dbSurat.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-5">❌ Belum ada riwayat pengajuan di Spreadsheet.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-4">❌ Belum ada riwayat pengajuan.</td></tr>`;
                     return;
                 }
 
-                // FILTER: Hanya tampilkan data surat yang No_RT nya sama dengan warga yang sedang login
-                const dataFilterSesuaiRT = dbSurat.filter(item => {
-                    // Normalisasi string RT jika dari sheets berbentuk "RT 01" atau murni angka "001"
+                // 🎯 REVISI PRIVASI: Saring data murni sing duwure jeneng + RT podo karo sing login!
+                const riwayatPribadi = dbSurat.filter(item => {
                     let rtBersih = item.no_rt ? item.no_rt.toString().replace(/\D/g, "") : "";
-                    return parseInt(rtBersih) === parseInt(USER_LOGIN_RT);
+                    return item.nama.toLowerCase().trim() === LOGGED_USER_NAME.toLowerCase().trim() && parseInt(rtBersih) === parseInt(LOGGED_USER_RT);
                 });
 
-                if(dataFilterSesuaiRT.length === 0){
-                     tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-5">❌ Belum ada riwayat surat pengajuan di wilayah RT.${USER_LOGIN_RT} Anda.</td></tr>`;
+                if(riwayatPribadi.length === 0){
+                     tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-4">❌ Anda belum pernah membuat pengajuan surat.</td></tr>`;
                      return;
                 }
 
-                dataFilterSesuaiRT.reverse().forEach(surat => {
+                riwayatPribadi.reverse().forEach(surat => {
                     let badgeStatus = '';
                     let tombolTindakan = '';
-                    
-                    // Ambil nama Ketua RT pembimbing dinamis sesuai record baris data
                     let noRtData = surat.no_rt ? surat.no_rt.toString().replace(/\D/g, "") : "001";
-                    let namaRtValidator = DATA_KETUA_RT[noRtData] || "Ketua RT Wilayah";
+                    let namaRtValidator = DATA_KETUA_RT[noRtData] || "Ketua RT";
 
                     if (surat.status === 'Menunggu Validasi RT') {
-                        badgeStatus = `<span class="badge badge-warning font-weight-bold px-3 py-2 text-uppercase">⏳ PROSES DI RT.${noRtData}</span>`;
+                        badgeStatus = `<span class="badge badge-warning font-weight-bold px-3 py-2">⏳ PROSES DI RT.${noRtData}</span>`;
                         tombolTindakan = `<span class="text-muted small">Menunggu Bpk <b>${namaRtValidator}</b></span>`;
                     } else if (surat.status === 'Menunggu Validasi RW') {
-                        badgeStatus = `<span class="badge badge-info font-weight-bold px-3 py-2 text-uppercase">⏳ PROSES DI RW</span>`;
+                        badgeStatus = `<span class="badge badge-info font-weight-bold px-3 py-2">⏳ PROSES DI RW</span>`;
                         tombolTindakan = `<span class="text-muted small">Menunggu Bpk <b>Mochamad Soffa</b></span>`;
                     } else if (surat.status === 'Selesai') {
-                        badgeStatus = `<span class="badge badge-success font-weight-bold px-3 py-2 text-uppercase">✅ SURAT SELESAI</span>`;
+                        badgeStatus = `<span class="badge badge-success font-weight-bold px-3 py-2">✅ SELESAI</span>`;
                         const stringData = encodeURIComponent(JSON.stringify(surat));
                         tombolTindakan = `<button class="btn btn-dark btn-sm rounded-pill font-weight-bold btn-block shadow-sm" onclick="eksekusiCetakGanting('${stringData}')">🖨️ Cetak Surat</button>`;
                     }
@@ -282,21 +292,17 @@
                         </tr>`;
                 });
             } catch (error) {
-                console.error(error);
-                tbody.innerHTML = `<tr><td colspan="4" class="text-center text-danger py-5">❌ Gagal sinkronisasi data.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center text-danger py-4">❌ Gagal memuat data.</td></tr>`;
             }
         }
 
-        // 3. ENGINE CETAK SURAT + TANDA TANGAN ONLINE AUTOMATION (QR CODE INTEGRATED)
+        // 3. ENGINE CETAK SURAT + TTD ONLINE (QR CODE)
         function eksekusiCetakGanting(encodedData) {
             const s = JSON.parse(decodeURIComponent(encodedData));
             const tahunSekarang = new Date().getFullYear();
-            
-            // Cari Nama RT Dinamis berdasarkan nomor RT surat tersebut
             let noRtData = s.no_rt ? s.no_rt.toString().replace(/\D/g, "") : "001";
             let namaRtValidator = DATA_KETUA_RT[noRtData] || "SAIFUL HIDAYAT";
 
-            // QR Code API Generator Tanda Tangan Online mengikat ID Surat Unik
             const qrTtdOnlineRT = `https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=SIGNED_ONLINE_BY_RT_${noRtData}_ID_${s.id}`;
             const qrTtdOnlineRW = `https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=SIGNED_ONLINE_BY_RW_001_ID_${s.id}`;
 
@@ -310,11 +316,11 @@
                     <div style="border-bottom: 4px double #000; margin-top: 5px; margin-bottom: 25px;"></div>
                     
                     <div style="text-align: center; margin-bottom: 30px;">
-                        <span style="font-weight: bold; font-size: 12pt; text-decoration: underline; letter-spacing: 0.5px;">SURAT KETERANGAN / PENGANTAR</span><br>
+                        <span style="font-weight: bold; font-size: 12pt; text-decoration: underline;">SURAT KETERANGAN / PENGANTAR</span><br>
                         <span>Nomor : ${s.no_rt_num || '...'} / RT.${noRtData}/RW.001/       /${tahunSekarang}</span>
                     </div>
                     
-                    <p style="text-indent: 45px; margin-bottom: 15px; text-align: justify; font-size: 11pt;">Yang bertanda tangan dibawah ini menerangkan bahwa :</p>
+                    <p style="text-indent: 45px; text-align: justify; font-size: 11pt;">Yang bertanda tangan dibawah ini menerangkan bahwa :</p>
                     
                     <table style="width: 100%; margin-left: 15px; border-collapse: collapse; font-size: 11pt; line-height: 1.9; text-align: left;">
                         <tr><td style="width: 4%;">1.</td><td style="width: 28%;">N a m a</td><td style="width: 3%;">:</td><td style="font-weight: bold; text-transform: uppercase;">${s.nama}</td></tr>
@@ -343,14 +349,14 @@
                             <td style="width: 34%; vertical-align: top;">
                                 <span style="font-size: 10pt; display: block; margin-bottom: 5px;">No. ${s.no_rw || '...'} /RW.001/      /${tahunSekarang}<br><b>MENGETAHUI</b></span>
                                 KETUA RW.001<br>
-                                <img src="${qrTtdOnlineRW}" alt="QR TTD RW" style="width:85px; height:85px; margin: 8px 0; border: 1px solid #eee; padding:3px;"><br>
-                                <small style="display:block; font-size:7.5pt; color:#555; font-style:italic; margin-bottom:2px;">✓ Divalidasi secara Online</small>
+                                <img src="${qrTtdOnlineRW}" style="width:85px; height:85px; margin: 8px 0; border: 1px solid #eee; padding:3px;"><br>
+                                <small style="display:block; font-size:7.5pt; color:#555; font-style:italic;">✓ Divalidasi secara Online</small>
                                 <u><b>MOCHAMAD SOFFA</b></u>
                             </td>
                             <td style="width: 33%; vertical-align: top;">
                                 <br>Ketua RT. ${noRtData}<br>
-                                <img src="${qrTtdOnlineRT}" alt="QR TTD RT" style="width:85px; height:85px; margin: 8px 0; border: 1px solid #eee; padding:3px;"><br>
-                                <small style="display:block; font-size:7.5pt; color:#555; font-style:italic; margin-bottom:2px;">✓ Divalidasi secara Online</small>
+                                <img src="${qrTtdOnlineRT}" style="width:85px; height:85px; margin: 8px 0; border: 1px solid #eee; padding:3px;"><br>
+                                <small style="display:block; font-size:7.5pt; color:#555; font-style:italic;">✓ Divalidasi secara Online</small>
                                 <u><b>${namaRtValidator}</b></u>
                             </td>
                         </tr>
