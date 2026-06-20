@@ -10,27 +10,13 @@
             background-color: #f8f9fa;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
-        .navbar-brand {
-            font-weight: 700;
-        }
-        .card {
-            border: none;
-            border-radius: 12px;
-        }
-        /* Style gae panyaring cetak ruko bunder */
+        .navbar-brand { font-weight: 700; }
+        .card { border: none; border-radius: 12px; }
+        
         @media print {
-            body * {
-                visibility: hidden;
-            }
-            #isi-surat-cetak, #isi-surat-cetak * {
-                visibility: visible;
-            }
-            #isi-surat-cetak {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-            }
+            body * { visibility: hidden; }
+            #isi-surat-cetak, #isi-surat-cetak * { visibility: visible; }
+            #isi-surat-cetak { position: absolute; left: 0; top: 0; width: 100%; }
         }
     </style>
 </head>
@@ -49,9 +35,14 @@
 
     <div class="container">
         <div class="row mb-4 align-items-center">
-            <div class="col">
+            <div class="col-md-8">
                 <h3 class="font-weight-bold text-dark mb-1">📩 Riwayat & Pengajuan Surat</h3>
                 <p class="text-muted small">Monitoring data pengajuan surat pengantar real-time Dusun Malang Desa Ganting</p>
+            </div>
+            <div class="col-md-4 text-md-right">
+                <button class="btn btn-primary rounded-pill font-weight-bold px-4 shadow-sm py-2" data-toggle="modal" data-target="#modalFormPengantar">
+                    ➕ Buat Pengajuan Baru
+                </button>
             </div>
         </div>
 
@@ -73,7 +64,81 @@
         </div>
     </div>
 
+    <div class="modal fade" id="modalFormPengantar" tabindex="-1" role="dialog" aria-labelledby="modalFormLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title font-weight-bold" id="modalFormLabel">Formulir Pengajuan Surat Pengantar</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="formSuratWarga" onsubmit="submitSuratKompleks(event)">
+                    <div class="modal-body p-4">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="font-weight-bold small">Nama Lengkap</label>
+                                <input type="text" id="p_nama" class="form-control" required placeholder="Contoh: Saiful Effendi">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="font-weight-bold small">Tempat, Tanggal Lahir</label>
+                                <input type="text" id="p_ttl" class="form-control" required placeholder="Sidoarjo, 12 Agustus 1990">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="font-weight-bold small">Jenis Kelamin</label>
+                                <select id="p_jk" class="form-control" required>
+                                    <option value="Laki-laki">Laki-laki</option>
+                                    <option value="Perempuan">Perempuan</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="font-weight-bold small">Agama</label>
+                                <input type="text" id="p_agama" class="form-control" required placeholder="Islam">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="font-weight-bold small">Pekerjaan</label>
+                                <input type="text" id="p_pekerjaan" class="form-control" required placeholder="Swasta">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="font-weight-bold small">Pendidikan Terakhir</label>
+                                <input type="text" id="p_pendidikan" class="form-control" required placeholder="SMA / S1">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="font-weight-bold small">Nomor Kartu Keluarga (KK)</label>
+                                <input type="number" id="p_kk" class="form-control" required placeholder="3515...">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="font-weight-bold small">Nomor KTP / NIK</label>
+                                <input type="number" id="p_ktp" class="form-control" required placeholder="3515...">
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label class="font-weight-bold small">Alamat Lengkap Dusun</label>
+                                <textarea id="p_alamat" class="form-control" rows="2" required placeholder="Dusun Malang RT 01 RW 01 Desa Ganting"></textarea>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="font-weight-bold small">Keperluan Surat</label>
+                                <input type="text" id="p_keperluan" class="form-control" required placeholder="Mengurus KTP Hilang / Surat Nikah">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="font-weight-bold small">No. Telp / Gmail Kontak</label>
+                                <input type="text" id="p_telp_gmail" class="form-control" required placeholder="0812345xxx / warga@gmail.com">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light text-right">
+                        <button type="button" class="btn btn-secondary rounded-pill px-4" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary rounded-pill px-4 font-weight-bold">🚀 Kirim Pengajuan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div id="isi-surat-cetak" class="d-none d-print-block"></div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
         // ============================================================================
@@ -81,23 +146,64 @@
         // ============================================================================
         const SPREADSHEET_API_URL = "PASANG_URL_WEB_APP_APPS_SCRIPT_IKU_NANG_KENE";
 
-        // Jalankan render data otomatis pas halaman di-load awal
         document.addEventListener("DOMContentLoaded", function() {
             renderTabelWargaCloud();
         });
 
-        // FUNCTION GET DATA REAL-TIME
+        // 1. API ENGINE: SUBMIT DATA FORMULIR NYANG SPREADSHEET (POST)
+        async function submitSuratKompleks(event) {
+            event.preventDefault();
+            const btnSubmit = event.target.querySelector('button[type="submit"]');
+            const originalText = btnSubmit.innerHTML;
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = `<span>⏳ Mengirim ke Spreadsheet...</span>`;
+
+            const payload = {
+                action: "tambahSuratGanting",
+                id: 'GNT-' + Date.now(),
+                nama: document.getElementById('p_nama').value,
+                ttl: document.getElementById('p_ttl').value,
+                jk: document.getElementById('p_jk').value,
+                agama: document.getElementById('p_agama').value,
+                pekerjaan: document.getElementById('p_pekerjaan').value,
+                pendidikan: document.getElementById('p_pendidikan').value,
+                kk: document.getElementById('p_kk').value,
+                ktp: document.getElementById('p_ktp').value,
+                alamat: document.getElementById('p_alamat').value,
+                keperluan: document.getElementById('p_keperluan').value,
+                telp_gmail: document.getElementById('p_telp_gmail').value
+            };
+
+            try {
+                const response = await fetch(SPREADSHEET_API_URL, {
+                    method: "POST",
+                    mode: "cors",
+                    headers: { "Content-Type": "text/plain" },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                if (result.status === "sukses" || result.success === true) {
+                    $('#modalFormPengantar').modal('hide');
+                    alert('🚀 Sukses! Data masuk Spreadsheet Utama. Antrean Anda berhasil dicatat.');
+                    event.target.reset();
+                    renderTabelWargaCloud(); 
+                }
+            } catch (error) {
+                console.error("Gagal koneksi API:", error);
+                alert("❌ Waduh Bos, koneksi API Spreadsheet gembos!");
+            } finally {
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = originalText;
+            }
+        }
+
+        // 2. API ENGINE: AMBIL DATA TEKO SPREADSHEET & RENDER REAL-TIME (GET)
         async function renderTabelWargaCloud() {
             const tbody = document.getElementById('tabel-surat-warga');
             if (!tbody) return;
             
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="4" class="text-center py-5">
-                        <div class="spinner-border text-primary" role="status"></div>
-                        <div class="text-muted small mt-2 font-weight-bold">Sinkronisasi Real-Time Google Sheets...</div>
-                    </td>
-                </tr>`;
+            tbody.innerHTML = `<tr><td colspan="4" class="text-center py-5"><div class="spinner-border text-primary" role="status"></div><div class="text-muted small mt-2 font-weight-bold">Sinkronisasi Real-Time Google Sheets...</div></td></tr>`;
 
             try {
                 const response = await fetch(SPREADSHEET_API_URL + "?action=ambilSuratGanting");
@@ -139,7 +245,7 @@
             }
         }
 
-        // FUNCTION CETAK SURAT FORMAT DESA GANTING
+        // 3. ENGINE CETAK SURAT UTAMA (MURNI FORMAT WORD DESA GANTING 2026)
         function eksekusiCetakGanting(encodedData) {
             const s = JSON.parse(decodeURIComponent(encodedData));
             const tahunSekarang = new Date().getFullYear();
@@ -180,19 +286,9 @@
                     
                     <table style="width: 100%; margin-top: 20px; text-align: center; font-size: 11pt;">
                         <tr>
-                            <td style="width: 33%; vertical-align: top;">
-                                Yang bersangkutan,<br><br><br><br><br>
-                                ( <b>${s.nama.toUpperCase()}</b> )
-                            </td>
-                            <td style="width: 34%; vertical-align: top;">
-                                <span style="font-size: 10pt; display: block; margin-bottom: 20px;">No. ${s.no_rw || '...'} /RW.001/      /${tahunSekarang}<br><b>MENGETAHUI</b></span>
-                                KETUA RW.001<br><br><br><br>
-                                <u><b>${s.ttd_rw || 'MOCHAMAD SOFFA'}</b></u>
-                            </td>
-                            <td style="width: 33%; vertical-align: top;">
-                                <br>Ketua RT. 001<br><br><br><br><br>
-                                <u><b>${s.ttd_rt || 'SAIFUL HIDAYAT'}</b></u>
-                            </td>
+                            <td style="width: 33%; vertical-align: top;">Yang bersangkutan,<br><br><br><br><br>( <b>${s.nama.toUpperCase()}</b> )</td>
+                            <td style="width: 34%; vertical-align: top;"><span style="font-size: 10pt; display: block; margin-bottom: 20px;">No. ${s.no_rw || '...'} /RW.001/      /${tahunSekarang}<br><b>MENGETAHUI</b></span>KETUA RW.001<br><br><br><br><u><b>${s.ttd_rw || 'MOCHAMAD SOFFA'}</b></u></td>
+                            <td style="width: 33%; vertical-align: top;"><br>Ketua RT. 001<br><br><br><br><br><u><b>${s.ttd_rt || 'SAIFUL HIDAYAT'}</b></u></td>
                         </tr>
                     </table>
                 </div>`;
