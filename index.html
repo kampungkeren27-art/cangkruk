@@ -170,13 +170,37 @@
             border: none;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
-    </style>
+        /* MEKSO MODAL FORMULIR MAJU NANG PALING NGAREP DEWE */
+.modal {
+    z-index: 1060 !important; /* Luwih dhuwur teko backdrop gawan template */
+}
+.modal-backdrop {
+    z-index: 1040 !important; /* Nempatno petenge tetep nang mburi form */
+}
+body.modal-open {
+    overflow: hidden; /* Nyegah halaman mburi melu kemecer pas form diisi */
+}
+/* BOM CSS ANTI-CHELENG (Pekso Maju Paling Ngarep Layar) */
+body.modal-open {
+    overflow: hidden !important;
+}
+.modal {
+    position: fixed !important;
+    z-index: 999999 !important; /* Digawe dhuwur pol */
+    overflow-y: auto !important;
+}
+.modal-backdrop {
+    position: fixed !important;
+    z-index: 99999 !important; /* Sak itik nang mburine modal */
+}
+    
+</style>
 </head>
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-light sticky-top bg-white">
     <div class="container">
-        <a class="navbar-brand" href="javascript:void(0)" onclick="showHome()">
+        <a class="navbar-brand" href="#" onclick="showHome(); return false;">
             <span style="color: var(--primary)">●</span> SOLID <span style="font-weight:300; color: #6b7280;">RW</span>
         </a>
         <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navbarNav">
@@ -184,35 +208,47 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a class="nav-link mx-2" href="javascript:void(0)" onclick="showHome()">Beranda</a></li>
+                <li class="nav-item"><a class="nav-link mx-2" href="#" onclick="showHome(); return false;">Beranda</a></li>
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle btn btn-light rounded-pill px-4 py-2 mt-1 mt-lg-0 shadow-sm mx-1" 
-                       href="javascript:void(0)" id="profilDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
+                       href="#" id="profilDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
                        style="font-size: 0.85rem; color: var(--primary-dark) !important;">
                          Profil
                     </a>
                     <div class="dropdown-menu border-0 shadow-lg p-3" aria-labelledby="profilDropdown">
-                        <a class="dropdown-item py-3 rounded mb-1" href="javascript:void(0)" onclick="showProfil('struktur')">🏢 Struktur Organisasi</a>
-                        <a class="dropdown-item py-3 rounded" href="javascript:void(0)" onclick="showProfil('tentang')">ℹ️ Tentang</a>
+                        <a class="dropdown-item py-3 rounded mb-1" href="#" onclick="showProfil('struktur'); return false;">🏢 Struktur Organisasi</a>
+                        <a class="dropdown-item py-3 rounded" href="#" onclick="showProfil('tentang'); return false;">ℹ️ Tentang</a>
                     </div>
                 </li>
                 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle btn btn-light rounded-pill px-4 py-2 mt-1 mt-lg-0 shadow-sm mx-1" 
-                       href="javascript:void(0)" id="navbarStat" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
+                       href="#" id="navbarStat" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
                        style="font-size: 0.85rem; color: var(--primary-dark) !important;">
                          Statistik Wilayah
                     </a>
                     <div class="dropdown-menu border-0 shadow-lg p-3" aria-labelledby="navbarStat">
-                        <a class="dropdown-item py-3 rounded mb-1" href="javascript:void(0)" onclick="loadRT('RT 01')">📍 Data RT 01</a>
-                        <a class="dropdown-item py-3 rounded mb-1" href="javascript:void(0)" onclick="loadRT('RT 02')">📍 Data RT 02</a>
-                        <a class="dropdown-item py-3 rounded mb-1" href="javascript:void(0)" onclick="loadRT('RT 03')">📍 Data RT 03</a>
-                        <a class="dropdown-item py-3 rounded" href="javascript:void(0)" onclick="loadRT('RT 04')">📍 Data RT 04</a>
+                        <a class="dropdown-item py-3 rounded mb-1" href="#" onclick="loadRT('RT 01'); return false;">📍 Data RT 01</a>
+                        <a class="dropdown-item py-3 rounded mb-1" href="#" onclick="loadRT('RT 02'); return false;">📍 Data RT 02</a>
+                        <a class="dropdown-item py-3 rounded mb-1" href="#" onclick="loadRT('RT 03'); return false;">📍 Data RT 03</a>
+                        <a class="dropdown-item py-3 rounded" href="#" onclick="loadRT('RT 04'); return false;">📍 Data RT 04</a>
                     </div>
                 </li>
+                
+                <li class="nav-item">
+                     <a class="nav-link btn btn-outline-primary rounded-pill px-4 py-2 mt-1 mt-lg-0 shadow-sm mx-1" 
+                        href="Persuratan.html" style="font-size: 0.85rem;">
+                     📩 Persuratan Warga
+                     </a>
+                    </li>
+            </ul>
+        </div>
+    </div>
 
-               
+ 
+<div id="isi-surat-cetak" class="d-none d-print-block"></div>
+
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle btn btn-primary text-white rounded-pill px-4 py-2 mt-1 mt-lg-0 shadow-sm mx-1" 
@@ -244,8 +280,8 @@
                         <div class="nav-item" id="logout-nav-item" style="display:none;">
                            <div class="dropdown-divider"></div>
                              <a class="dropdown-item text-danger" href="#" onclick="logoutWarga(); return false;">
-                           <i class="fas fa-sign-out-alt mr-2"></i>Keluar
-                              </a>
+                               <i class="fas fa-sign-out-alt mr-2"></i>Keluar
+                             </a>
                         </div>
                     </div>
                 </li>
@@ -254,7 +290,33 @@
     </div>
 </nav>
             
+<div id="halaman-riwayat-surat" class="container my-5" style="display: none;">
+    <div class="row mb-4 align-items-center">
+        <div class="col">
+            <h4 class="font-weight-bold text-dark mb-1">📩 Riwayat & Pengajuan Surat Pemohon</h4>
+            <p class="text-muted small">Monitoring data pengajuan surat pengantar real-time terintegrasi Google Sheets</p>
+        </div>
+    </div>
 
+    <div class="card border-0 shadow-sm rounded-lg overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="bg-light text-secondary font-weight-bold" style="font-size: 0.82rem;">
+                    <tr>
+                        <th>JENIS SURAT / ID</th>
+                        <th>NAMA PEMOHON</th>
+                        <th>STATUS ALUR</th>
+                        <th class="text-center">AKSI / TINDAKAN</th>
+                    </tr>
+                </thead>
+                <tbody id="tabel-surat-warga">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="isi-surat-cetak" class="d-none d-print-block"></div>
 
 <div id="main-page-content">
     <div id="home-wrapper">
@@ -885,22 +947,6 @@
                     <span aria-hidden="true" style="font-size: 2rem;">&times;</span>
                 </button>
             </div>
-            <div class="row mb-3 style-cetak-hide">
-                <div class="col-12">
-                    <ul class="nav nav-pills nav-fill bg-light p-1 rounded" id="tabNeracaRW" role="tablist" style="border: 1px solid #dee2e6;">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active font-weight-bold p-3 rounded" id="nav-rw-pribadi-tab" data-toggle="tab" data-target="#konten-rw-pribadi" type="button" role="tab" aria-selected="true">
-                                🏢 1. Kas Internal RW Pribadi
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link font-weight-bold p-3 rounded" id="nav-rt-kumulatif-tab" data-toggle="tab" data-target="#konten-rt-kumulatif" type="button" role="tab" aria-selected="false">
-                                📊 2. Kumulatif / Konsolidasi All RT
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-            </div>
             <div class="modal-body p-4 bg-light">
                 
                 <div class="text-right mb-3">
@@ -1381,15 +1427,18 @@ function jalankanEnginePenghitungNeraca(isRW) {
         if (nomorRTX) targetRT = nomorRTX.toString().replace(/\D/g, "").trim();
     }
     
-    // 3. Tembak jalur menggunakan dataType "jsonp"
+    // 3. Tembak jalur baru menggunakan dataType "jsonp" agar anti blokir CORS / Error 400
     $.ajax({
         url: URL_WEB_APP_SERVER,
         type: "GET",
-        data: { action: "ambilKasDinamis" },
+        data: {
+            action: "ambilKasDinamis"
+        },
         crossDomain: true,
         dataType: "jsonp", 
         success: function(responDinamis) {
             console.log("Koneksi sukses! Data Kas_RT dinamis berhasil didapat:", responDinamis);
+            
             if (responDinamis && responDinamis.length > 0) {
                 renderKomponenLengkapAkuntansi(responDinamis, isRW);
             } else {
@@ -1441,7 +1490,7 @@ function renderKomponenLengkapAkuntansi(data, isRW) {
         }
     }
 
-    // 🌟 VARIABEL DITARUH DI SINI LAGI AGAR GRAFIK UTAMA TIDAK IKUT TER-RESET 
+    // 🌟 SEPARASI DATA MASTER 
     let htmlJurnalRW = "";
     let htmlJurnalRTKumulatif = "";
     let htmlJurnalRTSpesifik = "";
@@ -1472,6 +1521,7 @@ function renderKomponenLengkapAkuntansi(data, isRW) {
             } catch (err) { tgl = tglRaw; }
         }
         
+        // 🛠️ Perbaikan: Tambahkan (.trim()) agar spasi tak sengaja di Google Sheets tidak merusak filter data
         const rt = row[2] ? row[2].toString().trim() : "-";          
         const jenis = row[3] || "Pemasukan"; 
         const posAkun = row[4] || "Umum";   
@@ -1497,6 +1547,7 @@ function renderKomponenLengkapAkuntansi(data, isRW) {
                 <td class="text-muted"><small>${petugas}</small></td>
             </tr>`;
 
+        // Pengecekan Kategori Data Kas Utama
         if (rt.toUpperCase() === "RW") {
             if (isPemasukan) {
                 rwPemasukan += nominal;
@@ -1525,18 +1576,92 @@ function renderKomponenLengkapAkuntansi(data, isRW) {
         }
     }
 
-    // Bungkus data kalkulasi ke dalam objek khusus untuk dikirim ke fungsi switch tampilan
-    const dataKalkulasi = {
-        htmlJurnalRW, htmlJurnalRTKumulatif, htmlJurnalRTSpesifik,
-        rwAktiva, rwPasiva, rtAktiva, rtPasiva,
-        rwPemasukan, rwPengeluaran, rtPemasukanKumulatif, rtPengeluaranKumulatif, rincianPerRT
-    };
-
+    // 🛠️ Jalur Alternatif Penyuntikan: Jika ID sub-title-neraca tidak ditemukan, pasang langsung di atas area Jurnal Utama
     if (currentUser.role === 'admin' || currentUser.kk === "3515162501090114") {
-        // Bind event nggae Nav-Pills asli bawaan HTML-mu
-        $(document).off('shown.bs.tab', '#tabNeracaRW button').on('shown.bs.tab', '#tabNeracaRW button', function() {
-            aplikasikanSwitchTampilanHalaman(dataKalkulasi);
-        });
+        if ($('#container-toggle-rw').length === 0) {
+            const toggleElementHTML = `
+                <div id="container-toggle-rw" class="p-3 my-3 bg-light rounded text-center border style-cetak-hide">
+                    <span class="font-weight-bold mr-3 text-dark">🎯 PILIH MODE DASHBOARD KEUANGAN:</span>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="radio-rw-pribadi" name="toggleModeRW" class="custom-control-input" checked>
+                        <label class="custom-control-label font-weight-bold text-primary" for="radio-rw-pribadi" style="cursor:pointer; user-select:none;">🏢 1. Kas Internal RW Pribadi</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="radio-rt-kumulatif" name="toggleModeRW" class="custom-control-input">
+                        <label class="custom-control-label font-weight-bold text-success" for="radio-rt-kumulatif" style="cursor:pointer; user-select:none;">📊 2. Kumulatif / Konsolidasi All RT</label>
+                    </div>
+                </div>`;
+
+            if ($('#sub-title-neraca').length > 0) {
+                $('#sub-title-neraca').after(toggleElementHTML);
+            } else {
+                $('.modal-body').prepend(toggleElementHTML); // Fallback: taruh di bagian paling atas modal body
+            }
+
+            // Daftarkan ulang Event Listener secara eksplisit
+            $(document).on('change', 'input[name="toggleModeRW"]', function() {
+                aplikasikanSwitchTampilanHalaman();
+            });
+        }
+    }
+
+    function aplikasikanSwitchTampilanHalaman() {
+        // Fallback deteksi jika elemen belum siap sepenuhnya di HTML DOM
+        const isPribadiActive = $('#radio-rw-pribadi').length > 0 ? $('#radio-rw-pribadi').is(':checked') : true;
+
+        if (isPribadiActive || !(currentUser.role === 'admin' || currentUser.kk === "3515162501090114")) {
+            $('#title-tabel-kas').html('<i class="fas fa-history mr-2"></i>BUKU JURNAL TRANSAKSI INTERNAL (KHUSUS RW PRIBADI)');
+            $('#neraca-log-jurnal').html(htmlJurnalRW || '<tr><td colspan="8" class="text-center text-muted p-3">Belum ada transaksi internal RW</td></tr>');
+            
+            $('#neraca-total-aktiva').text("Rp " + rwPemasukan.toLocaleString('id-ID'));
+            $('#neraca-total-pasiva').text("Rp " + rwPengeluaran.toLocaleString('id-ID'));
+            $('#neraca-saldo-internal-text').text("Rp " + (rwPemasukan - rwPengeluaran).toLocaleString('id-ID'));
+
+            let rAktiva = "";
+            for (let key in rwAktiva) { rAktiva += `<tr><td class="py-1">🟢 ${key}</td><td class="text-right font-weight-bold text-dark py-1">Rp ${rwAktiva[key].toLocaleString('id-ID')}</td></tr>`; }
+            $('#neraca-aktiva-rows').html(rAktiva || '<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
+
+            let rPasiva = "";
+            for (let key in rwPasiva) { rPasiva += `<tr><td class="py-1">🔴 ${key}</td><td class="text-right font-weight-bold text-dark py-1">Rp ${rwPasiva[key].toLocaleString('id-ID')}</td></tr>`; }
+            $('#neraca-pasiva-rows').html(rPasiva || '<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
+
+            $('#section-rekap-rw').hide(); 
+        } else {
+            $('#title-tabel-kas').html('<i class="fas fa-history mr-2"></i>MASTER LOG KONSOLIDASI (GABUNGAN DATA ALL RT)');
+            $('#neraca-log-jurnal').html(htmlJurnalRTKumulatif || '<tr><td colspan="8" class="text-center text-muted p-3">Tidak ditemukan data kas RT</td></tr>');
+
+            $('#neraca-total-aktiva').text("Rp " + rtPemasukanKumulatif.toLocaleString('id-ID'));
+            $('#neraca-total-pasiva').text("Rp " + rtPengeluaranKumulatif.toLocaleString('id-ID'));
+            $('#neraca-saldo-internal-text').text("Rp " + (rtPemasukanKumulatif - rtPengeluaranKumulatif).toLocaleString('id-ID'));
+
+            let rAktiva = "";
+            for (let key in rtAktiva) { rAktiva += `<tr><td class="py-1">🟢 ${key}</td><td class="text-right font-weight-bold text-dark py-1">Rp ${rtAktiva[key].toLocaleString('id-ID')}</td></tr>`; }
+            $('#neraca-aktiva-rows').html(rAktiva || '<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
+
+            let rPasiva = "";
+            for (let key in rtPasiva) { rPasiva += `<tr><td class="py-1">🔴 ${key}</td><td class="text-right font-weight-bold text-dark py-1">Rp ${rtPasiva[key].toLocaleString('id-ID')}</td></tr>`; }
+            $('#neraca-pasiva-rows').html(rPasiva || '<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
+
+            $('#rekap-total-masuk').text("Rp " + rtPemasukanKumulatif.toLocaleString('id-ID'));
+            $('#rekap-total-keluar').text("Rp " + rtPengeluaranKumulatif.toLocaleString('id-ID'));
+            $('#rekap-saldo-bersih').text("Rp " + (rtPemasukanKumulatif - rtPengeluaranKumulatif).toLocaleString('id-ID'));
+
+            let htmlRTWidget = "";
+            for (const rtKey in rincianPerRT) {
+                const hitungNetto = rincianPerRT[rtKey].masuk - rincianPerRT[rtKey].keluar;
+                htmlRTWidget += `
+                    <div class="col-md-4 mb-3">
+                        <div class="p-3 rounded border bg-white shadow-sm" style="font-size:12px;">
+                            <h6 class="font-weight-bold text-dark border-bottom pb-2 mb-2"><i class="fas fa-home text-muted mr-1"></i> Rangkuman RT ${rtKey}</h6>
+                            <div class="d-flex justify-content-between mb-1"><span>Total Masuk:</span><span class="text-success font-weight-bold">Rp ${rincianPerRT[rtKey].masuk.toLocaleString('id-ID')}</span></div>
+                            <div class="d-flex justify-content-between mb-1"><span>Total Keluar:</span><span class="text-danger font-weight-bold">Rp ${rincianPerRT[rtKey].keluar.toLocaleString('id-ID')}</span></div>
+                            <div class="d-flex justify-content-between pt-1 border-top mt-2"><strong>Saldo Bersih:</strong><strong class="${hitungNetto >= 0 ? 'text-success' : 'text-danger'}">Rp ${hitungNetto.toLocaleString('id-ID')}</strong></div>
+                        </div>
+                    </div>`;
+            }
+            $('#wrapper-breakdown-rt').html(htmlRTWidget || '<div class="col-12 text-center text-muted">Belum ada rekap data per unit RT</div>');
+            $('#section-rekap-rw').show();
+        }
     }
 
     if (!(currentUser.role === 'admin' || currentUser.kk === "3515162501090114")) {
@@ -1550,70 +1675,9 @@ function renderKomponenLengkapAkuntansi(data, isRW) {
         $('#neraca-total-aktiva').text("Rp " + rtPemasukanKumulatif.toLocaleString('id-ID'));
         $('#neraca-total-pasiva').text("Rp " + rtPengeluaranKumulatif.toLocaleString('id-ID'));
         $('#neraca-saldo-internal-text').text("Rp " + (rtPemasukanKumulatif - rtPengeluaranKumulatif).toLocaleString('id-ID'));
+        $('#container-toggle-rw').hide();
     } else {
-        aplikasikanSwitchTampilanHalaman(dataKalkulasi);
-    }
-}
-
-// FUNGSI BERDIRI SENDIRI DENGAN OPER-OPERAN PARAMETER DATA AMAN
-function aplikasikanSwitchTampilanHalaman(dk) {
-    if (!dk) return;
-
-    // Deteksi jika Nav-Pills Tab "Kas Internal RW" sing di-klik / aktif
-    const isPribadiActive = $('#nav-rw-pribadi-tab').hasClass('active') || $('.nav-link:contains("Kas Internal RW")').hasClass('active') || $('#radio-rw-pribadi').is(':checked');
-
-    if (isPribadiActive || !(currentUser.role === 'admin' || currentUser.kk === "3515162501090114")) {
-        $('#title-tabel-kas').html('<i class="fas fa-history mr-2"></i>BUKU JURNAL TRANSAKSI INTERNAL (KHUSUS RW PRIBADI)');
-        $('#neraca-log-jurnal').html(dk.htmlJurnalRW || '<tr><td colspan="8" class="text-center text-muted p-3">Belum ada transaksi internal RW</td></tr>');
-        
-        $('#neraca-total-aktiva').text("Rp " + dk.rwPemasukan.toLocaleString('id-ID'));
-        $('#neraca-total-pasiva').text("Rp " + dk.rwPengeluaran.toLocaleString('id-ID'));
-        $('#neraca-saldo-internal-text').text("Rp " + (dk.rwPemasukan - dk.rwPengeluaran).toLocaleString('id-ID'));
-
-        let rAktiva = "";
-        for (let key in dk.rwAktiva) { rAktiva += `<tr><td class="py-1">🟢 ${key}</td><td class="text-right font-weight-bold text-dark py-1">Rp ${dk.rwAktiva[key].toLocaleString('id-ID')}</td></tr>`; }
-        $('#neraca-aktiva-rows').html(rAktiva || '<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
-
-        let rPasiva = "";
-        for (let key in dk.rwPasiva) { rPasiva += `<tr><td class="py-1">🔴 ${key}</td><td class="text-right font-weight-bold text-dark py-1">Rp ${dk.rwPasiva[key].toLocaleString('id-ID')}</td></tr>`; }
-        $('#neraca-pasiva-rows').html(rPasiva || '<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
-
-        $('#section-rekap-rw').hide(); 
-    } else {
-        $('#title-tabel-kas').html('<i class="fas fa-history mr-2"></i>MASTER LOG KONSOLIDASI (GABUNGAN DATA ALL RT)');
-        $('#neraca-log-jurnal').html(dk.htmlJurnalRTKumulatif || '<tr><td colspan="8" class="text-center text-muted p-3">Tidak ditemukan data kas RT</td></tr>');
-
-        $('#neraca-total-aktiva').text("Rp " + dk.rtPemasukanKumulatif.toLocaleString('id-ID'));
-        $('#neraca-total-pasiva').text("Rp " + dk.rtPengeluaranKumulatif.toLocaleString('id-ID'));
-        $('#neraca-saldo-internal-text').text("Rp " + (dk.rtPemasukanKumulatif - dk.rtPengeluaranKumulatif).toLocaleString('id-ID'));
-
-        let rAktiva = "";
-        for (let key in dk.rtAktiva) { rAktiva += `<tr><td class="py-1">🟢 ${key}</td><td class="text-right font-weight-bold text-dark py-1">Rp ${dk.rtAktiva[key].toLocaleString('id-ID')}</td></tr>`; }
-        $('#neraca-aktiva-rows').html(rAktiva || '<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
-
-        let rPasiva = "";
-        for (let key in dk.rtPasiva) { rPasiva += `<tr><td class="py-1">🔴 ${key}</td><td class="text-right font-weight-bold text-dark py-1">Rp ${dk.rtPasiva[key].toLocaleString('id-ID')}</td></tr>`; }
-        $('#neraca-pasiva-rows').html(rPasiva || '<tr><td class="text-muted text-center py-2">Kosong</td></tr>');
-
-        $('#rekap-total-masuk').text("Rp " + dk.rtPemasukanKumulatif.toLocaleString('id-ID'));
-        $('#rekap-total-keluar').text("Rp " + dk.rtPengeluaranKumulatif.toLocaleString('id-ID'));
-        $('#rekap-saldo-bersih').text("Rp " + (dk.rtPemasukanKumulatif - dk.rtPengeluaranKumulatif).toLocaleString('id-ID'));
-
-        let htmlRTWidget = "";
-        for (const rtKey in dk.rincianPerRT) {
-            const hitungNetto = dk.rincianPerRT[rtKey].masuk - dk.rincianPerRT[rtKey].keluar;
-            htmlRTWidget += `
-                <div class="col-md-4 mb-3">
-                    <div class="p-3 rounded border bg-white shadow-sm" style="font-size:12px;">
-                        <h6 class="font-weight-bold text-dark border-bottom pb-2 mb-2"><i class="fas fa-home text-muted mr-1"></i> Rangkuman RT ${rtKey}</h6>
-                        <div class="d-flex justify-content-between mb-1"><span>Total Masuk:</span><span class="text-success font-weight-bold">Rp ${dk.rincianPerRT[rtKey].masuk.toLocaleString('id-ID')}</span></div>
-                        <div class="d-flex justify-content-between mb-1"><span>Total Keluar:</span><span class="text-danger font-weight-bold">Rp ${dk.rincianPerRT[rtKey].keluar.toLocaleString('id-ID')}</span></div>
-                        <div class="d-flex justify-content-between pt-1 border-top mt-2"><strong>Saldo Bersih:</strong><strong class="${hitungNetto >= 0 ? 'text-success' : 'text-danger'}">Rp ${hitungNetto.toLocaleString('id-ID')}</strong></div>
-                    </div>
-                </div>`;
-        }
-        $('#wrapper-breakdown-rt').html(htmlRTWidget || '<div class="col-12 text-center text-muted">Belum ada rekap data per unit RT</div>');
-        $('#section-rekap-rw').show();
+        aplikasikanSwitchTampilanHalaman();
     }
 }
 
@@ -3110,6 +3174,231 @@ async function kirimBeritaKeBackend() {
 }
 
 
+//PERSURATAN NIH BOS
+// ============================================================================
+// 1. CONFIGURATION: PASANG URL GOOGLE APPS SCRIPT-MU NANG KENE, BOS!
+// ============================================================================
+const SPREADSHEET_API_URL = "https://script.google.com/macros/s/AKfycbxADW-wf-uWrOs95bNwqpf_gWKm9yNViuLXxI0BtMEZ8UanBtptRi-_50CkNK3xUSVR/exec";
+
+// ============================================================================
+// SYSTEM ROUTER SPA - MANDIRI & ANTI CRASH
+// ============================================================================
+function showRiwayatPersuratan() {
+    console.log("Tombol Persuratan Berhasil Diklik, Bos!");
+
+    // 1. Singkirno/delikno kabeh bagean kontener halaman liyane gawan template-mu
+    const sections = ['halaman-home', 'halaman-profil', 'halaman-statistik'];
+    sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
+    
+    // 2. Tampilno seksi riwayat persuratan warga
+    const halSurat = document.getElementById('halaman-riwayat-surat');
+    if (halSurat) {
+        halSurat.style.display = 'block';
+    } else {
+        alert("❌ Waduh Bos, ID 'halaman-riwayat-surat' durung mbok saling nang HTML-mu!");
+        return;
+    }
+    
+    // 3. Sinkronisasi data real-time teko Google Sheets
+    renderTabelWargaCloud();
+}
+
+
+// INI PENGAMAN: Menyelipkan penutupan halaman riwayat surat tanpa merusak fungsi showHome aslimu
+document.addEventListener("DOMContentLoaded", function() {
+    // Mode Intercept Mandiri gae nutup riwayat pas warga balik nang Beranda
+    const origShowHome = window.showHome;
+    if (typeof origShowHome === 'function') {
+        window.showHome = function() {
+            const halSurat = document.getElementById('halaman-riwayat-surat');
+            if (halSurat) halSurat.style.display = 'none';
+            origShowHome(); // Jalankan showHome aslimu bawaan template
+        };
+    }
+});
+
+
+// ============================================================================
+// API ENGINE: SUBMIT DATA FORMULIR NYANG SPREADSHEET (POST)
+// ============================================================================
+async function submitSuratKompleks(event) {
+    event.preventDefault();
+    
+    const btnSubmit = event.target.querySelector('button[type="submit"]');
+    const originalText = btnSubmit ? btnSubmit.innerHTML : "Kirim";
+    
+    if (btnSubmit) {
+        btnSubmit.disabled = true;
+        btnSubmit.innerHTML = `<span>⏳ Mengirim ke Spreadsheet...</span>`;
+    }
+
+    const payload = {
+        action: "tambahSuratGanting", // Cocok karo kodingan doPost anyarmu
+        id: 'GNT-' + Date.now(),
+        nama: document.getElementById('p_nama').value,
+        ttl: document.getElementById('p_ttl').value,
+        jk: document.getElementById('p_jk').value,
+        agama: document.getElementById('p_agama').value,
+        pekerjaan: document.getElementById('p_pekerjaan').value,
+        pendidikan: document.getElementById('p_pendidikan').value,
+        kk: document.getElementById('p_kk').value,
+        ktp: document.getElementById('p_ktp').value,
+        alamat: document.getElementById('p_alamat').value,
+        keperluan: document.getElementById('p_keperluan').value,
+        telp_gmail: document.getElementById('p_telp_gmail').value
+    };
+
+    try {
+        const response = await fetch(SPREADSHEET_API_URL, {
+            method: "POST",
+            mode: "cors",
+            headers: { "Content-Type": "text/plain" },
+            body: JSON.stringify(payload)
+        });
+        
+        const result = await response.json();
+        if (result.status === "sukses" || result.success === true) {
+            $('#modalFormPengantar').modal('hide');
+            alert('🚀 Sukses! Data masuk Spreadsheet Utama. Antrean Anda berhasil dicatat.');
+            event.target.reset();
+            renderTabelWargaCloud(); 
+        }
+    } catch (error) {
+        console.error("Gagal koneksi API:", error);
+        alert("❌ Waduh Bos, koneksi API Spreadsheet gembos. Cek kodingan Apps Script-mu!");
+    } finally {
+        if (btnSubmit) {
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = originalText;
+        }
+    }
+}
+
+
+// ============================================================================
+// API ENGINE: AMBIL DATA TEKO SPREADSHEET & RENDER REAL-TIME (GET)
+// ============================================================================
+async function renderTabelWargaCloud() {
+    const tbody = document.getElementById('tabel-surat-warga');
+    if (!tbody) return;
+    
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="4" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status"></div>
+                <div class="text-muted small mt-2 font-weight-bold">Sinkronisasi Real-Time Google Sheets...</div>
+            </td>
+        </tr>`;
+
+    try {
+        // Nembak doGet sing wis kok benerno nganggo parameter action khusus
+        const response = await fetch(SPREADSHEET_API_URL + "?action=ambilSuratGanting");
+        const dbSurat = await response.json();
+        
+        tbody.innerHTML = '';
+        
+        if (!dbSurat || dbSurat.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-5">❌ Belum ada riwayat pengajuan di Spreadsheet.</td></tr>`;
+            return;
+        }
+
+        dbSurat.reverse().forEach(surat => {
+            let badgeStatus = '';
+            let tombolTindakan = '';
+
+            if (surat.status === 'Menunggu Validasi RT') {
+                badgeStatus = `<span class="badge badge-warning font-weight-bold px-3 py-2 text-uppercase">⏳ PROSES DI RT</span>`;
+                tombolTindakan = `<span class="text-muted small">Diproses Bpk Saiful Hidayat</span>`;
+            } else if (surat.status === 'Menunggu Validasi RW') {
+                badgeStatus = `<span class="badge badge-info font-weight-bold px-3 py-2 text-uppercase">⏳ PROSES DI RW</span>`;
+                tombolTindakan = `<span class="text-muted small">Diproses Bpk Mochamad Soffa</span>`;
+            } else if (surat.status === 'Selesai') {
+                badgeStatus = `<span class="badge badge-success font-weight-bold px-3 py-2 text-uppercase">✅ SURAT SELESAI</span>`;
+                const stringData = encodeURIComponent(JSON.stringify(surat));
+                tombolTindakan = `<button class="btn btn-dark btn-sm rounded-pill font-weight-bold btn-block shadow-sm" onclick="eksekusiCetakGanting('${stringData}')">🖨️ Cetak Surat</button>`;
+            }
+
+            tbody.innerHTML += `
+                <tr style="font-size: 0.88rem;">
+                    <td class="align-middle"><span class="font-weight-bold text-dark">Surat Pengantar</span><br><small class="text-muted font-italic">${surat.id}</small></td>
+                    <td class="align-middle font-weight-bold text-secondary text-uppercase">${surat.nama}</td>
+                    <td class="align-middle">${badgeStatus}</td>
+                    <td class="align-middle text-center">${tombolTindakan}</td>
+                </tr>`;
+        });
+    } catch (error) {
+        console.error("Gagal narik data:", error);
+        tbody.innerHTML = `<tr><td colspan="4" class="text-center text-danger py-5">❌ Gagal sinkronisasi data. Pastikan URL Web App bener!</td></tr>`;
+    }
+}
+
+
+// ============================================================================
+// ENGINE CETAK SURAT UTAMA (MURNI FORMAT WORD DESA GANTING 2026)
+// ============================================================================
+function eksekusiCetakGanting(encodedData) {
+    const s = JSON.parse(decodeURIComponent(encodedData));
+    const tahunSekarang = new Date().getFullYear();
+
+    const templateDokumenWord = `
+        <div style="width: 100%; font-family: 'Times New Roman', Times, serif; color: #000; padding: 20px; line-height: 1.6;">
+            <div style="text-align: center; font-weight: bold; font-size: 14pt;">
+                <div style="letter-spacing: 0.5px;">RUKUN TETANGGA 001</div>
+                <div style="letter-spacing: 0.5px;">RUKUN WARGA 001</div>
+                <div style="letter-spacing: 0.5px;">DUSUN MALANG DESA GANTING</div>
+            </div>
+            <div style="border-bottom: 4px double #000; margin-top: 5px; margin-bottom: 25px;"></div>
+            
+            <div style="text-align: center; margin-bottom: 30px;">
+                <span style="font-weight: bold; font-size: 12pt; text-decoration: underline; letter-spacing: 0.5px;">SURAT KETERANGAN / PENGANTAR</span><br>
+                <span>Nomor : ${s.no_rt || '...'} / RT.001/RW.001/       /${tahunSekarang}</span>
+            </div>
+            
+            <p style="text-indent: 45px; margin-bottom: 15px; text-align: justify; font-size: 11pt;">Yang bertanda tangan dibawah ini menerangkan bahwa :</p>
+            
+            <table style="width: 100%; margin-left: 15px; border-collapse: collapse; font-size: 11pt; line-height: 1.9; text-align: left;">
+                <tr><td style="width: 4%;">1.</td><td style="width: 28%;">N a m a</td><td style="width: 3%;">:</td><td style="font-weight: bold; text-transform: uppercase;">${s.nama}</td></tr>
+                <tr><td>2.</td><td>Tempat/Tgl. Lahir</td><td>:</td><td>${s.ttl}</td></tr>
+                <tr><td>3.</td><td>Jenis Kelamin</td><td>:</td><td>${s.jk}</td></tr>
+                <tr><td>4.</td><td>A g a m a</td><td>:</td><td>${s.agama}</td></tr>
+                <tr><td>5.</td><td>Pekerjaan</td><td>:</td><td>${s.pekerjaan}</td></tr>
+                <tr><td>6.</td><td>Pendidikan</td><td>:</td><td>${s.pendidikan}</td></tr>
+                <tr><td>7.</td><td>Nomor  K  K</td><td>:</td><td>${s.kk}</td></tr>
+                <tr><td>8.</td><td>Nomor  K T  P</td><td>:</td><td>${s.ktp}</td></tr>
+                <tr><td>9.</td><td>A l a m a t</td><td>:</td><td>${s.alamat}</td></tr>
+                <tr><td>10.</td><td>Keperluan</td><td>:</td><td>${s.keperluan}</td></tr>
+                <tr><td>11.</td><td>No. Telp/Gmail</td><td>:</td><td>${s.telp_gmail}</td></tr>
+            </table>
+            
+            <p style="text-indent: 45px; margin-top: 25px; text-align: justify; font-size: 11pt;">Demikian surat keterangan ini dibuat untuk dipergunakan sebagaimana mestinya.</p>
+            
+            <div style="text-align: right; margin-top: 45px; margin-right: 50px; font-size: 11pt;">Ganting, ............................. ${tahunSekarang}</div>
+            
+            <table style="width: 100%; margin-top: 20px; text-align: center; font-size: 11pt;">
+                <tr>
+                    <td style="width: 33%; vertical-align: top;">
+                        Yang bersangkutan,<br><br><br><br><br>
+                        ( <b>${s.nama.toUpperCase()}</b> )
+                    </td>
+                    <td style="width: 34%; vertical-align: top;">
+                        <span style="font-size: 10pt; display: block; margin-bottom: 20px;">No. ${s.no_rw || '...'} /RW.001/      /${tahunSekarang}<br><b>MENGETAHUI</b></span>
+                        KETUA RW.001<br><br><br><br>
+                        <u><b>${s.ttd_rw || 'MOCHAMAD SOFFA'}</b></u>
+                    </td>
+                    <td style="width: 33%; vertical-align: top;">
+                        <br>Ketua RT. 001<br><br><br><br><br>
+                        <u><b>${s.ttd_rt || 'SAIFUL HIDAYAT'}</b></u>
+                    </td>
+                </tr>
+            </table>
+        </div>`;
+
+    document.getElementById('isi-surat-cetak').innerHTML = templateDokumenWord;
+    window.print();
+}
 
 </script>
 </body>
