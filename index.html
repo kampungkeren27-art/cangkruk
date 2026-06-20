@@ -3399,7 +3399,23 @@ function eksekusiCetakGanting(encodedData) {
     document.getElementById('isi-surat-cetak').innerHTML = templateDokumenWord;
     window.print();
 }
+document.addEventListener("DOMContentLoaded", function() {
+    // Moco data login sing disimpen pas warga sukses login
+    const loggedUserName = localStorage.getItem("user_nama");
+    const loggedUserRT = localStorage.getItem("user_rt");
 
+    // Lek jeneng lan No_RT ono (artine wis login), nembe menune dituduhno
+    if (loggedUserName && loggedUserRT) {
+        const menuPersuratan = document.getElementById("menu-persuratan");
+        if (menuPersuratan) {
+            menuPersuratan.style.display = "block"; // Tampilkan menu
+        }
+    }
+});
+    // Pas tombol logout diklik, busak session-e
+localStorage.removeItem("user_nama");
+localStorage.removeItem("user_rt");
+window.location.href = "index.html"; // Balik nyang halaman awal
 </script>
 </body>
 </html>
