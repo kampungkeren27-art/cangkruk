@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📩 Persuratan Warga - SOLID RW</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        .navbar-brand {
+            font-weight: 700;
+        }
+        .card {
+            border: none;
+            border-radius: 12px;
+        }
+        /* Style gae panyaring cetak ruko bunder */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #isi-surat-cetak, #isi-surat-cetak * {
+                visibility: visible;
+            }
+            #isi-surat-cetak {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-light bg-white sticky-top shadow-sm mb-5">
+        <div class="container">
+            <a class="navbar-brand" href="index_dong (1).html">
+                <span style="color: #007bff">●</span> SOLID <span style="font-weight:300; color: #6b7280;">RW</span>
+            </a>
+            <a href="index_dong (1).html" class="btn btn-light rounded-pill px-4 font-weight-bold btn-sm shadow-sm">
+                🏠 Kembali ke Beranda
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row mb-4 align-items-center">
+            <div class="col">
+                <h3 class="font-weight-bold text-dark mb-1">📩 Riwayat & Pengajuan Surat</h3>
+                <p class="text-muted small">Monitoring data pengajuan surat pengantar real-time Dusun Malang Desa Ganting</p>
+            </div>
+        </div>
+
+        <div class="card shadow-sm overflow-hidden mb-5">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="bg-light text-secondary font-weight-bold" style="font-size: 0.85rem;">
+                        <tr>
+                            <th>JENIS SURAT / ID</th>
+                            <th>NAMA PEMOHON</th>
+                            <th>STATUS ALUR</th>
+                            <th class="text-center">AKSI / TINDAKAN</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabel-surat-warga">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="isi-surat-cetak" class="d-none d-print-block"></div>
+
+    <script>
+        // ============================================================================
+        // CONFIGURATION: PASANG URL GOOGLE APPS SCRIPT-MU NANG KENE, BOS!
+        // ============================================================================
+        const SPREADSHEET_API_URL = "PASANG_URL_WEB_APP_APPS_SCRIPT_IKU_NANG_KENE";
+
+        // Jalankan render data otomatis pas halaman di-load awal
+        document.addEventListener("DOMContentLoaded", function() {
+            renderTabelWargaCloud();
+        });
+
+        // FUNCTION GET DATA REAL-TIME
+        async function renderTabelWargaCloud() {
+            const tbody = document.getElementById('tabel-surat-warga');
+            if (!tbody) return;
+            
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <div class="text-muted small mt-2 font-weight-bold">Sinkronisasi Real-Time Google Sheets...</div>
+                    </td>
+                </tr>`;
+
+            try {
+                const response = await fetch(SPREADSHEET_API_URL + "?action=ambilSuratGanting");
+                const dbSurat = await response.json();
+                tbody.innerHTML = '';
+                
+                if (!dbSurat || dbSurat.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-5">❌ Belum ada riwayat pengajuan di Spreadsheet.</td></tr>`;
+                    return;
+                }
+
+                dbSurat.reverse().forEach(surat => {
+                    let badgeStatus = '';
+                    let tombolTindakan = '';
+
+                    if (surat.status === 'Menunggu Validasi RT') {
+                        badgeStatus = `<span class="badge badge-warning font-weight-bold px-3 py-2 text-uppercase">⏳ PROSES DI RT</span>`;
+                        tombolTindakan = `<span class="text-muted small">Diproses Bpk Saiful Hidayat</span>`;
+                    } else if (surat.status === 'Menunggu Validasi RW') {
+                        badgeStatus = `<span class="badge badge-info font-weight-bold px-3 py-2 text-uppercase">⏳ PROSES DI RW</span>`;
+                        tombolTindakan = `<span class="text-muted small">Diproses Bpk Mochamad Soffa</span>`;
+                    } else if (surat.status === 'Selesai') {
+                        badgeStatus = `<span class="badge badge-success font-weight-bold px-3 py-2 text-uppercase">✅ SURAT SELESAI</span>`;
+                        const stringData = encodeURIComponent(JSON.stringify(surat));
+                        tombolTindakan = `<button class="btn btn-dark btn-sm rounded-pill font-weight-bold btn-block shadow-sm" onclick="eksekusiCetakGanting('${stringData}')">🖨️ Cetak Surat</button>`;
+                    }
+
+                    tbody.innerHTML += `
+                        <tr style="font-size: 0.88rem;">
+                            <td class="align-middle"><span class="font-weight-bold text-dark">Surat Pengantar</span><br><small class="text-muted font-italic">${surat.id}</small></td>
+                            <td class="align-middle font-weight-bold text-secondary text-uppercase">${surat.nama}</td>
+                            <td class="align-middle">${badgeStatus}</td>
+                            <td class="align-middle text-center">${tombolTindakan}</td>
+                        </tr>`;
+                });
+            } catch (error) {
+                console.error("Gagal narik data:", error);
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center text-danger py-5">❌ Gagal sinkronisasi data. Pastikan URL Web App bener!</td></tr>`;
+            }
+        }
+
+        // FUNCTION CETAK SURAT FORMAT DESA GANTING
+        function eksekusiCetakGanting(encodedData) {
+            const s = JSON.parse(decodeURIComponent(encodedData));
+            const tahunSekarang = new Date().getFullYear();
+
+            const templateDokumenWord = `
+                <div style="width: 100%; font-family: 'Times New Roman', Times, serif; color: #000; padding: 20px; line-height: 1.6;">
+                    <div style="text-align: center; font-weight: bold; font-size: 14pt;">
+                        <div style="letter-spacing: 0.5px;">RUKUN TETANGGA 001</div>
+                        <div style="letter-spacing: 0.5px;">RUKUN WARGA 001</div>
+                        <div style="letter-spacing: 0.5px;">DUSUN MALANG DESA GANTING</div>
+                    </div>
+                    <div style="border-bottom: 4px double #000; margin-top: 5px; margin-bottom: 25px;"></div>
+                    
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <span style="font-weight: bold; font-size: 12pt; text-decoration: underline; letter-spacing: 0.5px;">SURAT KETERANGAN / PENGANTAR</span><br>
+                        <span>Nomor : ${s.no_rt || '...'} / RT.001/RW.001/       /${tahunSekarang}</span>
+                    </div>
+                    
+                    <p style="text-indent: 45px; margin-bottom: 15px; text-align: justify; font-size: 11pt;">Yang bertanda tangan dibawah ini menerangkan bahwa :</p>
+                    
+                    <table style="width: 100%; margin-left: 15px; border-collapse: collapse; font-size: 11pt; line-height: 1.9; text-align: left;">
+                        <tr><td style="width: 4%;">1.</td><td style="width: 28%;">N a m a</td><td style="width: 3%;">:</td><td style="font-weight: bold; text-transform: uppercase;">${s.nama}</td></tr>
+                        <tr><td>2.</td><td>Tempat/Tgl. Lahir</td><td>:</td><td>${s.ttl}</td></tr>
+                        <tr><td>3.</td><td>Jenis Kelamin</td><td>:</td><td>${s.jk}</td></tr>
+                        <tr><td>4.</td><td>A g a m a</td><td>:</td><td>${s.agama}</td></tr>
+                        <tr><td>5.</td><td>Pekerjaan</td><td>:</td><td>${s.pekerjaan}</td></tr>
+                        <tr><td>6.</td><td>Pendidikan</td><td>:</td><td>${s.pendidikan}</td></tr>
+                        <tr><td>7.</td><td>Nomor  K  K</td><td>:</td><td>${s.kk}</td></tr>
+                        <tr><td>8.</td><td>Nomor  K T  P</td><td>:</td><td>${s.ktp}</td></tr>
+                        <tr><td>9.</td><td>A l a m a t</td><td>:</td><td>${s.alamat}</td></tr>
+                        <tr><td>10.</td><td>Keperluan</td><td>:</td><td>${s.keperluan}</td></tr>
+                        <tr><td>11.</td><td>No. Telp/Gmail</td><td>:</td><td>${s.telp_gmail}</td></tr>
+                    </table>
+                    
+                    <p style="text-indent: 45px; margin-top: 25px; text-align: justify; font-size: 11pt;">Demikian surat keterangan ini dibuat untuk dipergunakan sebagaimana mestinya.</p>
+                    
+                    <div style="text-align: right; margin-top: 45px; margin-right: 50px; font-size: 11pt;">Ganting, ............................. ${tahunSekarang}</div>
+                    
+                    <table style="width: 100%; margin-top: 20px; text-align: center; font-size: 11pt;">
+                        <tr>
+                            <td style="width: 33%; vertical-align: top;">
+                                Yang bersangkutan,<br><br><br><br><br>
+                                ( <b>${s.nama.toUpperCase()}</b> )
+                            </td>
+                            <td style="width: 34%; vertical-align: top;">
+                                <span style="font-size: 10pt; display: block; margin-bottom: 20px;">No. ${s.no_rw || '...'} /RW.001/      /${tahunSekarang}<br><b>MENGETAHUI</b></span>
+                                KETUA RW.001<br><br><br><br>
+                                <u><b>${s.ttd_rw || 'MOCHAMAD SOFFA'}</b></u>
+                            </td>
+                            <td style="width: 33%; vertical-align: top;">
+                                <br>Ketua RT. 001<br><br><br><br><br>
+                                <u><b>${s.ttd_rt || 'SAIFUL HIDAYAT'}</b></u>
+                            </td>
+                        </tr>
+                    </table>
+                </div>`;
+
+            document.getElementById('isi-surat-cetak').innerHTML = templateDokumenWord;
+            window.print();
+        }
+    </script>
+</body>
+</html>
