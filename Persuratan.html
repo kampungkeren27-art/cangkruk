@@ -27,9 +27,12 @@
             <a class="navbar-brand" href="index.html">
                 <span style="color: #007bff">●</span> SOLID <span style="font-weight:300; color: #6b7280;">RW</span>
             </a>
-            <a href="index.html" class="btn btn-light rounded-pill px-4 font-weight-bold btn-sm shadow-sm">
-                🏠 Kembali ke Beranda
-            </a>
+            <div>
+                <span id="badge-rt-login" class="badge badge-info p-2 font-weight-boldmr-2">Mendeteksi Wilayah...</span>
+                <a href="index.html" class="btn btn-light rounded-pill px-4 font-weight-bold btn-sm shadow-sm">
+                    🏠 Kembali ke Beranda
+                </a>
+            </div>
         </div>
     </nav>
 
@@ -54,11 +57,11 @@
                             <th>JENIS SURAT / ID</th>
                             <th>NAMA PEMOHON</th>
                             <th>STATUS ALUR</th>
-                            <th class="text-center">AKSI / TINDAKAN</th>
+                            <th class="text-center">AKSI / VALIDATOR</th>
                         </tr>
                     </thead>
                     <tbody id="tabel-surat-warga">
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -76,6 +79,11 @@
                 <form id="formSuratWarga" onsubmit="submitSuratKompleks(event)">
                     <div class="modal-body p-4">
                         <div class="row">
+                            <div class="form-group col-md-12">
+                                <div class="alert alert-secondary small font-weight-bold text-dark bg-light border-0">
+                                    📍 Pengajuan Surat ini otomatis diteruskan ke: <span id="text-rt-terkunci" class="text-primary">Mendeteksi Akun RT...</span>
+                                </div>
+                            </div>
                             <div class="form-group col-md-6">
                                 <label class="font-weight-bold small">Nama Lengkap</label>
                                 <input type="text" id="p_nama" class="form-control" required placeholder="Contoh: Saiful Effendi">
@@ -113,7 +121,7 @@
                             </div>
                             <div class="form-group col-md-12">
                                 <label class="font-weight-bold small">Alamat Lengkap Dusun</label>
-                                <textarea id="p_alamat" class="form-control" rows="2" required placeholder="Dusun Malang RT 01 RW 01 Desa Ganting"></textarea>
+                                <textarea id="p_alamat" class="form-control" rows="2" required placeholder="Dusun Malang Desa Ganting"></textarea>
                             </div>
                             <div class="form-group col-md-6">
                                 <label class="font-weight-bold small">Keperluan Surat</label>
@@ -141,16 +149,33 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
-        // ============================================================================
-        // CONFIGURATION: PASANG URL GOOGLE APPS SCRIPT-MU NANG KENE, BOS!
-        // ============================================================================
         const SPREADSHEET_API_URL = "https://script.google.com/macros/s/AKfycbxADW-wf-uWrOs95bNwqpf_gWKm9yNViuLXxI0BtMEZ8UanBtptRi-_50CkNK3xUSVR/exec";
 
+        // ============================================================================
+        // DATABASE KETUA RT MALANG GANTING (Sesuaikan karo jeneng asline, Bos)
+        // ============================================================================
+        const DATA_KETUA_RT = {
+            "001": "SAIFUL HIDAYAT",
+            "002": "BAPAK BAMBANG JAYADI",
+            "003": "BAPAK SUPRIYANTO",
+            "004": "BAPAK AGUS BUDIARTO"
+        };
+
+        // ============================================================================
+        // DETEKSI AKUN LOGIN WARGA
+        // ============================================================================
+        // Sistem otomatis nyari data login warga. Kalau belum ada, fallback ke "001" buat keamanan kodingan
+        const USER_LOGIN_RT = localStorage.getItem("user_rt") || "001"; // contoh isi string: "001", "002"
+
         document.addEventListener("DOMContentLoaded", function() {
+            // Pasang text status login di interface
+            document.getElementById('badge-rt-login').innerText = `🔐 Wilayah Anda: RT.${USER_LOGIN_RT}`;
+            document.getElementById('text-rt-terkunci').innerText = `RT ${USER_LOGIN_RT} (Ketua RT: ${DATA_KETUA_RT[USER_LOGIN_RT] || 'Ketua RT'})`;
+            
             renderTabelWargaCloud();
         });
 
-        // 1. API ENGINE: SUBMIT DATA FORMULIR NYANG SPREADSHEET (POST)
+        // 1. API ENGINE: SUBMIT DATA
         async function submitSuratKompleks(event) {
             event.preventDefault();
             const btnSubmit = event.target.querySelector('button[type="submit"]');
@@ -161,6 +186,7 @@
             const payload = {
                 action: "tambahSuratGanting",
                 id: 'GNT-' + Date.now(),
+                no_rt: USER_LOGIN_RT, // 👈 KIRIM NO RT AKUN LOGIN SECARA OTOMATIS
                 nama: document.getElementById('p_nama').value,
                 ttl: document.getElementById('p_ttl').value,
                 jk: document.getElementById('p_jk').value,
@@ -185,12 +211,12 @@
                 const result = await response.json();
                 if (result.status === "sukses" || result.success === true) {
                     $('#modalFormPengantar').modal('hide');
-                    alert('🚀 Sukses! Data masuk Spreadsheet Utama. Antrean Anda berhasil dicatat.');
+                    alert('🚀 Sukses! Data masuk Spreadsheet Utama.');
                     event.target.reset();
                     renderTabelWargaCloud(); 
                 }
             } catch (error) {
-                console.error("Gagal koneksi API:", error);
+                console.error(error);
                 alert("❌ Waduh Bos, koneksi API Spreadsheet gembos!");
             } finally {
                 btnSubmit.disabled = false;
@@ -198,7 +224,7 @@
             }
         }
 
-        // 2. API ENGINE: AMBIL DATA TEKO SPREADSHEET & RENDER REAL-TIME (GET)
+        // 2. API ENGINE: GET & FILTER REAL-TIME BERDASARKAN RT
         async function renderTabelWargaCloud() {
             const tbody = document.getElementById('tabel-surat-warga');
             if (!tbody) return;
@@ -215,16 +241,32 @@
                     return;
                 }
 
-                dbSurat.reverse().forEach(surat => {
+                // FILTER: Hanya tampilkan data surat yang No_RT nya sama dengan warga yang sedang login
+                const dataFilterSesuaiRT = dbSurat.filter(item => {
+                    // Normalisasi string RT jika dari sheets berbentuk "RT 01" atau murni angka "001"
+                    let rtBersih = item.no_rt ? item.no_rt.toString().replace(/\D/g, "") : "";
+                    return parseInt(rtBersih) === parseInt(USER_LOGIN_RT);
+                });
+
+                if(dataFilterSesuaiRT.length === 0){
+                     tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-5">❌ Belum ada riwayat surat pengajuan di wilayah RT.${USER_LOGIN_RT} Anda.</td></tr>`;
+                     return;
+                }
+
+                dataFilterSesuaiRT.reverse().forEach(surat => {
                     let badgeStatus = '';
                     let tombolTindakan = '';
+                    
+                    // Ambil nama Ketua RT pembimbing dinamis sesuai record baris data
+                    let noRtData = surat.no_rt ? surat.no_rt.toString().replace(/\D/g, "") : "001";
+                    let namaRtValidator = DATA_KETUA_RT[noRtData] || "Ketua RT Wilayah";
 
                     if (surat.status === 'Menunggu Validasi RT') {
-                        badgeStatus = `<span class="badge badge-warning font-weight-bold px-3 py-2 text-uppercase">⏳ PROSES DI RT</span>`;
-                        tombolTindakan = `<span class="text-muted small">Diproses Bpk Saiful Hidayat</span>`;
+                        badgeStatus = `<span class="badge badge-warning font-weight-bold px-3 py-2 text-uppercase">⏳ PROSES DI RT.${noRtData}</span>`;
+                        tombolTindakan = `<span class="text-muted small">Menunggu Bpk <b>${namaRtValidator}</b></span>`;
                     } else if (surat.status === 'Menunggu Validasi RW') {
                         badgeStatus = `<span class="badge badge-info font-weight-bold px-3 py-2 text-uppercase">⏳ PROSES DI RW</span>`;
-                        tombolTindakan = `<span class="text-muted small">Diproses Bpk Mochamad Soffa</span>`;
+                        tombolTindakan = `<span class="text-muted small">Menunggu Bpk <b>Mochamad Soffa</b></span>`;
                     } else if (surat.status === 'Selesai') {
                         badgeStatus = `<span class="badge badge-success font-weight-bold px-3 py-2 text-uppercase">✅ SURAT SELESAI</span>`;
                         const stringData = encodeURIComponent(JSON.stringify(surat));
@@ -240,20 +282,28 @@
                         </tr>`;
                 });
             } catch (error) {
-                console.error("Gagal narik data:", error);
-                tbody.innerHTML = `<tr><td colspan="4" class="text-center text-danger py-5">❌ Gagal sinkronisasi data. Pastikan URL Web App bener!</td></tr>`;
+                console.error(error);
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center text-danger py-5">❌ Gagal sinkronisasi data.</td></tr>`;
             }
         }
 
-        // 3. ENGINE CETAK SURAT UTAMA (MURNI FORMAT WORD DESA GANTING 2026)
+        // 3. ENGINE CETAK SURAT + TANDA TANGAN ONLINE AUTOMATION (QR CODE INTEGRATED)
         function eksekusiCetakGanting(encodedData) {
             const s = JSON.parse(decodeURIComponent(encodedData));
             const tahunSekarang = new Date().getFullYear();
+            
+            // Cari Nama RT Dinamis berdasarkan nomor RT surat tersebut
+            let noRtData = s.no_rt ? s.no_rt.toString().replace(/\D/g, "") : "001";
+            let namaRtValidator = DATA_KETUA_RT[noRtData] || "SAIFUL HIDAYAT";
+
+            // QR Code API Generator Tanda Tangan Online mengikat ID Surat Unik
+            const qrTtdOnlineRT = `https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=SIGNED_ONLINE_BY_RT_${noRtData}_ID_${s.id}`;
+            const qrTtdOnlineRW = `https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=SIGNED_ONLINE_BY_RW_001_ID_${s.id}`;
 
             const templateDokumenWord = `
                 <div style="width: 100%; font-family: 'Times New Roman', Times, serif; color: #000; padding: 20px; line-height: 1.6;">
                     <div style="text-align: center; font-weight: bold; font-size: 14pt;">
-                        <div style="letter-spacing: 0.5px;">RUKUN TETANGGA 001</div>
+                        <div style="letter-spacing: 0.5px;">RUKUN TETANGGA ${noRtData}</div>
                         <div style="letter-spacing: 0.5px;">RUKUN WARGA 001</div>
                         <div style="letter-spacing: 0.5px;">DUSUN MALANG DESA GANTING</div>
                     </div>
@@ -261,7 +311,7 @@
                     
                     <div style="text-align: center; margin-bottom: 30px;">
                         <span style="font-weight: bold; font-size: 12pt; text-decoration: underline; letter-spacing: 0.5px;">SURAT KETERANGAN / PENGANTAR</span><br>
-                        <span>Nomor : ${s.no_rt || '...'} / RT.001/RW.001/       /${tahunSekarang}</span>
+                        <span>Nomor : ${s.no_rt_num || '...'} / RT.${noRtData}/RW.001/       /${tahunSekarang}</span>
                     </div>
                     
                     <p style="text-indent: 45px; margin-bottom: 15px; text-align: justify; font-size: 11pt;">Yang bertanda tangan dibawah ini menerangkan bahwa :</p>
@@ -286,9 +336,23 @@
                     
                     <table style="width: 100%; margin-top: 20px; text-align: center; font-size: 11pt;">
                         <tr>
-                            <td style="width: 33%; vertical-align: top;">Yang bersangkutan,<br><br><br><br><br>( <b>${s.nama.toUpperCase()}</b> )</td>
-                            <td style="width: 34%; vertical-align: top;"><span style="font-size: 10pt; display: block; margin-bottom: 20px;">No. ${s.no_rw || '...'} /RW.001/      /${tahunSekarang}<br><b>MENGETAHUI</b></span>KETUA RW.001<br><br><br><br><u><b>${s.ttd_rw || 'MOCHAMAD SOFFA'}</b></u></td>
-                            <td style="width: 33%; vertical-align: top;"><br>Ketua RT. 001<br><br><br><br><br><u><b>${s.ttd_rt || 'SAIFUL HIDAYAT'}</b></u></td>
+                            <td style="width: 33%; vertical-align: top;">
+                                Yang bersangkutan,<br><br><br><br><br><br>
+                                ( <b>${s.nama.toUpperCase()}</b> )
+                            </td>
+                            <td style="width: 34%; vertical-align: top;">
+                                <span style="font-size: 10pt; display: block; margin-bottom: 5px;">No. ${s.no_rw || '...'} /RW.001/      /${tahunSekarang}<br><b>MENGETAHUI</b></span>
+                                KETUA RW.001<br>
+                                <img src="${qrTtdOnlineRW}" alt="QR TTD RW" style="width:85px; height:85px; margin: 8px 0; border: 1px solid #eee; padding:3px;"><br>
+                                <small style="display:block; font-size:7.5pt; color:#555; font-style:italic; margin-bottom:2px;">✓ Divalidasi secara Online</small>
+                                <u><b>MOCHAMAD SOFFA</b></u>
+                            </td>
+                            <td style="width: 33%; vertical-align: top;">
+                                <br>Ketua RT. ${noRtData}<br>
+                                <img src="${qrTtdOnlineRT}" alt="QR TTD RT" style="width:85px; height:85px; margin: 8px 0; border: 1px solid #eee; padding:3px;"><br>
+                                <small style="display:block; font-size:7.5pt; color:#555; font-style:italic; margin-bottom:2px;">✓ Divalidasi secara Online</small>
+                                <u><b>${namaRtValidator}</b></u>
+                            </td>
                         </tr>
                     </table>
                 </div>`;
