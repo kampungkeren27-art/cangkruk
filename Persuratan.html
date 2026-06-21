@@ -177,7 +177,6 @@
             try {
                 const parsedUser = JSON.parse(sessionWarga);
                 LOGGED_USER_NAME = parsedUser.nama;
-                // Amankan format RT dadi 3 digit (conto: "3" dadi "003") ben sinkron karo DATA_KETUA_RT
                 let rtRaw = parsedUser.rt ? parsedUser.rt.toString().replace(/\D/g, "") : "";
                 LOGGED_USER_RT = rtRaw.padStart(3, '0');
 
@@ -237,7 +236,7 @@
                 });
                 const result = await response.json();
                 if (result.status === "sukses" || result.success === true) {
-                    $('#modalFormPengantar').modal('hide');
+                    $('#modalFormFormPengantar').modal('hide');
                     alert('🚀 Pengajuan Berhasil Dikirim!');
                     event.target.reset();
                     document.getElementById('p_nama').value = LOGGED_USER_NAME;
@@ -268,10 +267,19 @@
                     return;
                 }
 
+                // ============================================================================
+                // 🎯 REVISI FILTER ENGGAK SENSITIF KAPITAL & SPASI (FIX TABEL KOSONG)
+                // ============================================================================
                 const riwayatPribadi = dbSurat.filter(item => {
-                    let rtBersih = item.no_rt ? item.no_rt.toString().replace(/\D/g, "") : "";
-                    let rtBersihFormatted = rtBersih.padStart(3, '0');
-                    return item.nama.toLowerCase().trim() === LOGGED_USER_NAME.toLowerCase().trim() && rtBersihFormatted === LOGGED_USER_RT;
+                    if (!item.nama || !item.no_rt) return false;
+
+                    let namaDiSheets = item.nama.toString().toLowerCase().trim();
+                    let namaUserLogin = LOGGED_USER_NAME.toString().toLowerCase().trim();
+
+                    let rtDiSheets = parseInt(item.no_rt.toString().replace(/\D/g, ""), 10);
+                    let rtUserLogin = parseInt(LOGGED_USER_RT.toString().replace(/\D/g, ""), 10);
+
+                    return namaDiSheets === namaUserLogin && rtDiSheets === rtUserLogin;
                 });
 
                 if(riwayatPribadi.length === 0){
@@ -333,7 +341,7 @@
                     
                     <div style="text-align: center; margin-bottom: 30px;">
                         <span style="font-weight: bold; font-size: 12pt; text-decoration: underline;">SURAT KETERANGAN / PENGANTAR</span><br>
-                        <span>Nomor : ${s.no_rt_num || '...'} / RT.${noRtFormatted}/RW.001/       /${tahunSekarang}</span>
+                        <span>Nomor : ${s.no_rt_num || '...'} / RT.${noRtFormatted}/RW.001/      /${tahunSekarang}</span>
                     </div>
                     
                     <p style="text-indent: 45px; text-align: justify; font-size: 11pt;">Yang bertanda tangan dibawah ini menerangkan bahwa :</p>
