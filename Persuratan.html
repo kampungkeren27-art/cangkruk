@@ -1,20 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    // ============================================================================
-// 🛡️ SECURITY ENGINE: CEK STATUS LOGIN WARGA (GATEKEEPER)
-// ============================================================================
-const LOGGED_USER_NAME = localStorage.getItem("user_nama"); 
-const LOGGED_USER_RT = localStorage.getItem("user_rt"); 
-
-// JARRINGE NANG KENE, COK! Lek salah siji kosong, langsung didupak metu!
-if (!LOGGED_USER_NAME || !LOGGED_USER_RT || LOGGED_USER_NAME === "null" || LOGGED_USER_RT === "null") {
-    alert("🔒 Akses Ditolak! Sampeyan kudu login dhisik, Bos.");
-    window.location.href = "index.html"; // <--- Tendang balik nyang halaman login/utama
-} else {
-    // Lek lolos login, nembe konten di-buka
-    document.getElementById('content-wrapper').style.display = 'block';
-}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>📩 Persuratan Warga - SOLID RW</title>
