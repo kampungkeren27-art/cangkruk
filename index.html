@@ -3414,11 +3414,17 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 // ISI IKI PAS PROSES LOGIN BERHASIL / SUKSES!
-localStorage.setItem("user_nama", "Saiful Effendi"); // Ganti karo variable jeneng teko database-mu
-localStorage.setItem("user_rt", "001");             // Ganti karo variable No RT teko database-mu
-
-// Nembe bar iku pindah halaman nyang persuratan
-window.location.href = "Persuratan.html";
+// KUDU REK REKAN NGENE, COK! DIDALAM FUNGSI LOGIN, DUDU NGADECK DEWE!
+function tombolLoginDiklik() {
+    // 1. Proses cek username & password nang kene...
+    // 2. Lek bener, nembe baris iki di-eksekusi:
+    
+    localStorage.setItem("user_nama", "Saiful Effendi"); // Ganti nggae data asli teko inputan/database
+    localStorage.setItem("user_rt", "001");             // Ganti nggae data RT asli
+    
+    // 3. Nembe pindah halaman
+    window.location.href = "Persuratan.html"; 
+}
 </script>
 </body>
 </html>
