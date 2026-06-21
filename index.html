@@ -236,12 +236,12 @@ body.modal-open {
                     </div>
                 </li>
                 
-                <li class="nav-item">
-                     <a class="nav-link btn btn-outline-primary rounded-pill px-4 py-2 mt-1 mt-lg-0 shadow-sm mx-1" 
-                        href="Persuratan.html" style="font-size: 0.85rem;">
-                     📩 Persuratan Warga
-                     </a>
-                    </li>
+      <li class="nav-item" id="menu-persuratan" style="display: none;">
+    <a class="nav-link btn btn-outline-primary rounded-pill px-4 py-2 mt-1 mt-lg-0 shadow-sm mx-1" 
+       href="Persuratan.html" style="font-size: 0.85rem;">
+        📩 Persuratan Warga
+    </a>
+</li>
             </ul>
         </div>
     </div>
@@ -1289,13 +1289,19 @@ function prosesLogin() {
                 }
             }
 
-            // TAMPILAN BARU: Tanpa tulisan aneh
+            // TAMPILAN BARU: Tanpa tulisan aneh + TRIGER SINKRON OTOMATIS
             Swal.fire({
                 icon: 'success',
                 title: 'Login Berhasil',
                 text: 'Selamat Datang, ' + currentUser.nama,
                 timer: 2000,
                 showConfirmButton: false
+            }).then(() => {
+                // PAKSA JEDHUL DETIK IKI MERGO SWAL-E WIS ILANG!
+                const menuPersuratan = document.getElementById('menu-persuratan');
+                if (menuPersuratan) {
+                    menuPersuratan.style.setProperty('display', 'inline-block', 'important');
+                }
             });
         } else {
             Swal.fire({ icon: 'error', title: 'Tidak Ditemukan', text: 'Data No. KK tidak ditemukan di database warga!' });
@@ -1340,7 +1346,19 @@ function sikatLoginKeServer() {
             }
             // -----------------------------------------------------------------
             
-            Swal.fire({ icon: 'success', title: 'Berhasil Masuk', text: 'Selamat datang, ' + currentUser.nama, timer: 1500, showConfirmButton: false });
+            Swal.fire({ 
+                icon: 'success', 
+                title: 'Berhasil Masuk', 
+                text: 'Selamat datang, ' + currentUser.nama, 
+                timer: 1500, 
+                showConfirmButton: false 
+            }).then(() => {
+                // PAKSA JEDHUL JALUR SERVER
+                const menuPersuratan = document.getElementById('menu-persuratan');
+                if (menuPersuratan) {
+                    menuPersuratan.style.setProperty('display', 'inline-block', 'important');
+                }
+            });
         } else {
             Swal.fire({ icon: 'error', title: 'Gagal Login', text: response.message });
         }
@@ -1359,6 +1377,45 @@ function tampilkanTombolKeuanganSesuaiSesi() {
         $('#btn-floating-keuangan').hide();
     }
 }
+
+(function() {
+    // Fungsi gae ngecek lan meksa menu persuratan metu/ndelik
+    function periksaStatusMenuPersuratan() {
+        const sessionWarga = localStorage.getItem('solid_rw_user');
+        const menuPersuratan = document.getElementById('menu-persuratan');
+        
+        if (!menuPersuratan) return;
+
+        if (sessionWarga && sessionWarga !== "null" && sessionWarga !== "undefined") {
+            try {
+                const dataUser = JSON.parse(sessionWarga);
+                if (dataUser && dataUser.nama) {
+                    // Lek kedeteksi login, paksa metu senajan di-override fungsi liya!
+                    if (menuPersuratan.style.display !== 'inline-block') {
+                        menuPersuratan.style.setProperty('display', 'inline-block', 'important');
+                    }
+                }
+            } catch (e) {
+                console.error("Gagal moco session", e);
+            }
+        } else {
+            // Lek gak login, paksa ilang resik!
+            if (menuPersuratan.style.display !== 'none') {
+                menuPersuratan.style.setProperty('display', 'none', 'important');
+            }
+        }
+    }
+
+    // 1. Jalankan langsung pas halaman pertama kali dimuat
+    document.addEventListener("DOMContentLoaded", periksaStatusMenuPersuratan);
+
+    // 2. 🚀 TRIGER LICIKE NANG KENE: Pantau owah-owahan memori browser (pas login sukses klik)
+    // Saking pintere, gak perlu ngenteni refresh, lek memori terisi langsung MAK JREDD METU!
+    window.addEventListener('storage', periksaStatusMenuPersuratan);
+
+    // 3. Jaga-jaga lek ditutup karo fungsi updateUIAfterLogin() gawan aplikasimu, cek saben setengah detik
+    setInterval(periksaStatusMenuPersuratan, 500);
+})();
 
 // 2. Fungsi pembuka modal dan pembagi hak akses (Privasi Data)
 // ========================================================================
@@ -3413,18 +3470,58 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 });
-// ISI IKI PAS PROSES LOGIN BERHASIL / SUKSES!
-// KUDU REK REKAN NGENE, COK! DIDALAM FUNGSI LOGIN, DUDU NGADECK DEWE!
-function tombolLoginDiklik() {
-    // 1. Proses cek username & password nang kene...
-    // 2. Lek bener, nembe baris iki di-eksekusi:
+
+
+
+
+(function() {
+    let isProcessingLogin = false;
+
+    function periksaStatusMenuPersuratan() {
+        // Lek pas nembe proses login, jarno SweetAlert mlaku dhisik, ojo diganggu
+        if (isProcessingLogin) return;
+
+        const sessionWarga = localStorage.getItem('solid_rw_user');
+        const menuPersuratan = document.getElementById('menu-persuratan');
+        
+        if (!menuPersuratan) return;
+
+        if (sessionWarga && sessionWarga !== "null" && sessionWarga !== "undefined") {
+            try {
+                const dataUser = JSON.parse(sessionWarga);
+                if (dataUser && dataUser.nama) {
+                    if (menuPersuratan.style.display !== 'inline-block') {
+                        menuPersuratan.style.setProperty('display', 'inline-block', 'important');
+                    }
+                }
+            } catch (e) {
+                console.error("Gagal moco session", e);
+            }
+        } else {
+            if (menuPersuratan.style.display !== 'none') {
+                menuPersuratan.style.setProperty('display', 'none', 'important');
+            }
+        }
+    }
+
+    // Amankan deteksi pas wargane nge-klik login
+    $(document).ajaxSuccess(function() {
+        isProcessingLogin = true;
+        setTimeout(() => { isProcessingLogin = false; }, 3000); // Kunci 3 detik ben alert-e selesih metu
+    });
+
+    // Jalankan detektor biasa
+    document.addEventListener("DOMContentLoaded", periksaStatusMenuPersuratan);
+    window.addEventListener('storage', periksaStatusMenuPersuratan);
     
-    localStorage.setItem("user_nama", "Saiful Effendi"); // Ganti nggae data asli teko inputan/database
-    localStorage.setItem("user_rt", "001");             // Ganti nggae data RT asli
-    
-    // 3. Nembe pindah halaman
-    window.location.href = "Persuratan.html"; 
-}
+    // Cek saben setengah detik, tapi gak bakal nabrak SweetAlert maneh
+    setInterval(periksaStatusMenuPersuratan, 500);
+})();
+
+
+
+
+
 </script>
 </body>
 </html>
