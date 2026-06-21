@@ -236,11 +236,11 @@ body.modal-open {
                     </div>
                 </li>
                 
-                <li class="nav-item" id="menu-persuratan" style="display: none;">
-                    <a class="nav-link btn btn-outline-primary rounded-pill px-4 py-2 mt-1 mt-lg-0 shadow-sm mx-1" 
-                    href="Persuratan.html" style="font-size: 0.85rem;">
-                    📩 Persuratan Warga
-                    </a>
+                <li class="nav-item">
+                     <a class="nav-link btn btn-outline-primary rounded-pill px-4 py-2 mt-1 mt-lg-0 shadow-sm mx-1" 
+                        href="Persuratan.html" style="font-size: 0.85rem;">
+                     📩 Persuratan Warga
+                     </a>
                     </li>
             </ul>
         </div>
@@ -3336,6 +3336,7 @@ async function renderTabelWargaCloud() {
 }
 
 
+
 // ============================================================================
 // ENGINE CETAK SURAT UTAMA (MURNI FORMAT WORD DESA GANTING 2026)
 // ============================================================================
@@ -3412,10 +3413,11 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 });
-    // Pas tombol logout diklik, busak session-e
+// Pas tombol logout diklik, busak session-e
 localStorage.removeItem("user_nama");
 localStorage.removeItem("user_rt");
 window.location.href = "index.html"; // Balik nyang halaman awal
+
 </script>
 </body>
 </html>
