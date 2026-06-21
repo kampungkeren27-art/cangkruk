@@ -164,26 +164,40 @@
         };
 
         // ============================================================================
-        // 🛡️ SECURITY ENGINE: CEK STATUS LOGIN WARGA (GATEKEEPER)
+        // 🛡️ SECURITY ENGINE FIX SINKRON: CEK STATUS LOGIN WARGA (GATEKEEPER)
         // ============================================================================
-        // Moco session login warga sing disave pas login.
-        const LOGGED_USER_NAME = localStorage.getItem("user_nama"); 
-        const LOGGED_USER_RT = localStorage.getItem("user_rt"); // Kudu isine koyo: "001", "002"
+        const sessionWarga = localStorage.getItem("solid_rw_user"); 
+        let LOGGED_USER_NAME = "";
+        let LOGGED_USER_RT = "";
 
-        // SENSOR PROTEKSI JALUR: Lek gak ono data login, langsung didupak metu!
-        if (!LOGGED_USER_NAME || !LOGGED_USER_RT) {
+        if (!sessionWarga || sessionWarga === "null" || sessionWarga === "undefined") {
             alert("🔒 Akses Ditolak! Sampeyan kudu login dhisik, Bos.");
-            window.location.href = "index.html"; // Tendang bali nyang halaman utama/login
+            window.location.href = "index.html"; 
         } else {
-            // Lek lolos login, nembe konten di-buka
-            document.getElementById('content-wrapper').style.display = 'block';
+            try {
+                const parsedUser = JSON.parse(sessionWarga);
+                LOGGED_USER_NAME = parsedUser.nama;
+                // Amankan format RT dadi 3 digit (conto: "3" dadi "003") ben sinkron karo DATA_KETUA_RT
+                let rtRaw = parsedUser.rt ? parsedUser.rt.toString().replace(/\D/g, "") : "";
+                LOGGED_USER_RT = rtRaw.padStart(3, '0');
+
+                if (!LOGGED_USER_NAME || !LOGGED_USER_RT || LOGGED_USER_RT === "000") {
+                    alert("🔒 Akses Ditolak! Data login tidak valid.");
+                    window.location.href = "index.html";
+                } else {
+                    document.getElementById('content-wrapper').style.display = 'block';
+                }
+            } catch(e) {
+                alert("🔒 Akses Ditolak! Terjadi kesalahan session.");
+                window.location.href = "index.html";
+            }
         }
 
         document.addEventListener("DOMContentLoaded", function() {
             if (LOGGED_USER_RT) {
                 document.getElementById('badge-rt-login').innerText = `🔐 Akun: ${LOGGED_USER_NAME} (RT.${LOGGED_USER_RT})`;
                 document.getElementById('text-rt-terkunci').innerText = `RT ${LOGGED_USER_RT} (Ketua RT: ${DATA_KETUA_RT[LOGGED_USER_RT] || 'Ketua RT'})`;
-                document.getElementById('p_nama').value = LOGGED_USER_NAME; // Pasang otomatis jenenge warga
+                document.getElementById('p_nama').value = LOGGED_USER_NAME; 
                 
                 renderTabelWargaCloud();
             }
@@ -201,7 +215,7 @@
                 action: "tambahSuratGanting",
                 id: 'GNT-' + Date.now(),
                 no_rt: LOGGED_USER_RT,
-                nama: LOGGED_USER_NAME, // Kunci nggae jeneng asline sing login
+                nama: LOGGED_USER_NAME, 
                 ttl: document.getElementById('p_ttl').value,
                 jk: document.getElementById('p_jk').value,
                 agama: document.getElementById('p_agama').value,
@@ -254,10 +268,10 @@
                     return;
                 }
 
-                // 🎯 REVISI PRIVASI: Saring data murni sing duwure jeneng + RT podo karo sing login!
                 const riwayatPribadi = dbSurat.filter(item => {
                     let rtBersih = item.no_rt ? item.no_rt.toString().replace(/\D/g, "") : "";
-                    return item.nama.toLowerCase().trim() === LOGGED_USER_NAME.toLowerCase().trim() && parseInt(rtBersih) === parseInt(LOGGED_USER_RT);
+                    let rtBersihFormatted = rtBersih.padStart(3, '0');
+                    return item.nama.toLowerCase().trim() === LOGGED_USER_NAME.toLowerCase().trim() && rtBersihFormatted === LOGGED_USER_RT;
                 });
 
                 if(riwayatPribadi.length === 0){
@@ -269,10 +283,11 @@
                     let badgeStatus = '';
                     let tombolTindakan = '';
                     let noRtData = surat.no_rt ? surat.no_rt.toString().replace(/\D/g, "") : "001";
-                    let namaRtValidator = DATA_KETUA_RT[noRtData] || "Ketua RT";
+                    let noRtFormatted = noRtData.padStart(3, '0');
+                    let namaRtValidator = DATA_KETUA_RT[noRtFormatted] || "Ketua RT";
 
                     if (surat.status === 'Menunggu Validasi RT') {
-                        badgeStatus = `<span class="badge badge-warning font-weight-bold px-3 py-2">⏳ PROSES DI RT.${noRtData}</span>`;
+                        badgeStatus = `<span class="badge badge-warning font-weight-bold px-3 py-2">⏳ PROSES DI RT.${noRtFormatted}</span>`;
                         tombolTindakan = `<span class="text-muted small">Menunggu Bpk <b>${namaRtValidator}</b></span>`;
                     } else if (surat.status === 'Menunggu Validasi RW') {
                         badgeStatus = `<span class="badge badge-info font-weight-bold px-3 py-2">⏳ PROSES DI RW</span>`;
@@ -301,15 +316,16 @@
             const s = JSON.parse(decodeURIComponent(encodedData));
             const tahunSekarang = new Date().getFullYear();
             let noRtData = s.no_rt ? s.no_rt.toString().replace(/\D/g, "") : "001";
-            let namaRtValidator = DATA_KETUA_RT[noRtData] || "SAIFUL HIDAYAT";
+            let noRtFormatted = noRtData.padStart(3, '0');
+            let namaRtValidator = DATA_KETUA_RT[noRtFormatted] || "SAIFUL HIDAYAT";
 
-            const qrTtdOnlineRT = `https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=SIGNED_ONLINE_BY_RT_${noRtData}_ID_${s.id}`;
+            const qrTtdOnlineRT = `https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=SIGNED_ONLINE_BY_RT_${noRtFormatted}_ID_${s.id}`;
             const qrTtdOnlineRW = `https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=SIGNED_ONLINE_BY_RW_001_ID_${s.id}`;
 
             const templateDokumenWord = `
                 <div style="width: 100%; font-family: 'Times New Roman', Times, serif; color: #000; padding: 20px; line-height: 1.6;">
                     <div style="text-align: center; font-weight: bold; font-size: 14pt;">
-                        <div style="letter-spacing: 0.5px;">RUKUN TETANGGA ${noRtData}</div>
+                        <div style="letter-spacing: 0.5px;">RUKUN TETANGGA ${noRtFormatted}</div>
                         <div style="letter-spacing: 0.5px;">RUKUN WARGA 001</div>
                         <div style="letter-spacing: 0.5px;">DUSUN MALANG DESA GANTING</div>
                     </div>
@@ -317,7 +333,7 @@
                     
                     <div style="text-align: center; margin-bottom: 30px;">
                         <span style="font-weight: bold; font-size: 12pt; text-decoration: underline;">SURAT KETERANGAN / PENGANTAR</span><br>
-                        <span>Nomor : ${s.no_rt_num || '...'} / RT.${noRtData}/RW.001/       /${tahunSekarang}</span>
+                        <span>Nomor : ${s.no_rt_num || '...'} / RT.${noRtFormatted}/RW.001/       /${tahunSekarang}</span>
                     </div>
                     
                     <p style="text-indent: 45px; text-align: justify; font-size: 11pt;">Yang bertanda tangan dibawah ini menerangkan bahwa :</p>
@@ -354,7 +370,7 @@
                                 <u><b>MOCHAMAD SOFFA</b></u>
                             </td>
                             <td style="width: 33%; vertical-align: top;">
-                                <br>Ketua RT. ${noRtData}<br>
+                                <br>Ketua RT. ${noRtFormatted}<br>
                                 <img src="${qrTtdOnlineRT}" style="width:85px; height:85px; margin: 8px 0; border: 1px solid #eee; padding:3px;"><br>
                                 <small style="display:block; font-size:7.5pt; color:#555; font-style:italic;">✓ Divalidasi secara Online</small>
                                 <u><b>${namaRtValidator}</b></u>
