@@ -163,9 +163,6 @@
             "004": "BAPAK AGUS BUDIARTO"
         };
 
-        // ============================================================================
-        // 🛡️ SECURITY ENGINE FIX SINKRON: CEK STATUS LOGIN WARGA (GATEKEEPER)
-        // ============================================================================
         const sessionWarga = localStorage.getItem("solid_rw_user"); 
         let LOGGED_USER_NAME = "";
         let LOGGED_USER_RT = "";
@@ -202,7 +199,6 @@
             }
         });
 
-        // 1. API ENGINE: POST DATA
         async function submitSuratKompleks(event) {
             event.preventDefault();
             const btnSubmit = event.target.querySelector('button[type="submit"]');
@@ -219,6 +215,7 @@
                 jk: document.getElementById('p_jk').value,
                 agama: document.getElementById('p_agama').value,
                 pekerjaan: document.getElementById('p_pekerjaan').value,
+                disabled: false,
                 pendidikan: document.getElementById('p_pendidikan').value,
                 kk: document.getElementById('p_kk').value,
                 ktp: document.getElementById('p_ktp').value,
@@ -236,7 +233,7 @@
                 });
                 const result = await response.json();
                 if (result.status === "sukses" || result.success === true) {
-                    $('#modalFormFormPengantar').modal('hide');
+                    $('#modalFormPengantar').modal('hide');
                     alert('🚀 Pengajuan Berhasil Dikirim!');
                     event.target.reset();
                     document.getElementById('p_nama').value = LOGGED_USER_NAME;
@@ -250,7 +247,6 @@
             }
         }
 
-        // 2. API ENGINE: GET & FILTER RIWAYAT KHUSUS WARGA SING LOGIN
         async function renderTabelWargaCloud() {
             const tbody = document.getElementById('tabel-surat-warga');
             if (!tbody) return;
@@ -262,27 +258,32 @@
                 const dbSurat = await response.json();
                 tbody.innerHTML = '';
                 
-                if (!dbSurat || dbSurat.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-4">❌ Belum ada riwayat pengajuan.</td></tr>`;
+                let dataSaringan = Array.isArray(dbSurat) ? dbSurat : (dbSurat.data || []);
+
+                if (!dataSaringan || dataSaringan.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-4">❌ Belum ada riwayat pengajuan di database.</td></tr>`;
                     return;
                 }
 
                 // ============================================================================
-                // 🎯 REVISI FILTER ENGGAK SENSITIF KAPITAL & SPASI (FIX TABEL KOSONG)
+                // 🎯 REVISI ENGINE FILTER TOTAL (SINKRONISASI STRING NAMA & ANGKA RT)
                 // ============================================================================
-                const riwayatPribadi = dbSurat.filter(item => {
-                    if (!item.nama || !item.no_rt) return false;
+                const riwayatPribadi = dataSaringan.filter(item => {
+                    let sheetNama = item.nama || item.Nama || item.NAMA || "";
+                    let sheetRt = item.no_rt || item.No_RT || item.NO_RT || item.rt || item.RT || "";
 
-                    let namaDiSheets = item.nama.toString().toLowerCase().trim();
-                    let namaUserLogin = LOGGED_USER_NAME.toString().toLowerCase().trim();
+                    if (!sheetNama || !sheetRt) return false;
 
-                    let rtDiSheets = parseInt(item.no_rt.toString().replace(/\D/g, ""), 10);
-                    let rtUserLogin = parseInt(LOGGED_USER_RT.toString().replace(/\D/g, ""), 10);
+                    let namaCleanSheets = sheetNama.toString().toLowerCase().replace(/\s+/g, "").trim();
+                    let namaCleanLogin = LOGGED_USER_NAME.toString().toLowerCase().replace(/\s+/g, "").trim();
 
-                    return namaDiSheets === namaUserLogin && rtDiSheets === rtUserLogin;
+                    let rtCleanSheets = parseInt(sheetRt.toString().replace(/\D/g, ""), 10);
+                    let rtCleanLogin = parseInt(LOGGED_USER_RT.toString().replace(/\D/g, ""), 10);
+
+                    return namaCleanSheets === namaCleanLogin && rtCleanSheets === rtCleanLogin;
                 });
 
-                if(riwayatPribadi.length === 0){
+                if (riwayatPribadi.length === 0) {
                      tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-4">❌ Anda belum pernah membuat pengajuan surat.</td></tr>`;
                      return;
                 }
@@ -290,40 +291,47 @@
                 riwayatPribadi.reverse().forEach(surat => {
                     let badgeStatus = '';
                     let tombolTindakan = '';
-                    let noRtData = surat.no_rt ? surat.no_rt.toString().replace(/\D/g, "") : "001";
+                    
+                    let sheetRt = surat.no_rt || surat.No_RT || surat.rt || "001";
+                    let noRtData = sheetRt.toString().replace(/\D/g, "");
                     let noRtFormatted = noRtData.padStart(3, '0');
                     let namaRtValidator = DATA_KETUA_RT[noRtFormatted] || "Ketua RT";
+                    
+                    let statusSurat = surat.status || surat.Status || 'Menunggu Validasi RT';
 
-                    if (surat.status === 'Menunggu Validasi RT') {
+                    if (statusSurat === 'Menunggu Validasi RT') {
                         badgeStatus = `<span class="badge badge-warning font-weight-bold px-3 py-2">⏳ PROSES DI RT.${noRtFormatted}</span>`;
                         tombolTindakan = `<span class="text-muted small">Menunggu Bpk <b>${namaRtValidator}</b></span>`;
-                    } else if (surat.status === 'Menunggu Validasi RW') {
+                    } else if (statusSurat === 'Menunggu Validasi RW') {
                         badgeStatus = `<span class="badge badge-info font-weight-bold px-3 py-2">⏳ PROSES DI RW</span>`;
                         tombolTindakan = `<span class="text-muted small">Menunggu Bpk <b>Mochamad Soffa</b></span>`;
-                    } else if (surat.status === 'Selesai') {
+                    } else if (statusSurat === 'Selesai') {
                         badgeStatus = `<span class="badge badge-success font-weight-bold px-3 py-2">✅ SELESAI</span>`;
                         const stringData = encodeURIComponent(JSON.stringify(surat));
                         tombolTindakan = `<button class="btn btn-dark btn-sm rounded-pill font-weight-bold btn-block shadow-sm" onclick="eksekusiCetakGanting('${stringData}')">🖨️ Cetak Surat</button>`;
+                    } else {
+                        badgeStatus = `<span class="badge badge-secondary font-weight-bold px-3 py-2">${statusSurat}</span>`;
+                        tombolTindakan = `<span class="text-muted small">-</span>`;
                     }
 
                     tbody.innerHTML += `
                         <tr style="font-size: 0.88rem;">
-                            <td class="align-middle"><span class="font-weight-bold text-dark">Surat Pengantar</span><br><small class="text-muted font-italic">${surat.id}</small></td>
-                            <td class="align-middle font-weight-bold text-secondary text-uppercase">${surat.nama}</td>
+                            <td class="align-middle"><span class="font-weight-bold text-dark">Surat Pengantar</span><br><small class="text-muted font-italic">${surat.id || '-'}</small></td>
+                            <td class="align-middle font-weight-bold text-secondary text-uppercase">${surat.nama || surat.Nama}</td>
                             <td class="align-middle">${badgeStatus}</td>
                             <td class="align-middle text-center">${tombolTindakan}</td>
                         </tr>`;
                 });
             } catch (error) {
-                tbody.innerHTML = `<tr><td colspan="4" class="text-center text-danger py-4">❌ Gagal memuat data.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center text-danger py-4">❌ Gagal memuat data soko server.</td></tr>`;
             }
         }
 
-        // 3. ENGINE CETAK SURAT + TTD ONLINE (QR CODE)
         function eksekusiCetakGanting(encodedData) {
             const s = JSON.parse(decodeURIComponent(encodedData));
             const tahunSekarang = new Date().getFullYear();
-            let noRtData = s.no_rt ? s.no_rt.toString().replace(/\D/g, "") : "001";
+            let sheetRt = s.no_rt || s.No_RT || s.rt || "001";
+            let noRtData = sheetRt.toString().replace(/\D/g, "");
             let noRtFormatted = noRtData.padStart(3, '0');
             let namaRtValidator = DATA_KETUA_RT[noRtFormatted] || "SAIFUL HIDAYAT";
 
@@ -341,23 +349,23 @@
                     
                     <div style="text-align: center; margin-bottom: 30px;">
                         <span style="font-weight: bold; font-size: 12pt; text-decoration: underline;">SURAT KETERANGAN / PENGANTAR</span><br>
-                        <span>Nomor : ${s.no_rt_num || '...'} / RT.${noRtFormatted}/RW.001/      /${tahunSekarang}</span>
+                        <span>Nomor : ${s.no_rt_num || '...'} / RT.${noRtFormatted}/RW.001/       /${tahunSekarang}</span>
                     </div>
                     
                     <p style="text-indent: 45px; text-align: justify; font-size: 11pt;">Yang bertanda tangan dibawah ini menerangkan bahwa :</p>
                     
                     <table style="width: 100%; margin-left: 15px; border-collapse: collapse; font-size: 11pt; line-height: 1.9; text-align: left;">
-                        <tr><td style="width: 4%;">1.</td><td style="width: 28%;">N a m a</td><td style="width: 3%;">:</td><td style="font-weight: bold; text-transform: uppercase;">${s.nama}</td></tr>
-                        <tr><td>2.</td><td>Tempat/Tgl. Lahir</td><td>:</td><td>${s.ttl}</td></tr>
-                        <tr><td>3.</td><td>Jenis Kelamin</td><td>:</td><td>${s.jk}</td></tr>
-                        <tr><td>4.</td><td>A g a m a</td><td>:</td><td>${s.agama}</td></tr>
-                        <tr><td>5.</td><td>Pekerjaan</td><td>:</td><td>${s.pekerjaan}</td></tr>
-                        <tr><td>6.</td><td>Pendidikan</td><td>:</td><td>${s.pendidikan}</td></tr>
-                        <tr><td>7.</td><td>Nomor  K  K</td><td>:</td><td>${s.kk}</td></tr>
-                        <tr><td>8.</td><td>Nomor  K T  P</td><td>:</td><td>${s.ktp}</td></tr>
-                        <tr><td>9.</td><td>A l a m a t</td><td>:</td><td>${s.alamat}</td></tr>
-                        <tr><td>10.</td><td>Keperluan</td><td>:</td><td>${s.keperluan}</td></tr>
-                        <tr><td>11.</td><td>No. Telp/Gmail</td><td>:</td><td>${s.telp_gmail}</td></tr>
+                        <tr><td style="width: 4%;">1.</td><td style="width: 28%;">N a m a</td><td style="width: 3%;">:</td><td style="font-weight: bold; text-transform: uppercase;">${s.nama || s.Nama}</td></tr>
+                        <tr><td>2.</td><td>Tempat/Tgl. Lahir</td><td>:</td><td>${s.ttl || s.Ttl || '-'}</td></tr>
+                        <tr><td>3.</td><td>Jenis Kelamin</td><td>:</td><td>${s.jk || s.Jk || '-'}</td></tr>
+                        <tr><td>4.</td><td>A g a m a</td><td>:</td><td>${s.agama || s.Agama || '-'}</td></tr>
+                        <tr><td>5.</td><td>Pekerjaan</td><td>:</td><td>${s.pekerjaan || s.Pekerjaan || '-'}</td></tr>
+                        <tr><td>6.</td><td>Pendidikan</td><td>:</td><td>${s.pendidikan || s.Pendidikan || '-'}</td></tr>
+                        <tr><td>7.</td><td>Nomor  K  K</td><td>:</td><td>${s.kk || s.Kk || '-'}</td></tr>
+                        <tr><td>8.</td><td>Nomor  K T  P</td><td>:</td><td>${s.ktp || s.Ktp || '-'}</td></tr>
+                        <tr><td>9.</td><td>A l a m a t</td><td>:</td><td>${s.alamat || s.Alamat || '-'}</td></tr>
+                        <tr><td>10.</td><td>Keperluan</td><td>:</td><td>${s.keperluan || s.Keperluan || '-'}</td></tr>
+                        <tr><td>11.</td><td>No. Telp/Gmail</td><td>:</td><td>${s.telp_gmail || s.Telp_Gmail || '-'}</td></tr>
                     </table>
                     
                     <p style="text-indent: 45px; margin-top: 25px; text-align: justify; font-size: 11pt;">Demikian surat keterangan ini dibuat untuk dipergunakan sebagaimana mestinya.</p>
@@ -368,10 +376,10 @@
                         <tr>
                             <td style="width: 33%; vertical-align: top;">
                                 Yang bersangkutan,<br><br><br><br><br><br>
-                                ( <b>${s.nama.toUpperCase()}</b> )
+                                ( <b>${(s.nama || s.Nama || "").toUpperCase()}</b> )
                             </td>
                             <td style="width: 34%; vertical-align: top;">
-                                <span style="font-size: 10pt; display: block; margin-bottom: 5px;">No. ${s.no_rw || '...'} /RW.001/      /${tahunSekarang}<br><b>MENGETAHUI</b></span>
+                                <span style="font-size: 10pt; display: block; margin-bottom: 5px;">No. ${s.no_rw || '...'} /RW.001/       /${tahunSekarang}<br><b>MENGETAHUI</b></span>
                                 KETUA RW.001<br>
                                 <img src="${qrTtdOnlineRW}" style="width:85px; height:85px; margin: 8px 0; border: 1px solid #eee; padding:3px;"><br>
                                 <small style="display:block; font-size:7.5pt; color:#555; font-style:italic;">✓ Divalidasi secara Online</small>
