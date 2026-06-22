@@ -180,7 +180,17 @@
                 if (!LOGGED_USER_NAME || !LOGGED_USER_RT || LOGGED_USER_RT === "000") {
                     alert("🔒 Akses Ditolak! Data login tidak valid.");
                     window.location.href = "index.html";
-                } else {
+                } else if (kk.trim() === "3515162501090114") {
+                  currentUser = {
+                  nama: "ADMIN UTAMA RW",
+                  kk: "3515162501090114",
+                  rt: "RW",
+                  role: "admin" // Hak akses penuh rekap RW
+                };
+        found = true;
+                    
+                }
+                else {
                     document.getElementById('content-wrapper').style.display = 'block';
                 }
             } catch(e) {
