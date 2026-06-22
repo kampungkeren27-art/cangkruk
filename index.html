@@ -170,37 +170,13 @@
             border: none;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
-        /* MEKSO MODAL FORMULIR MAJU NANG PALING NGAREP DEWE */
-.modal {
-    z-index: 1060 !important; /* Luwih dhuwur teko backdrop gawan template */
-}
-.modal-backdrop {
-    z-index: 1040 !important; /* Nempatno petenge tetep nang mburi form */
-}
-body.modal-open {
-    overflow: hidden; /* Nyegah halaman mburi melu kemecer pas form diisi */
-}
-/* BOM CSS ANTI-CHELENG (Pekso Maju Paling Ngarep Layar) */
-body.modal-open {
-    overflow: hidden !important;
-}
-.modal {
-    position: fixed !important;
-    z-index: 999999 !important; /* Digawe dhuwur pol */
-    overflow-y: auto !important;
-}
-.modal-backdrop {
-    position: fixed !important;
-    z-index: 99999 !important; /* Sak itik nang mburine modal */
-}
-    
-</style>
+    </style>
 </head>
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-light sticky-top bg-white">
     <div class="container">
-        <a class="navbar-brand" href="#" onclick="showHome(); return false;">
+        <a class="navbar-brand" href="javascript:void(0)" onclick="showHome()">
             <span style="color: var(--primary)">●</span> SOLID <span style="font-weight:300; color: #6b7280;">RW</span>
         </a>
         <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navbarNav">
@@ -208,47 +184,41 @@ body.modal-open {
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a class="nav-link mx-2" href="#" onclick="showHome(); return false;">Beranda</a></li>
+                <li class="nav-item"><a class="nav-link mx-2" href="javascript:void(0)" onclick="showHome()">Beranda</a></li>
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle btn btn-light rounded-pill px-4 py-2 mt-1 mt-lg-0 shadow-sm mx-1" 
-                       href="#" id="profilDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
+                       href="javascript:void(0)" id="profilDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
                        style="font-size: 0.85rem; color: var(--primary-dark) !important;">
                          Profil
                     </a>
                     <div class="dropdown-menu border-0 shadow-lg p-3" aria-labelledby="profilDropdown">
-                        <a class="dropdown-item py-3 rounded mb-1" href="#" onclick="showProfil('struktur'); return false;">🏢 Struktur Organisasi</a>
-                        <a class="dropdown-item py-3 rounded" href="#" onclick="showProfil('tentang'); return false;">ℹ️ Tentang</a>
+                        <a class="dropdown-item py-3 rounded mb-1" href="javascript:void(0)" onclick="showProfil('struktur')">🏢 Struktur Organisasi</a>
+                        <a class="dropdown-item py-3 rounded" href="javascript:void(0)" onclick="showProfil('tentang')">ℹ️ Tentang</a>
                     </div>
                 </li>
                 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle btn btn-light rounded-pill px-4 py-2 mt-1 mt-lg-0 shadow-sm mx-1" 
-                       href="#" id="navbarStat" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
+                       href="javascript:void(0)" id="navbarStat" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
                        style="font-size: 0.85rem; color: var(--primary-dark) !important;">
                          Statistik Wilayah
                     </a>
                     <div class="dropdown-menu border-0 shadow-lg p-3" aria-labelledby="navbarStat">
-                        <a class="dropdown-item py-3 rounded mb-1" href="#" onclick="loadRT('RT 01'); return false;">📍 Data RT 01</a>
-                        <a class="dropdown-item py-3 rounded mb-1" href="#" onclick="loadRT('RT 02'); return false;">📍 Data RT 02</a>
-                        <a class="dropdown-item py-3 rounded mb-1" href="#" onclick="loadRT('RT 03'); return false;">📍 Data RT 03</a>
-                        <a class="dropdown-item py-3 rounded" href="#" onclick="loadRT('RT 04'); return false;">📍 Data RT 04</a>
+                        <a class="dropdown-item py-3 rounded mb-1" href="javascript:void(0)" onclick="loadRT('RT 01')">📍 Data RT 01</a>
+                        <a class="dropdown-item py-3 rounded mb-1" href="javascript:void(0)" onclick="loadRT('RT 02')">📍 Data RT 02</a>
+                        <a class="dropdown-item py-3 rounded mb-1" href="javascript:void(0)" onclick="loadRT('RT 03')">📍 Data RT 03</a>
+                        <a class="dropdown-item py-3 rounded" href="javascript:void(0)" onclick="loadRT('RT 04')">📍 Data RT 04</a>
                     </div>
                 </li>
-                
-      <li class="nav-item" id="menu-persuratan" style="display: none;">
-    <a class="nav-link btn btn-outline-primary rounded-pill px-4 py-2 mt-1 mt-lg-0 shadow-sm mx-1" 
-       href="Persuratan.html" style="font-size: 0.85rem;">
-        📩 Persuratan Warga
-    </a>
-</li>
-            </ul>
-        </div>
-    </div>
+                <li class="nav-item" id="menu-persuratan" style="display: none;">
+                        <a class="nav-link btn btn-outline-primary rounded-pill px-4 py-2 mt-1 mt-lg-0 shadow-sm mx-1" 
+                        href="Persuratan.html" style="font-size: 0.85rem;">
+                        📩 Persuratan Warga
+                        </a>
+                </li>
 
- 
-<div id="isi-surat-cetak" class="d-none d-print-block"></div>
-
+               
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle btn btn-primary text-white rounded-pill px-4 py-2 mt-1 mt-lg-0 shadow-sm mx-1" 
@@ -280,8 +250,8 @@ body.modal-open {
                         <div class="nav-item" id="logout-nav-item" style="display:none;">
                            <div class="dropdown-divider"></div>
                              <a class="dropdown-item text-danger" href="#" onclick="logoutWarga(); return false;">
-                               <i class="fas fa-sign-out-alt mr-2"></i>Keluar
-                             </a>
+                           <i class="fas fa-sign-out-alt mr-2"></i>Keluar
+                              </a>
                         </div>
                     </div>
                 </li>
@@ -290,33 +260,7 @@ body.modal-open {
     </div>
 </nav>
             
-<div id="halaman-riwayat-surat" class="container my-5" style="display: none;">
-    <div class="row mb-4 align-items-center">
-        <div class="col">
-            <h4 class="font-weight-bold text-dark mb-1">📩 Riwayat & Pengajuan Surat Pemohon</h4>
-            <p class="text-muted small">Monitoring data pengajuan surat pengantar real-time terintegrasi Google Sheets</p>
-        </div>
-    </div>
 
-    <div class="card border-0 shadow-sm rounded-lg overflow-hidden">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0 align-middle">
-                <thead class="bg-light text-secondary font-weight-bold" style="font-size: 0.82rem;">
-                    <tr>
-                        <th>JENIS SURAT / ID</th>
-                        <th>NAMA PEMOHON</th>
-                        <th>STATUS ALUR</th>
-                        <th class="text-center">AKSI / TINDAKAN</th>
-                    </tr>
-                </thead>
-                <tbody id="tabel-surat-warga">
-                    </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<div id="isi-surat-cetak" class="d-none d-print-block"></div>
 
 <div id="main-page-content">
     <div id="home-wrapper">
@@ -1081,7 +1025,7 @@ body.modal-open {
                                 <tr>
                                     <th class="p-3">ID (A)</th>
                                     <th class="p-3">TANGGAL (B)</th>
-                                    <th class="p-3">RT (C)</th>
+                                    <th class="p-3">WILAYAH (C)</th>
                                     <th class="p-3">JENIS (D)</th>
                                     <th class="p-3">KATEGORI AKUN (E)</th>
                                     <th class="p-3">KETERANGAN (F)</th>
@@ -1364,20 +1308,6 @@ function sikatLoginKeServer() {
         }
     }).prosesLoginAplikasi(userTxt, passTxt);
 }
-
-// ========================================================================
-// CONTROLLER JAVASCRIPT - SINKRONISASI KOLOM KAS_RT (KOLOM A - H)
-// ========================================================================
-
-// 1. Memeriksa keberadaan sesi untuk menampilkan tombol melayang
-function tampilkanTombolKeuanganSesuaiSesi() {
-    if (typeof currentUser !== 'undefined' && currentUser) {
-        $('#btn-floating-keuangan').fadeIn();
-    } else {
-        $('#btn-floating-keuangan').hide();
-    }
-}
-
 (function() {
     // Fungsi gae ngecek lan meksa menu persuratan metu/ndelik
     function periksaStatusMenuPersuratan() {
@@ -1417,6 +1347,19 @@ function tampilkanTombolKeuanganSesuaiSesi() {
     setInterval(periksaStatusMenuPersuratan, 500);
 })();
 
+// ========================================================================
+// CONTROLLER JAVASCRIPT - SINKRONISASI KOLOM KAS_RT (KOLOM A - H)
+// ========================================================================
+
+// 1. Memeriksa keberadaan sesi untuk menampilkan tombol melayang
+function tampilkanTombolKeuanganSesuaiSesi() {
+    if (typeof currentUser !== 'undefined' && currentUser) {
+        $('#btn-floating-keuangan').fadeIn();
+    } else {
+        $('#btn-floating-keuangan').hide();
+    }
+}
+
 // 2. Fungsi pembuka modal dan pembagi hak akses (Privasi Data)
 // ========================================================================
 // CONTROLLER UTAMA - SISTEM FORMULIR & NERACA LAJUR (KOLOM A - H)
@@ -1433,7 +1376,7 @@ function bukaSistemNeraca() {
     $('#modalNeracaKeuangan').modal('show');
 
     // Mengamankan pembacaan properti data agar toleran terhadap huruf besar/kecil
-    const valRT = currentUser.no_rt || currentUser.NO_RT || currentUser.rt || currentUser.RT || "3";
+    const valRT = currentUser.no_rt || currentUser.NO_RT || currentUser.rt || currentUser.RT || "3" || "1" || "2";
     
     // Satukan semua kemungkinan sumber text jabatan menjadi Huruf Kapital Besar
     const valJabatan = (currentUser.jabatan || currentUser.JABATAN || currentUser.role || currentUser.ROLE || "").toString().toUpperCase();
@@ -1478,7 +1421,7 @@ function jalankanEnginePenghitungNeraca(isRW) {
     $('#neraca-log-jurnal').html('<tr><td colspan="8" class="text-center p-4 text-muted"><i class="fas fa-spinner fa-spin mr-2"></i>Mengkalkulasi berkas akuntansi finansial Cloud...</td></tr>');
     
     // 2. Deteksi otomatis nomor unit RT warga yang aktif
-    let targetRT = "3";
+    let targetRT = ["1", "2", "3"];
     if (typeof currentUser !== 'undefined' && currentUser) {
         let nomorRTX = currentUser.no_rt || currentUser.NO_RT || currentUser.rt || currentUser.RT;
         if (nomorRTX) targetRT = nomorRTX.toString().replace(/\D/g, "").trim();
@@ -1535,7 +1478,7 @@ function renderKomponenLengkapAkuntansi(data, isRW) {
         return; 
     }
 
-    let targetRTActive = "3"; 
+    let targetRTActive = ["1", "2", "3"];
     if (typeof currentUser !== 'undefined' && currentUser) {
         let nomorRTX = currentUser.no_rt || currentUser.NO_RT || currentUser.rt || currentUser.RT;
         if (nomorRTX) {
@@ -1590,7 +1533,7 @@ function renderKomponenLengkapAkuntansi(data, isRW) {
         const isPemasukan = (jenis.toString().toLowerCase().trim() === "pemasukan");
         const badgeJenis = isPemasukan ? "badge-success" : "badge-danger";
         const iconJenis = isPemasukan ? "↑" : "↓";
-        const badgeRTWarna = rt.toUpperCase() === "RW" ? "badge-warning text-dark font-weight-bold" : "badge-dark";
+        const badgeRTWarna = rt.toUpperCase() === "-" ? "badge-warning text-dark font-weight-bold" : "badge-dark";
 
         let barisHTML = `
             <tr>
@@ -1605,32 +1548,52 @@ function renderKomponenLengkapAkuntansi(data, isRW) {
             </tr>`;
 
         // Pengecekan Kategori Data Kas Utama
-        if (rt.toUpperCase() === "RW") {
-            if (isPemasukan) {
-                rwPemasukan += nominal;
-                rwAktiva[posAkun] = (rwAktiva[posAkun] || 0) + nominal;
-            } else {
-                rwPengeluaran += nominal;
-                rwPasiva[posAkun] = (rwPasiva[posAkun] || 0) + nominal;
-            }
-            htmlJurnalRW += barisHTML;
-        } else {
-            if (isPemasukan) {
-                rtPemasukanKumulatif += nominal;
-                rtAktiva[posAkun] = (rtAktiva[posAkun] || 0) + nominal;
-            } else {
-                rtPengeluaranKumulatif += nominal;
-                rtPasiva[posAkun] = (rtPasiva[posAkun] || 0) + nominal;
-            }
+        const rtValue = rt.toString().trim();
 
-            if (!rincianPerRT[rt]) { rincianPerRT[rt] = { masuk: 0, keluar: 0 }; }
-            if (isPemasukan) { rincianPerRT[rt].masuk += nominal; } else { rincianPerRT[rt].keluar += nominal; }
+if (rtValue === "-") {
 
-            if (rt === targetRTActive || rt.replace(/\D/g, "") === targetRTActive) {
-                htmlJurnalRTSpesifik += barisHTML;
-            }
-            htmlJurnalRTKumulatif += barisHTML;
-        }
+    // DATA RW
+    if (isPemasukan) {
+        rwPemasukan += nominal;
+        rwAktiva[posAkun] = (rwAktiva[posAkun] || 0) + nominal;
+    } else {
+        rwPengeluaran += nominal;
+        rwPasiva[posAkun] = (rwPasiva[posAkun] || 0) + nominal;
+    }
+
+    htmlJurnalRW += barisHTML;
+
+} else {
+
+    // DATA RT (1,2,3,dst)
+    if (isPemasukan) {
+        rtPemasukanKumulatif += nominal;
+        rtAktiva[posAkun] = (rtAktiva[posAkun] || 0) + nominal;
+    } else {
+        rtPengeluaranKumulatif += nominal;
+        rtPasiva[posAkun] = (rtPasiva[posAkun] || 0) + nominal;
+    }
+
+    if (!rincianPerRT[rtValue]) {
+        rincianPerRT[rtValue] = { masuk: 0, keluar: 0 };
+    }
+
+    if (isPemasukan) {
+        rincianPerRT[rtValue].masuk += nominal;
+    } else {
+        rincianPerRT[rtValue].keluar += nominal;
+    }
+
+    if (
+        rtValue === targetRTActive ||
+        rtValue.replace(/\D/g, "") === targetRTActive
+    ) {
+        htmlJurnalRTSpesifik += barisHTML;
+    }
+
+    htmlJurnalRTKumulatif += barisHTML;
+}
+       //
     }
 
     // 🛠️ Jalur Alternatif Penyuntikan: Jika ID sub-title-neraca tidak ditemukan, pasang langsung di atas area Jurnal Utama
@@ -3229,296 +3192,6 @@ async function kirimBeritaKeBackend() {
      alert("✅ Berita berhasil disimpan!");
   }
 }
-
-
-//PERSURATAN NIH BOS
-// ============================================================================
-// 1. CONFIGURATION: PASANG URL GOOGLE APPS SCRIPT-MU NANG KENE, BOS!
-// ============================================================================
-const SPREADSHEET_API_URL = "https://script.google.com/macros/s/AKfycbxADW-wf-uWrOs95bNwqpf_gWKm9yNViuLXxI0BtMEZ8UanBtptRi-_50CkNK3xUSVR/exec";
-
-// ============================================================================
-// SYSTEM ROUTER SPA - MANDIRI & ANTI CRASH
-// ============================================================================
-function showRiwayatPersuratan() {
-    console.log("Tombol Persuratan Berhasil Diklik, Bos!");
-
-    // 1. Singkirno/delikno kabeh bagean kontener halaman liyane gawan template-mu
-    const sections = ['halaman-home', 'halaman-profil', 'halaman-statistik'];
-    sections.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.style.display = 'none';
-    });
-    
-    // 2. Tampilno seksi riwayat persuratan warga
-    const halSurat = document.getElementById('halaman-riwayat-surat');
-    if (halSurat) {
-        halSurat.style.display = 'block';
-    } else {
-        alert("❌ Waduh Bos, ID 'halaman-riwayat-surat' durung mbok saling nang HTML-mu!");
-        return;
-    }
-    
-    // 3. Sinkronisasi data real-time teko Google Sheets
-    renderTabelWargaCloud();
-}
-
-
-// INI PENGAMAN: Menyelipkan penutupan halaman riwayat surat tanpa merusak fungsi showHome aslimu
-document.addEventListener("DOMContentLoaded", function() {
-    // Mode Intercept Mandiri gae nutup riwayat pas warga balik nang Beranda
-    const origShowHome = window.showHome;
-    if (typeof origShowHome === 'function') {
-        window.showHome = function() {
-            const halSurat = document.getElementById('halaman-riwayat-surat');
-            if (halSurat) halSurat.style.display = 'none';
-            origShowHome(); // Jalankan showHome aslimu bawaan template
-        };
-    }
-});
-
-
-// ============================================================================
-// API ENGINE: SUBMIT DATA FORMULIR NYANG SPREADSHEET (POST)
-// ============================================================================
-async function submitSuratKompleks(event) {
-    event.preventDefault();
-    
-    const btnSubmit = event.target.querySelector('button[type="submit"]');
-    const originalText = btnSubmit ? btnSubmit.innerHTML : "Kirim";
-    
-    if (btnSubmit) {
-        btnSubmit.disabled = true;
-        btnSubmit.innerHTML = `<span>⏳ Mengirim ke Spreadsheet...</span>`;
-    }
-
-    const payload = {
-        action: "tambahSuratGanting", // Cocok karo kodingan doPost anyarmu
-        id: 'GNT-' + Date.now(),
-        nama: document.getElementById('p_nama').value,
-        ttl: document.getElementById('p_ttl').value,
-        jk: document.getElementById('p_jk').value,
-        agama: document.getElementById('p_agama').value,
-        pekerjaan: document.getElementById('p_pekerjaan').value,
-        pendidikan: document.getElementById('p_pendidikan').value,
-        kk: document.getElementById('p_kk').value,
-        ktp: document.getElementById('p_ktp').value,
-        alamat: document.getElementById('p_alamat').value,
-        keperluan: document.getElementById('p_keperluan').value,
-        telp_gmail: document.getElementById('p_telp_gmail').value
-    };
-
-    try {
-        const response = await fetch(SPREADSHEET_API_URL, {
-            method: "POST",
-            mode: "cors",
-            headers: { "Content-Type": "text/plain" },
-            body: JSON.stringify(payload)
-        });
-        
-        const result = await response.json();
-        if (result.status === "sukses" || result.success === true) {
-            $('#modalFormPengantar').modal('hide');
-            alert('🚀 Sukses! Data masuk Spreadsheet Utama. Antrean Anda berhasil dicatat.');
-            event.target.reset();
-            renderTabelWargaCloud(); 
-        }
-    } catch (error) {
-        console.error("Gagal koneksi API:", error);
-        alert("❌ Waduh Bos, koneksi API Spreadsheet gembos. Cek kodingan Apps Script-mu!");
-    } finally {
-        if (btnSubmit) {
-            btnSubmit.disabled = false;
-            btnSubmit.innerHTML = originalText;
-        }
-    }
-}
-
-
-// ============================================================================
-// API ENGINE: AMBIL DATA TEKO SPREADSHEET & RENDER REAL-TIME (GET)
-// ============================================================================
-async function renderTabelWargaCloud() {
-    const tbody = document.getElementById('tabel-surat-warga');
-    if (!tbody) return;
-    
-    tbody.innerHTML = `
-        <tr>
-            <td colspan="4" class="text-center py-5">
-                <div class="spinner-border text-primary" role="status"></div>
-                <div class="text-muted small mt-2 font-weight-bold">Sinkronisasi Real-Time Google Sheets...</div>
-            </td>
-        </tr>`;
-
-    try {
-        // Nembak doGet sing wis kok benerno nganggo parameter action khusus
-        const response = await fetch(SPREADSHEET_API_URL + "?action=ambilSuratGanting");
-        const dbSurat = await response.json();
-        
-        tbody.innerHTML = '';
-        
-        if (!dbSurat || dbSurat.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-5">❌ Belum ada riwayat pengajuan di Spreadsheet.</td></tr>`;
-            return;
-        }
-
-        dbSurat.reverse().forEach(surat => {
-            let badgeStatus = '';
-            let tombolTindakan = '';
-
-            if (surat.status === 'Menunggu Validasi RT') {
-                badgeStatus = `<span class="badge badge-warning font-weight-bold px-3 py-2 text-uppercase">⏳ PROSES DI RT</span>`;
-                tombolTindakan = `<span class="text-muted small">Diproses Bpk Saiful Hidayat</span>`;
-            } else if (surat.status === 'Menunggu Validasi RW') {
-                badgeStatus = `<span class="badge badge-info font-weight-bold px-3 py-2 text-uppercase">⏳ PROSES DI RW</span>`;
-                tombolTindakan = `<span class="text-muted small">Diproses Bpk Mochamad Soffa</span>`;
-            } else if (surat.status === 'Selesai') {
-                badgeStatus = `<span class="badge badge-success font-weight-bold px-3 py-2 text-uppercase">✅ SURAT SELESAI</span>`;
-                const stringData = encodeURIComponent(JSON.stringify(surat));
-                tombolTindakan = `<button class="btn btn-dark btn-sm rounded-pill font-weight-bold btn-block shadow-sm" onclick="eksekusiCetakGanting('${stringData}')">🖨️ Cetak Surat</button>`;
-            }
-
-            tbody.innerHTML += `
-                <tr style="font-size: 0.88rem;">
-                    <td class="align-middle"><span class="font-weight-bold text-dark">Surat Pengantar</span><br><small class="text-muted font-italic">${surat.id}</small></td>
-                    <td class="align-middle font-weight-bold text-secondary text-uppercase">${surat.nama}</td>
-                    <td class="align-middle">${badgeStatus}</td>
-                    <td class="align-middle text-center">${tombolTindakan}</td>
-                </tr>`;
-        });
-    } catch (error) {
-        console.error("Gagal narik data:", error);
-        tbody.innerHTML = `<tr><td colspan="4" class="text-center text-danger py-5">❌ Gagal sinkronisasi data. Pastikan URL Web App bener!</td></tr>`;
-    }
-}
-
-
-
-// ============================================================================
-// ENGINE CETAK SURAT UTAMA (MURNI FORMAT WORD DESA GANTING 2026)
-// ============================================================================
-function eksekusiCetakGanting(encodedData) {
-    const s = JSON.parse(decodeURIComponent(encodedData));
-    const tahunSekarang = new Date().getFullYear();
-
-    const templateDokumenWord = `
-        <div style="width: 100%; font-family: 'Times New Roman', Times, serif; color: #000; padding: 20px; line-height: 1.6;">
-            <div style="text-align: center; font-weight: bold; font-size: 14pt;">
-                <div style="letter-spacing: 0.5px;">RUKUN TETANGGA 001</div>
-                <div style="letter-spacing: 0.5px;">RUKUN WARGA 001</div>
-                <div style="letter-spacing: 0.5px;">DUSUN MALANG DESA GANTING</div>
-            </div>
-            <div style="border-bottom: 4px double #000; margin-top: 5px; margin-bottom: 25px;"></div>
-            
-            <div style="text-align: center; margin-bottom: 30px;">
-                <span style="font-weight: bold; font-size: 12pt; text-decoration: underline; letter-spacing: 0.5px;">SURAT KETERANGAN / PENGANTAR</span><br>
-                <span>Nomor : ${s.no_rt || '...'} / RT.001/RW.001/       /${tahunSekarang}</span>
-            </div>
-            
-            <p style="text-indent: 45px; margin-bottom: 15px; text-align: justify; font-size: 11pt;">Yang bertanda tangan dibawah ini menerangkan bahwa :</p>
-            
-            <table style="width: 100%; margin-left: 15px; border-collapse: collapse; font-size: 11pt; line-height: 1.9; text-align: left;">
-                <tr><td style="width: 4%;">1.</td><td style="width: 28%;">N a m a</td><td style="width: 3%;">:</td><td style="font-weight: bold; text-transform: uppercase;">${s.nama}</td></tr>
-                <tr><td>2.</td><td>Tempat/Tgl. Lahir</td><td>:</td><td>${s.ttl}</td></tr>
-                <tr><td>3.</td><td>Jenis Kelamin</td><td>:</td><td>${s.jk}</td></tr>
-                <tr><td>4.</td><td>A g a m a</td><td>:</td><td>${s.agama}</td></tr>
-                <tr><td>5.</td><td>Pekerjaan</td><td>:</td><td>${s.pekerjaan}</td></tr>
-                <tr><td>6.</td><td>Pendidikan</td><td>:</td><td>${s.pendidikan}</td></tr>
-                <tr><td>7.</td><td>Nomor  K  K</td><td>:</td><td>${s.kk}</td></tr>
-                <tr><td>8.</td><td>Nomor  K T  P</td><td>:</td><td>${s.ktp}</td></tr>
-                <tr><td>9.</td><td>A l a m a t</td><td>:</td><td>${s.alamat}</td></tr>
-                <tr><td>10.</td><td>Keperluan</td><td>:</td><td>${s.keperluan}</td></tr>
-                <tr><td>11.</td><td>No. Telp/Gmail</td><td>:</td><td>${s.telp_gmail}</td></tr>
-            </table>
-            
-            <p style="text-indent: 45px; margin-top: 25px; text-align: justify; font-size: 11pt;">Demikian surat keterangan ini dibuat untuk dipergunakan sebagaimana mestinya.</p>
-            
-            <div style="text-align: right; margin-top: 45px; margin-right: 50px; font-size: 11pt;">Ganting, ............................. ${tahunSekarang}</div>
-            
-            <table style="width: 100%; margin-top: 20px; text-align: center; font-size: 11pt;">
-                <tr>
-                    <td style="width: 33%; vertical-align: top;">
-                        Yang bersangkutan,<br><br><br><br><br>
-                        ( <b>${s.nama.toUpperCase()}</b> )
-                    </td>
-                    <td style="width: 34%; vertical-align: top;">
-                        <span style="font-size: 10pt; display: block; margin-bottom: 20px;">No. ${s.no_rw || '...'} /RW.001/      /${tahunSekarang}<br><b>MENGETAHUI</b></span>
-                        KETUA RW.001<br><br><br><br>
-                        <u><b>${s.ttd_rw || 'MOCHAMAD SOFFA'}</b></u>
-                    </td>
-                    <td style="width: 33%; vertical-align: top;">
-                        <br>Ketua RT. 001<br><br><br><br><br>
-                        <u><b>${s.ttd_rt || 'SAIFUL HIDAYAT'}</b></u>
-                    </td>
-                </tr>
-            </table>
-        </div>`;
-
-    document.getElementById('isi-surat-cetak').innerHTML = templateDokumenWord;
-    window.print();
-}
-document.addEventListener("DOMContentLoaded", function() {
-    // Moco data login sing disimpen pas warga sukses login
-    const loggedUserName = localStorage.getItem("user_nama");
-    const loggedUserRT = localStorage.getItem("user_rt");
-
-    // Lek jeneng lan No_RT ono (artine wis login), nembe menune dituduhno
-    if (loggedUserName && loggedUserRT) {
-        const menuPersuratan = document.getElementById("menu-persuratan");
-        if (menuPersuratan) {
-            menuPersuratan.style.display = "block"; // Tampilkan menu
-        }
-    }
-});
-
-
-
-
-(function() {
-    let isProcessingLogin = false;
-
-    function periksaStatusMenuPersuratan() {
-        // Lek pas nembe proses login, jarno SweetAlert mlaku dhisik, ojo diganggu
-        if (isProcessingLogin) return;
-
-        const sessionWarga = localStorage.getItem('solid_rw_user');
-        const menuPersuratan = document.getElementById('menu-persuratan');
-        
-        if (!menuPersuratan) return;
-
-        if (sessionWarga && sessionWarga !== "null" && sessionWarga !== "undefined") {
-            try {
-                const dataUser = JSON.parse(sessionWarga);
-                if (dataUser && dataUser.nama) {
-                    if (menuPersuratan.style.display !== 'inline-block') {
-                        menuPersuratan.style.setProperty('display', 'inline-block', 'important');
-                    }
-                }
-            } catch (e) {
-                console.error("Gagal moco session", e);
-            }
-        } else {
-            if (menuPersuratan.style.display !== 'none') {
-                menuPersuratan.style.setProperty('display', 'none', 'important');
-            }
-        }
-    }
-
-    // Amankan deteksi pas wargane nge-klik login
-    $(document).ajaxSuccess(function() {
-        isProcessingLogin = true;
-        setTimeout(() => { isProcessingLogin = false; }, 3000); // Kunci 3 detik ben alert-e selesih metu
-    });
-
-    // Jalankan detektor biasa
-    document.addEventListener("DOMContentLoaded", periksaStatusMenuPersuratan);
-    window.addEventListener('storage', periksaStatusMenuPersuratan);
-    
-    // Cek saben setengah detik, tapi gak bakal nabrak SweetAlert maneh
-    setInterval(periksaStatusMenuPersuratan, 500);
-})();
-
-
 
 
 
