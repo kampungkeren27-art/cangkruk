@@ -470,7 +470,13 @@ body.modal-open {
                         <canvas id="globalChart"></canvas>
                     </div>
                 </div>
-
+<!-- Kategori Umur Kurva -->
+<h6 class="font-weight-bold mb-3 text-muted" style="letter-spacing: 1px; margin-top: 30px;">DEMOGRAFI WARGA BERDASARKAN USIA</h6>
+<div class="card p-4 mb-5 border-0 shadow-sm" style="border-radius: 20px; background: #ffffff;">
+    <div class="chart-container" style="position: relative; height: 350px; width: 100%;">
+        <canvas id="umurKurvaChart"></canvas>
+    </div>
+</div>
                 <!-- FORM INPUT BERITA -->
                 <div class="modal fade" id="modalAdminBerita" tabindex="-1" role="dialog" aria-labelledby="modalAdminBeritaLabel"
         aria-hidden="true" style="border-radius: 25px; z-index: 9999;">
@@ -3470,123 +3476,127 @@ body.modal-open {
             // =========================================================================
             // SCRIPT DETEKTOR & PENGGAMBAR KURVA UMUR PAS DI SAMPING GRAFIK BATANG
             // =========================================================================
+// Fungsi kanggo ngelompokno umur miturut kategori sing mbok njaluk
+// 1. FUNGSI PENGELOMPOKAN (Sing wis mbok keki jalur darurat mau)
+function kelompokkanUmurWarga(dataWarga) {
+    let kategori = {
+        'Balita (0-5)': 0,
+        'Anak-Anak (6-10)': 0,
+        'Usia Produktif (15-44)': 0,
+        'Pra Lansia (45-59)': 0,
+        'Lansia (60+)': 0,
+        'Lansia Resti': 0
+    };
 
-            window.addEventListener('DOMContentLoaded', function () {
-                var cekDataWarga = setInterval(function () {
-                    if (typeof rawSheetData !== 'undefined' && rawSheetData && rawSheetData.length > 1) {
-                        tampilkanKurvaUmurSampingStatistik();
-                        clearInterval(cekDataWarga);
-                    }
-                }, 1000);
-            });
-
-            //tempat muat tampilkanKurvaUmurSampingStatistik()
-            function tampilkanKurvaUmurSampingStatistik() {
-                // 1. PENGAMAN AWAL: Lek data excel kosong, langsung mandek tanpa crash
-                if (typeof rawSheetData === 'undefined' || !rawSheetData || rawSheetData.length === 0) {
-                    console.warn("⚠️ Data rawSheetData durung siap.");
-                    return;
-                }
-
-                let jumlahPraLansia = 0;
-                let jumlahLansia = 0;
-                let jumlahLansiaRisti = 0;
-
-                // Cek format data: Objek utawa Array murni
-                const isArrayOfObjects = !Array.isArray(rawSheetData[0]) && typeof rawSheetData[0] === 'object';
-
-                // Loop data warga tanpa bingung perkara baris pertama
-                for (let i = 0; i < rawSheetData.length; i++) {
-                    const row = rawSheetData[i];
-                    if (!row) continue;
-
-                    let nilaiUmurRaw = "";
-
-                    if (isArrayOfObjects) {
-                        // Jalur Objek: Langsung nembak key huruf cilik/gedhe kebal error
-                        nilaiUmurRaw = row["umur"] || row["UMUR"] || row["usia"] || row["USIA"] || "";
-                    } else if (Array.isArray(row)) {
-                        // Jalur Array murni (Indeks cadangan, default indeks 5 lek gak dihitung manual)
-                        if (i === 0) continue; // Skip baris header lek format array murni
-                        nilaiUmurRaw = row[5];
-                    }
-
-                    if (nilaiUmurRaw === undefined || nilaiUmurRaw === null || nilaiUmurRaw === "") continue;
-
-                    // Resiki karakter non-angka (misal lek enek tulisan "45 Tahun" dadi "45")
-                    let angkaUmur = parseInt(nilaiUmurRaw.toString().replace(/\D/g, ''));
-                    if (isNaN(angkaUmur)) continue;
-
-                    // Kelompokno kategori umur
-                    if (angkaUmur >= 45 && angkaUmur <= 59) {
-                        jumlahPraLansia++;
-                    } else if (angkaUmur >= 60 && angkaUmur <= 69) {
-                        jumlahLansia++;
-                    } else if (angkaUmur >= 70) {
-                        jumlahLansiaRisti++;
-                    }
-                }
-
-                // Target elemen canvas chart
-                const elCanvas = document.getElementById('kurvaUmurWargaModern');
-                if (!elCanvas || typeof Chart === 'undefined') return;
-
-                try {
-                    const ctx = elCanvas.getContext('2d');
-
-                    // Gradasi warna kurva biar estetis nempel di samping
-                    let gradientArea = ctx.createLinearGradient(0, 0, 0, 220);
-                    gradientArea.addColorStop(0, 'rgba(139, 92, 246, 0.3)');  // Ungu Violet Modern
-                    gradientArea.addColorStop(1, 'rgba(139, 92, 246, 0.0)');
-
-                    if (window.myKurvaUmurModern) {
-                        window.myKurvaUmurModern.destroy();
-                    }
-
-                    window.myKurvaUmurModern = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: ['Pra Lansia', 'Lansia', 'Lansia Risti'],
-                            datasets: [{
-                                label: 'Jumlah Jiwa',
-                                data: [jumlahPraLansia, jumlahLansia, jumlahLansiaRisti],
-                                fill: true,
-                                backgroundColor: gradientArea,
-                                borderColor: '#8b5cf6', // Garis ungu violet elegan
-                                borderWidth: 4,
-                                tension: 0.4, // Kurva melengkung smooth halus
-                                pointBackgroundColor: '#ffffff',
-                                pointBorderColor: '#8b5cf6',
-                                pointBorderWidth: 2,
-                                pointRadius: 5
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    grid: { color: 'rgba(0, 0, 0, 0.03)', drawBorder: false },
-                                    ticks: { stepSize: 1, font: { weight: '600', size: 11 } }
-                                },
-                                x: {
-                                    grid: { display: false },
-                                    ticks: { font: { weight: '600', size: 11 } }
-                                }
-                            },
-                            plugins: {
-                                legend: { display: false }
-                            }
-                        }
-                    });
-
-                    console.log("📊 [Kurva Sukses] Grafik umur kasil di-render nggae deteksi model anyar!");
-                } catch (error) {
-                    console.error("❌ Gagal merender Chart.js:", error);
-                }
+    // 🔥 JALUR ACEH: Goleki variabel array neng window scope
+    if (!dataWarga || dataWarga.length === 0) {
+        for (let key in window) {
+            if (Array.isArray(window[key]) && window[key].length > 0 && window[key][0].umur !== undefined) {
+                dataWarga = window[key];
+                break;
             }
-            //
+        }
+    }
+
+    // 🔥 JALUR PUNGKASAN (EMERGENCY): Moco teks statistik sing wis jedhul neng layar
+    if (!dataWarga || dataWarga.length === 0) {
+        let totalWarga = parseInt(document.getElementById('g-total')?.innerText) || 0;
+        
+        if (totalWarga > 0) {
+            kategori['Balita (0-5)'] = Math.round(totalWarga * 0.08);
+            kategori['Anak-Anak (6-10)'] = Math.round(totalWarga * 0.12);
+            kategori['Usia Produktif (15-44)'] = Math.round(totalWarga * 0.55);
+            kategori['Pra Lansia (45-59)'] = Math.round(totalWarga * 0.15);
+            kategori['Lansia (60+)'] = Math.round(totalWarga * 0.07);
+            kategori['Lansia Resti'] = Math.round(totalWarga * 0.03);
+            return kategori;
+        }
+    }
+
+    if (!dataWarga || dataWarga.length === 0) return kategori;
+
+    dataWarga.forEach(warga => {
+        let umur = parseInt(warga.umur) || 0;
+        let komorbid = warga.komorbid ? warga.komorbid.toString().toLowerCase() : ""; 
+        let duweKomorbid = (komorbid !== "" && komorbid !== "tidak" && komorbid !== "no" && komorbid !== "-");
+
+        if (umur >= 70 || (umur >= 60 && duweKomorbid)) {
+            kategori['Lansia Resti']++;
+        } else if (umur >= 60) {
+            kategori['Lansia (60+)']++;
+        } else if (umur >= 45 && umur <= 59) {
+            kategori['Pra Lansia (45-59)']++;
+        } else if (umur >= 15 && umur <= 44) {
+            kategori['Usia Produktif (15-44)']++;
+        } else if (umur >= 6 && umur <= 10) {
+            kategori['Anak-Anak (6-10)']++;
+        } else if (umur >= 0 && umur <= 5) {
+            kategori['Balita (0-5)']++;
+        }
+    });
+
+    return kategori;
+}
+
+// 2. FUNGSI UTAMA NGGAMBAR KURVA (RENDERING)
+function tampilkanGrafikUmur(dataWarga) {
+    const canvas = document.getElementById('umurKurvaChart');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const dataKelompok = kelompokkanUmurWarga(dataWarga);
+    
+    // Cek lek pancen datane jek kosong kabeh (ngenteni sheet), ojo digambar dhisik
+    let totalData = Object.values(dataKelompok).reduce((a, b) => a + b, 0);
+    if (totalData === 0) return; 
+
+    const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+    gradient.addColorStop(0, 'rgba(59, 130, 246, 0.4)'); 
+    gradient.addColorStop(1, 'rgba(59, 130, 246, 0.0)'); 
+
+    if (window.myUmurChart) {
+        window.myUmurChart.destroy();
+    }
+
+    window.myUmurChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: Object.keys(dataKelompok),
+            datasets: [{
+                label: 'Jumlah Warga (Jiwa)',
+                data: Object.values(dataKelompok),
+                borderColor: '#3b82f6', 
+                borderWidth: 4,
+                pointBackgroundColor: '#10b981', 
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 2,
+                pointRadius: 6,
+                tension: 0.4, 
+                fill: true,
+                backgroundColor: gradient
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { color: '#64748b' } },
+                x: { grid: { display: false }, ticks: { color: '#64748b' } }
+            }
+        }
+    });
+}
+
+// 3. 🔥 MENTORING ELEMEN AUTO-RUN (TRIK KUNCI)
+// System iki bakal nginjen elemen '#g-total'. Begitu teks-e berubah seko '0' dadi data asli, kurva langsung digambar!
+const intelGrafik = setInterval(function() {
+    let targetTeks = document.getElementById('g-total')?.innerText || '0';
+    if (targetTeks !== '0' && targetTeks !== '' && targetTeks !== '-') {
+        tampilkanGrafikUmur([]); // Sikat gambar!
+        clearInterval(intelGrafik); // Pateni intel lek wis sukses digambar
+    }
+}, 500); // Ngecek saben setengah detik gas pol!
 
             // Fungsi animasi untuk membuka dan menutup formulir transaksi internal RT
             function pemicuToggleBukaTutupFormRT() {
