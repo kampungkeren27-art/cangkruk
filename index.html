@@ -3599,7 +3599,7 @@ body.modal-open {
             // =========================================================================
             // 🟢 GANTI DENGAN VERSI ANTI-MACET INI (LOADER PASTI BERHENTI / REFRESH AMAN)
             // =========================================================================
-            async function prosesUploadAdmin() {
+    async function prosesUploadAdmin() {
     const idBerita = $('#adm-id-berita').val() || "";
     const kategori = $('#kategoriBerita').val() || "Informasi Umum";
     const judul = $('#judulBerita').val();
@@ -3647,7 +3647,7 @@ body.modal-open {
             isi: isi,
             namaPetugas: "ADMIN RW01",
             fotoUrlDariFrontEnd: fotoUrlHasil,
-            // 🔥 FIX FOTO: Tak pasangi variasi jeneng variabel ben backend-mu iso moco
+            // 🔥 FIX VARIABEL FOTO (Supaya backend moco bener)
             fotoUrl: fotoUrlHasil, 
             foto: fotoUrlHasil
         },
@@ -3665,21 +3665,21 @@ body.modal-open {
         if (response.status === "sukses" || response.success) {
             alert("✅ Berita berhasil disimpan!");
             
-            // 🔥 FIX 1: Form Langsung Menutup Otomatis (Nganggo ID modal sing bener)
+            // 🔥 FIX: Nutup modal manajemen berita admin sing bener
             $('#modal-manajemen-berita-admin').modal('hide');
+            if ($('#modalAdminBerita').length) $('#modalAdminBerita').modal('hide');
             
-            // Kosongno isi form ben resik pas dibuka maneh
+            // Kosongno isi form
             $('#adm-id-berita').val('');
             $('#judulBerita').val('');
             $('#isiBerita').val('');
             $('#fotoBerita').val('');
             $('#label-nama-foto').text('No file chosen');
 
-            // 🔥 FIX 2: Supaya Tampil yang Terbaru (Reload total meksa browser moco data anyar seko Sheets)
+            // 🔥 FIX: Langsung refresh gress meksa load data paling anyar
             try { 
-                // Goleki fungsi sing nggo njupuk data awalmu (misal: ambilBerita(), loadData(), utawa showHome())
-                if (typeof showHome === "function") {
-                    showHome(); 
+                if (typeof kembaliKeBeranda === "function") {
+                    kembaliKeBeranda(); 
                 } else {
                     window.location.reload(true); 
                 }
@@ -3732,9 +3732,10 @@ function muatTabelBeritaAdmin(allValuesBerita) {
 
 function pemicuBukaFormEditBerita(id, kategori, judul, isi) {
     $('#adm-id-berita').val(id);
-    $('#adm-kategori').val(kategori);
-    $('#adm-judul').val(judul);
-    $('#adm-isi').val(isi);
+    // 🔥 FIX: Selector dilarasno karo ID input sing bener neng modalmu
+    $('#kategoriBerita').val(kategori);
+    $('#judulBerita').val(judul);
+    $('#isiBerita').val(isi);
     if ($('#modalAdminForm').length) $('#modalAdminForm').modal('show');
 }
 
@@ -3811,7 +3812,7 @@ function muatBeritaUtamaDinamis(allValuesBerita) {
 
         htmlListKanan += `
             <div class="d-flex align-items-start justify-content-between ${borderStyle}" style="gap: 12px; cursor: pointer;" 
-                 onclick="bukaPopUpAlerteCok('${jdlAmanLama}', '${isiAmanLama}', '${imgLama}')">
+                  onclick="bukaPopUpAlerteCok('${jdlAmanLama}', '${isiAmanLama}', '${imgLama}')">
                 <div style="flex: 1; min-width: 0;">
                     <span class="text-success font-weight-bold d-block text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px; margin-bottom: 2px;">${katLama}</span>
                     <a href="javascript:void(0)" class="text-dark font-weight-bold text-decoration-none d-block mb-1" style="font-size: 0.85rem; line-height: 1.3;">
@@ -3839,8 +3840,8 @@ function bukaDashboardManajemenBerita() {
     // banjur nembe di-show modale.
     $('#modal-manajemen-berita-admin').appendTo("body").modal('show');
 
-    // Ambil data dari server jika memang dibutuhkan untuk mengisi form/tabel di dalam modal
-    fetch(`${API_URL}?action=ambilBeritaAPI`)
+    // 🔥 FIX ANTI-CACHE: Ditambahi timestamp ben meksa njupuk data paling gress neng dashboard
+    fetch(`${API_URL}?action=ambilBeritaAPI&_=${new Date().getTime()}`)
         .then(response => response.json())
         .then(result => {
             if (result.status === "sukses") {
@@ -3857,7 +3858,8 @@ function bukaDashboardManajemenBerita() {
 function kembaliKeBeranda() {
     $('#admin-page-content').hide();
     $('#main-page-content').show();
-    fetch(`${API_URL}?action=ambilBeritaAPI`)
+    // 🔥 FIX ANTI-CACHE: Tambah timestamp ben loading berita neng beranda langsung gress
+    fetch(`${API_URL}?action=ambilBeritaAPI&_=${new Date().getTime()}`)
         .then(response => response.json())
         .then(result => {
             if (result.status === "sukses") muatBeritaUtamaDinamis(result.data);
@@ -3866,24 +3868,30 @@ function kembaliKeBeranda() {
 
 function bukaModalBeritaBaru() {
     $('#adm-id-berita').val('');
-    $('#adm-kategori').val('Informasi Umum');
-    $('#adm-judul').val('');
-    $('#adm-isi').val('');
-    $('#adm-file').val('');
+    // 🔥 FIX: Nyasar selector input modal sing bener
+    $('#kategoriBerita').val('Informasi Umum');
+    $('#judulBerita').val('');
+    $('#isiBerita').val('');
+    $('#fotoBerita').val('');
+    $('#label-nama-foto').text('No file chosen');
     $('#btn-admin-save').prop('disabled', false).text("Publikasikan Berita Baru");
-    $('#modalAdminBerita').modal('show');
+    // 🔥 FIX: Nyasar ID modal sing bener
+    $('#modal-manajemen-berita-admin').modal('show');
 }
 
 function siapkanEditBerita(id, kategori, judulBase64, isiBase64) {
     const judul = decodeURIComponent(escape(atob(judulBase64)));
     const isi = decodeURIComponent(escape(atob(isiBase64)));
     $('#adm-id-berita').val(id);
-    $('#adm-kategori').val(kategori);
-    $('#adm-judul').val(judul);
-    $('#adm-isi').val(isi);
-    $('#adm-file').val('');
+    // 🔥 FIX: Nyasar selector input modal sing bener
+    $('#kategoriBerita').val(kategori);
+    $('#judulBerita').val(judul);
+    $('#isiBerita').val(isi);
+    $('#fotoBerita').val('');
+    $('#label-nama-foto').text('No file chosen');
     $('#btn-admin-save').prop('disabled', false).text("Simpan Perubahan");
-    $('#modalAdminBerita').modal('show');
+    // 🔥 FIX: Nyasar ID modal sing bener
+    $('#modal-manajemen-berita-admin').modal('show');
 }
 
 // Fungsi muat modal bawaan template lek pancen ono
@@ -3899,8 +3907,8 @@ function bukaRincianBeritaLangsung(judulText, isiText, imgUrl) {
 }
 
 $(document).ready(function () {
-    // Load data awal pas pertama kali web dibukak
-    fetch(`${API_URL}?action=ambilBeritaAPI`)
+    // 🔥 FIX ANTI-CACHE: Load awal langsung bebas seko cache browser
+    fetch(`${API_URL}?action=ambilBeritaAPI&_=${new Date().getTime()}`)
         .then(response => response.json())
         .then(result => {
             if (result.status === "sukses") {
