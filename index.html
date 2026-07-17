@@ -394,7 +394,7 @@ body.modal-open {
                 </div>
             </div>
 
-            <div class="container" style="margin-top: -30px; position: relative; z-index: 5;">
+    <div class="container" style="margin-top: -30px; position: relative; z-index: 5;">
     <div id="home-section">
         <div class="row">
             
@@ -474,50 +474,50 @@ body.modal-open {
                 <!-- FORM INPUT BERITA -->
                 <div class="modal fade" id="modalAdminBerita" tabindex="-1" role="dialog" aria-labelledby="modalAdminBeritaLabel"
         aria-hidden="true" style="border-radius: 25px; z-index: 9999;">
-        <div class="modal-dialog modal-dialog-centered modal-md" role="document">
-            <div class="modal-content border-0 shadow-lg" style="border-radius: 25px;">
-                <div class="modal-header border-0 pt-4 px-4 d-flex align-items-center justify-content-between">
-                    <h4 class="font-weight-bold mb-0" id="modalAdminBeritaLabel">Formulir Pengisian Berita</h4>
-                    <button type="button" class="close" data-dismiss="modal" style="outline: none;">
-                        <span aria-hidden="true" style="font-size: 1.8rem;">×</span>
-                    </button>
-                </div>
-                <div class="modal-body px-4 pb-4">
-                    <form id="adminForm">
-                        <input type="hidden" id="adm-id-berita">
+                    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+                        <div class="modal-content border-0 shadow-lg" style="border-radius: 25px;">
+                            <div class="modal-header border-0 pt-4 px-4 d-flex align-items-center justify-content-between">
+                                <h4 class="font-weight-bold mb-0" id="modalAdminBeritaLabel">Formulir Pengisian Berita</h4>
+                                <button type="button" class="close" data-dismiss="modal" style="outline: none;">
+                                    <span aria-hidden="true" style="font-size: 1.8rem;">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body px-4 pb-4">
+                                <form id="adminForm">
+                                    <input type="hidden" id="adm-id-berita">
 
-                        <div class="form-group mb-3">
-                            <label class="small font-weight-bold text-muted">KATEGORI BERITA</label>
-                            <select id="adm-kategori" class="form-control" style="height: 45px; border-radius: 12px;">
-                                <option value="Edaran Resmi">Edaran Resmi</option>
-                                <option value="Kegiatan Warga">Kegiatan Warga / Kerja Bakti</option>
-                                <option value="Keamanan & Ketertiban">Keamanan & Ketertiban</option>
-                                <option value="Informasi Umum">Informasi Umum</option>
-                            </select>
+                                    <div class="form-group mb-3">
+                                        <label class="small font-weight-bold text-muted">KATEGORI BERITA</label>
+                                        <select id="adm-kategori" class="form-control" style="height: 45px; border-radius: 12px;">
+                                            <option value="Edaran Resmi">Edaran Resmi</option>
+                                            <option value="Kegiatan Warga">Kegiatan Warga / Kerja Bakti</option>
+                                            <option value="Keamanan & Ketertiban">Keamanan & Ketertiban</option>
+                                            <option value="Informasi Umum">Informasi Umum</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label class="small font-weight-bold text-muted">JUDUL PENGUMUMAN</label>
+                                        <input type="text" id="adm-judul" class="form-control"
+                                            placeholder="Contoh: Kerja Bakti Akbar" style="border-radius: 12px; height: 45px;">
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label class="small font-weight-bold text-muted">ISI PENGUMUMAN</label>
+                                        <textarea id="adm-isi" class="form-control" rows="4" placeholder="Detail rincian..."
+                                            style="border-radius: 12px;"></textarea>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label class="small font-weight-bold text-muted">UPLOAD FOTO (OPSIONAL)</label>
+                                        <input type="file" class="form-control-file" id="adm-file" accept="image/*">
+                                    </div>
+                                    <button type="button" onclick="prosesUploadAdmin()" id="btn-admin-save"
+                                        class="btn btn-primary btn-block py-3 font-weight-bold shadow" style="border-radius: 15px;">
+                                        Simpan & Publikasikan
+                                    </button>
+                                </form>
+                            </div>
                         </div>
-                        <div class="form-group mb-3">
-                            <label class="small font-weight-bold text-muted">JUDUL PENGUMUMAN</label>
-                            <input type="text" id="adm-judul" class="form-control"
-                                placeholder="Contoh: Kerja Bakti Akbar" style="border-radius: 12px; height: 45px;">
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="small font-weight-bold text-muted">ISI PENGUMUMAN</label>
-                            <textarea id="adm-isi" class="form-control" rows="4" placeholder="Detail rincian..."
-                                style="border-radius: 12px;"></textarea>
-                        </div>
-                        <div class="form-group mb-4">
-                            <label class="small font-weight-bold text-muted">UPLOAD FOTO (OPSIONAL)</label>
-                            <input type="file" class="form-control-file" id="adm-file" accept="image/*">
-                        </div>
-                        <button type="button" onclick="prosesUploadAdmin()" id="btn-admin-save"
-                            class="btn btn-primary btn-block py-3 font-weight-bold shadow" style="border-radius: 15px;">
-                            Simpan & Publikasikan
-                        </button>
-                    </form>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
             </div> 
             
@@ -570,7 +570,7 @@ body.modal-open {
                                 <i class="fas fa-shield-alt mr-3 text-primary fa-lg"></i>
                                 <div>
                                     <div style="font-size: 0.95rem; line-height: 1.2;">Kepolisian</div>
-                                    <span class="badge badge-danger mt-1 px-2 py-0.5" style="font-size: 0.7rem;">Panggil 110</span>
+                                    <span class="badge badge-danger mt-1 px-2 py-0.5" style="font-size: 0.7 Expandedrem;">Panggil 110</span>
                                 </div>
                             </div>
                         </a>
@@ -588,7 +588,9 @@ body.modal-open {
                 </div>
             </div> 
         </div> 
+    </div>
 </div>
+
 
 <!-- MODAL 1: INFO MODAL (STRUKTUR SUDAH DIPERBAIKI TOTAL & TIDAK DOUBLE) -->
 <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true" data-backdrop="false" style="z-index: 9999;">
@@ -3614,27 +3616,27 @@ body.modal-open {
     if ($('#loader-text').length) $('#loader-text').text(idBerita ? "Memperbarui..." : "Menyimpan...");
     if ($('#loader').length) $('#loader').show();
 
-    let fotoUrlHasil = "";
+    let fileDataPayload = null;
     const file = fileInput ? fileInput.files[0] : null;
 
+    // 🔥 OPSI AMAN: Lek ono file, langsung diubah dadi Base64 kanggo Google Drive bawaan backend
     if (file) {
         try {
-            let formDataImgur = new FormData();
-            formDataImgur.append("image", file);
-
-            let responImgur = await fetch("https://api.imgur.com/3/image", {
-                method: "POST",
-                headers: { Authorization: "Client-ID 6e80b2b8cc9df3a" },
-                body: formDataImgur
-            }).then(res => res.json());
-
-            if (responImgur.success) {
-                fotoUrlHasil = responImgur.data.link;
-            } else {
-                console.warn("Gagal upload ke Imgur, menggunakan gambar lama.");
-            }
-        } catch (errImgur) {
-            console.error("Error upload Imgur:", errImgur);
+            fileDataPayload = await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                    const base64String = reader.result.split(',')[1];
+                    resolve({
+                        data: base64String,
+                        mimeType: file.type,
+                        fileName: file.name
+                    });
+                };
+                reader.onerror = error => reject(error);
+            });
+        } catch (errBase64) {
+            console.error("Gagal convert file ke Base64:", errBase64);
         }
     }
 
@@ -3646,12 +3648,9 @@ body.modal-open {
             kategori: kategori,
             isi: isi,
             namaPetugas: "ADMIN RW01",
-            fotoUrlDariFrontEnd: fotoUrlHasil,
-            // 🔥 FIX VARIABEL FOTO (Supaya backend moco bener)
-            fotoUrl: fotoUrlHasil, 
-            foto: fotoUrlHasil
+            fotoLama: $('#previewFotoBerita').attr('src') || "" // Jogo-jogo lek gak ganti foto
         },
-        fileData: null
+        fileData: fileDataPayload // <-- Iki bakal langsung diwoco karo if (fileData) neng backend-mu
     };
 
     try {
@@ -3664,28 +3663,7 @@ body.modal-open {
 
         if (response.status === "sukses" || response.success) {
             alert("✅ Berita berhasil disimpan!");
-            
-            // 🔥 FIX: Nutup modal manajemen berita admin sing bener
-            $('#modal-manajemen-berita-admin').modal('hide');
-            if ($('#modalAdminBerita').length) $('#modalAdminBerita').modal('hide');
-            
-            // Kosongno isi form
-            $('#adm-id-berita').val('');
-            $('#judulBerita').val('');
-            $('#isiBerita').val('');
-            $('#fotoBerita').val('');
-            $('#label-nama-foto').text('No file chosen');
-
-            // 🔥 FIX: Langsung refresh gress meksa load data paling anyar
-            try { 
-                if (typeof kembaliKeBeranda === "function") {
-                    kembaliKeBeranda(); 
-                } else {
-                    window.location.reload(true); 
-                }
-            } catch (e) { 
-                window.location.reload(true); 
-            }
+            window.location.reload(true); 
         } else {
             alert("Gagal memproses berita: " + (response.message || "Unknown Error"));
         }
@@ -3729,6 +3707,27 @@ function muatTabelBeritaAdmin(allValuesBerita) {
     }
     $('#tabel-list-berita').html(htmlBaris);
 }
+document.addEventListener("DOMContentLoaded", function() {
+        var canvasGrafik = document.getElementById('globalChart');
+        if (canvasGrafik) {
+            canvasGrafik.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+            canvasGrafik.addEventListener('mousedown', function(e) {
+                e.stopPropagation();
+            });
+        }
+        
+        var containerGrafik = document.querySelector('.chart-container');
+        if (containerGrafik) {
+            containerGrafik.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+            containerGrafik.addEventListener('mousedown', function(e) {
+                e.stopPropagation();
+            });
+        }
+    });
 
 function pemicuBukaFormEditBerita(id, kategori, judul, isi) {
     $('#adm-id-berita').val(id);
