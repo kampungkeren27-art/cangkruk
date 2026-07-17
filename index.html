@@ -6,11 +6,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>    
+
+
+
+
+<!-- 3. JS Select2 (setelah jQuery) -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <style>
         :root {
             --primary: #10b981;
@@ -244,6 +252,26 @@
             border: none;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
+        /* Custom backdrop jernih khusus untuk infoModal */
+#infoModal {
+    background: rgba(0, 0, 0, 0.6) !important; /* Efek gelap transparan yang presisi */
+    backdrop-filter: blur(4px); /* BONUS: Efek blur estetik pada background belakang modal */
+}
+
+/* Biar scrollbar body tidak hilang/geser pas modal dibuka */
+body.modal-open {
+    padding-right: 0 !important;
+}
+/* Memberikan ruang aman di bagian atas dan bawah luar modal */
+#infoModal .modal-dialog {
+    margin-top: 30px !important;
+    margin-bottom: 30px !important;
+}
+
+/* Mengatur header modal agar rapi */
+#infoModal .modal-header {
+    background: #ffffff;
+}
     </style>
 </head>
 
@@ -367,193 +395,84 @@
             </div>
 
             <div class="container" style="margin-top: -30px; position: relative; z-index: 5;">
-                <div id="home-section">
+    <div id="home-section">
+        <div class="row">
+            
+            <div class="col-lg-8">
+                <h6 class="font-weight-bold text-muted mb-3" style="letter-spacing: 1px;">PENGUMUMAN TERBARU</h6>
+                
+                <!-- BACKGROUND MENYATU: Menggabungkan Berita Utama & Berita Terdahulu dalam Satu Card -->
+                <div class="card p-4 border-0 shadow-sm mb-5" style="border-radius: 25px; background: #ffffff;">
                     <div class="row">
-                        <div class="col-lg-8">
-                            <h6 class="font-weight-bold text-muted mb-3" style="letter-spacing: 1px;">PENGUMUMAN TERBARU
-                            </h6>
-
-                            <div class="card p-3 mb-5 shadow-sm border-0" style="border-radius: 20px;">
-                                <div class="overflow-hidden rounded" style="border-radius: 22px;">
-                                    <img id="main-news-img" src="https://picsum.photos/id/11/800/450" class="news-img"
-                                        style="width: 100%; object-fit: cover;">
-                                </div>
-                                <div class="card-body px-2">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <span id="main-news-badge"
-                                            class="badge badge-success px-3 py-2 rounded-pill mr-3">MEMUAT...</span>
+                        
+                        <!-- Sisi Kiri: Berita Utama -->
+                        <div class="col-md-7 pr-md-4 mb-4 mb-md-0" style="border-right: 1px solid #f1f5f9;">
+                            <div class="overflow-hidden rounded" style="border-radius: 16px; height: 210px;">
+                                <img id="main-news-img" src="https://picsum.photos/id/11/800/450" class="news-img w-100 h-100" style="object-fit: cover;">
+                            </div>
+                            <div class="card-body p-0 d-flex flex-column justify-content-between mt-3" style="height: calc(100% - 230px); min-height: 200px;">
+                                <div>
+                                    <div class="d-flex align-items-center mb-2 mt-2">
+                                        <span id="main-news-badge" class="badge badge-success px-3 py-1.5 rounded-pill mr-3" style="font-size: 0.75rem;">MEMUAT...</span>
                                         <small id="main-news-date" class="text-muted font-weight-bold">-</small>
                                     </div>
-                                    <h2 id="main-news-title" class="font-weight-bold mb-3">Memuat informasi terbaru...
-                                    </h2>
-                                    <p id="main-news-desc" class="text-muted mb-4 lead" style="font-size: 1rem;">Silakan
-                                        tunggu sebentar, sistem sedang menarik data pengumuman warga.</p>
-
-                                    <div class="d-flex flex-wrap" style="gap: 12px;">
-                                        <button class="btn btn-primary px-4" data-toggle="modal"
-                                            data-target="#infoModal" onclick="setModalDefault()">Lihat Rincian
-                                            Agenda</button>
-
-                                        <div id="menu-dashboard-admin"
-                                            style="display: none !important; d-inline-block;">
-                                            <button type="button"
-                                                class="btn btn-info font-weight-bold px-4 py-2 text-white shadow-sm"
-                                                style="border-radius: 12px;" onclick="bukaDashboardManajemenBerita()">
-                                                📊 Dashboard Berita
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <h6 class="font-weight-bold mb-3 text-muted" style="letter-spacing: 1px;">STATISTIK
-                                KUMULATIF RW</h6>
-                            <div class="card p-4 mb-5 border-0 shadow-sm" style="border-radius: 20px;">
-                                <div class="row text-center mb-4 mt-3">
-                                    <div class="col-4 border-right"><small class="text-muted font-weight-bold">TOTAL
-                                            WARGA</small>
-                                        <h2 id="g-total" class="font-weight-bold mt-2">0</h2>
-                                    </div>
-                                    <div class="col-4 border-right"><small
-                                            class="text-muted font-weight-bold">LAKI-LAKI</small>
-                                        <h2 id="g-pria" class="font-weight-bold mt-2" style="color: #3b82f6;">0</h2>
-                                    </div>
-                                    <div class="col-4"><small class="text-muted font-weight-bold">PEREMPUAN</small>
-                                        <h2 id="g-wanita" class="font-weight-bold mt-2" style="color: #ec4899;">0</h2>
-                                    </div>
+                                    <h2 id="main-news-title" class="font-weight-bold mb-2 text-dark" style="font-size: 1.2rem; line-height: 1.3;">Memuat informasi terbaru...</h2>
+                                    <p id="main-news-desc" class="text-muted mb-3" style="font-size: 0.85rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                                        Silakan tunggu sebentar, sistem sedang menarik data pengumuman warga.
+                                    </p>
                                 </div>
 
-                                <div class="chart-container" style="position: relative; height: 300px; width: 100%;">
-                                    <canvas id="globalChart"></canvas>
+                                <div class="d-flex flex-wrap mt-2" style="gap: 12px;">
+                                    <button class="btn btn-primary px-4 py-2" style="border-radius: 10px; font-size: 0.8rem; font-weight: 600;" data-toggle="modal" data-target="#infoModal" onclick="setModalDefault()">
+                                        Lihat Rincian Agenda
+                                    </button>
+                                    <div id="menu-dashboard-admin" style="display: none !important; d-inline-block;">
+                                        <button type="button" class="btn btn-info font-weight-bold px-4 py-2 text-white shadow-sm" style="border-radius: 10px; font-size: 0.8rem;" onclick="bukaDashboardManajemenBerita()">
+                                            📊 Dashboard Berita
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-lg-4">
-                            <h6 class="font-weight-bold mb-3 text-muted" style="letter-spacing: 1px;">INFORMASI CEPAT
-                            </h6>
-                            <div class="card announcement-box p-4 mb-4 shadow-sm border-0">
-                                <div class="mb-4 pb-3 border-bottom border-warning">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <span class="badge badge-warning text-dark px-2 py-1 mr-2">KAS RW</span>
-                                        <small class="font-weight-800">PENTING</small>
-                                    </div>
-                                    <p class="small mb-0 font-weight-bold text-dark opacity-75">Penyampaian Kas Desa
-                                        Ganting Sidoarjo.</p>
-                                </div>
-                                <div>
-                                    <div class="d-flex align-items-center mb-2">
-                                        <span class="badge badge-danger px-2 py-1 mr-2">LAPOR</span>
-                                        <small class="font-weight-800">KEAMANAN</small>
-                                    </div>
-                                    <p class="small mb-0 font-weight-bold text-dark opacity-75">Tamu lebih dari 24 jam
-                                        wajib lapor Ketua RT.</p>
-                                </div>
-                            </div>
-
-                            <div class="card p-4 bg-dark text-white shadow-lg border-0" style="border-radius: 25px;">
-                                <h5 class="font-weight-bold mb-1"><i
-                                        class="fas fa-phone-alt text-danger mr-2"></i>Layanan Bantuan</h5>
-                                <p class="small opacity-75 mb-4">Telepon Darurat Warga Desa Ganting.</p>
-
-                                <div class="d-flex flex-column" style="gap: 12px;">
-                                    <a href="https://wa.me/6281525855470" target="_blank"
-                                        class="btn btn-outline-light btn-block rounded-lg font-weight-bold text-left px-4 py-2 m-0">
-                                        <div class="d-flex align-items-center">
-                                            <i class="fab fa-whatsapp mr-3 text-success fa-lg"></i>
-                                            <div>
-                                                <div style="font-size: 1rem; line-height: 1.2;">BabinKamtibmas</div>
-                                                <span class="small opacity-75 font-weight-normal"
-                                                    style="letter-spacing: 0.5px;">0815-2585-5470</span>
-                                            </div>
-                                        </div>
-                                    </a>
-
-                                    <a href="https://wa.me/6281334679116" target="_blank"
-                                        class="btn btn-outline-light btn-block rounded-lg font-weight-bold text-left px-4 py-2 m-0">
-                                        <div class="d-flex align-items-center">
-                                            <i class="fab fa-whatsapp mr-3 text-success fa-lg"></i>
-                                            <div>
-                                                <div style="font-size: 1rem; line-height: 1.2;">Babinsa</div>
-                                                <span class="small opacity-75 font-weight-normal"
-                                                    style="letter-spacing: 0.5px;">0813-3467-9116</span>
-                                            </div>
-                                        </div>
-                                    </a>
-
-                                    <a href="tel:110"
-                                        class="btn btn-outline-light btn-block rounded-lg font-weight-bold text-left px-4 py-2 m-0">
-                                        <div class="d-flex align-items-center">
-                                            <i class="fas fa-shield-alt mr-3 text-primary fa-lg"></i>
-                                            <div>
-                                                <div style="font-size: 1rem; line-height: 1.2;">Kepolisian</div>
-                                                <span class="badge badge-danger mt-1 px-2 py-0.5"
-                                                    style="font-size: 0.75rem;">Panggil 110</span>
-                                            </div>
-                                        </div>
-                                    </a>
-
-                                    <a href="tel:112"
-                                        class="btn btn-outline-light btn-block rounded-lg font-weight-bold text-left px-4 py-2 m-0">
-                                        <div class="d-flex align-items-center">
-                                            <i class="fas fa-ambulance mr-3 text-warning fa-lg"></i>
-                                            <div>
-                                                <div style="font-size: 1rem; line-height: 1.2;">Pemkab (Siaga)</div>
-                                                <span class="badge badge-warning text-dark mt-1 px-2 py-0.5"
-                                                    style="font-size: 0.75rem;">Panggil 112</span>
-                                            </div>
-                                        </div>
-                                    </a>
+                        <!-- Sisi Kanan: Berita Terdahulu -->
+                        <div class="col-md-5 pl-md-4 d-flex flex-column justify-content-center">
+                            <h6 class="font-weight-bold text-dark mb-3 small" style="letter-spacing: 0.5px; opacity: 0.8;">BERITA TERDAHULU</h6>
+                            <div id="list-berita-terdahulu" class="d-flex flex-column" style="gap: 18px;">
+                                <div class="text-muted small text-center py-4">
+                                    <div class="spinner-border spinner-border-sm text-success mr-2" role="status"></div>
+                                    Memuat berita terdahulu...
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <div id="admin-page-content" class="container mt-4" style="display: none; position: relative; z-index: 10;">
-        <div class="card p-4 border-0 shadow-lg" style="border-radius: 25px;">
-            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4" style="gap: 15px;">
-                <div>
-                    <h4 class="font-weight-bold text-dark mb-1">📰 Manajemen Informasi & Berita</h4>
-                    <p class="text-muted small mb-0">Kelola informasi, tambah berita baru, atau perbarui pengumuman
-                        warga RW 01.</p>
+                <!-- Statistik Kumulatif -->
+                <h6 class="font-weight-bold mb-3 text-muted" style="letter-spacing: 1px;">STATISTIK KUMULATIF RW</h6>
+                <div class="card p-4 mb-5 border-0 shadow-sm" style="border-radius: 20px;">
+                    <div class="row text-center mb-4 mt-3">
+                        <div class="col-4 border-right">
+                            <small class="text-muted font-weight-bold">TOTAL WARGA</small>
+                            <h2 id="g-total" class="font-weight-bold mt-2">0</h2>
+                        </div>
+                        <div class="col-4 border-right">
+                            <small class="text-muted font-weight-bold">LAKI-LAKI</small>
+                            <h2 id="g-pria" class="font-weight-bold mt-2" style="color: #3b82f6;">0</h2>
+                        </div>
+                        <div class="col-4">
+                            <small class="text-muted font-weight-bold">PEREMPUAN</small>
+                            <h2 id="g-wanita" class="font-weight-bold mt-2" style="color: #ec4899;">0</h2>
+                        </div>
+                    </div>
+                    <div class="chart-container" style="position: relative; height: 300px; width: 100%;">
+                        <canvas id="globalChart"></canvas>
+                    </div>
                 </div>
-                <div class="d-flex" style="gap: 10px;">
-                    <button type="button" class="btn btn-primary px-4 py-2 font-weight-bold shadow-sm"
-                        style="border-radius: 12px;" onclick="bukaModalBeritaBaru()">
-                        ➕ Tambah Berita Baru
-                    </button>
-                    <button type="button" class="btn btn-light border px-4 py-2 font-weight-bold"
-                        style="border-radius: 12px;" onclick="kembaliKeBeranda()">
-                        ⬅️ Kembali Ke Beranda
-                    </button>
-                </div>
-            </div>
 
-            <div class="table-responsive">
-                <table class="table table-hover mb-0" style="min-width: 600px;">
-                    <thead class="bg-light text-secondary small font-weight-bold">
-                        <tr>
-                            <th style="width: 12%;">ID BERITA</th>
-                            <th style="width: 20%;">KATEGORI</th>
-                            <th style="width: 48%;">JUDUL PENGUMUMAN</th>
-                            <th style="width: 20%;" class="text-center">AKSI</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabel-list-berita">
-                        <tr>
-                            <td colspan="4" class="text-center text-muted py-4">Memuat data terbaru dari Sheets...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modalAdminBerita" tabindex="-1" role="dialog" aria-labelledby="modalAdminBeritaLabel"
+                <!-- FORM INPUT BERITA -->
+                <div class="modal fade" id="modalAdminBerita" tabindex="-1" role="dialog" aria-labelledby="modalAdminBeritaLabel"
         aria-hidden="true" style="border-radius: 25px; z-index: 9999;">
         <div class="modal-dialog modal-dialog-centered modal-md" role="document">
             <div class="modal-content border-0 shadow-lg" style="border-radius: 25px;">
@@ -600,7 +519,163 @@
         </div>
     </div>
 
+            </div> 
+            
+            <div class="col-lg-4">
+                <h6 class="font-weight-bold mb-3 text-muted" style="letter-spacing: 1px;">INFORMASI CEPAT</h6>
+                <div class="card announcement-box p-4 mb-4 shadow-sm border-0" style="border-radius: 20px;">
+                    <div class="mb-4 pb-3 border-bottom border-warning">
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="badge badge-warning text-dark px-2 py-1 mr-2">KAS RW</span>
+                            <small class="font-weight-bold">PENTING</small>
+                        </div>
+                        <p class="small mb-0 font-weight-bold text-dark opacity-75">Penyampaian Kas Desa Ganting Sidoarjo.</p>
+                    </div>
+                    <div>
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="badge badge-danger px-2 py-1 mr-2">LAPOR</span>
+                            <small class="font-weight-bold">KEAMANAN</small>
+                        </div>
+                        <p class="small mb-0 font-weight-bold text-dark opacity-75">Tamu lebih dari 24 jam wajib lapor Ketua RT.</p>
+                    </div>
+                </div>
+
+                <div class="card p-4 bg-dark text-white shadow-lg border-0" style="border-radius: 25px;">
+                    <h5 class="font-weight-bold mb-1"><i class="fas fa-phone-alt text-danger mr-2"></i>Layanan Bantuan</h5>
+                    <p class="small opacity-75 mb-4">Telepon Darurat Warga Desa Ganting.</p>
+
+                    <div class="d-flex flex-column" style="gap: 12px;">
+                        <a href="https://wa.me/6281525855470" target="_blank" class="btn btn-outline-light btn-block rounded-lg font-weight-bold text-left px-4 py-2 m-0" style="border-radius: 12px;">
+                            <div class="d-flex align-items-center">
+                                <i class="fab fa-whatsapp mr-3 text-success fa-lg"></i>
+                                <div>
+                                    <div style="font-size: 0.95rem; line-height: 1.2;">BabinKamtibmas</div>
+                                    <span class="small opacity-75 font-weight-normal" style="letter-spacing: 0.5px;">0815-2585-5470</span>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a href="https://wa.me/6281334679116" target="_blank" class="btn btn-outline-light btn-block rounded-lg font-weight-bold text-left px-4 py-2 m-0" style="border-radius: 12px;">
+                            <div class="d-flex align-items-center">
+                                <i class="fab fa-whatsapp mr-3 text-success fa-lg"></i>
+                                <div>
+                                    <div style="font-size: 0.95rem; line-height: 1.2;">Babinsa</div>
+                                    <span class="small opacity-75 font-weight-normal" style="letter-spacing: 0.5px;">0813-3467-9116</span>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a href="tel:110" class="btn btn-outline-light btn-block rounded-lg font-weight-bold text-left px-4 py-2 m-0" style="border-radius: 12px;">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-shield-alt mr-3 text-primary fa-lg"></i>
+                                <div>
+                                    <div style="font-size: 0.95rem; line-height: 1.2;">Kepolisian</div>
+                                    <span class="badge badge-danger mt-1 px-2 py-0.5" style="font-size: 0.7rem;">Panggil 110</span>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a href="tel:112" class="btn btn-outline-light btn-block rounded-lg font-weight-bold text-left px-4 py-2 m-0" style="border-radius: 12px;">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-ambulance mr-3 text-warning fa-lg"></i>
+                                <div>
+                                    <div style="font-size: 0.95rem; line-height: 1.2;">Pemkab (Siaga)</div>
+                                    <span class="badge badge-warning text-dark mt-1 px-2 py-0.5" style="font-size: 0.7rem;">Panggil 112</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div> 
+        </div> 
+</div>
+
+<!-- MODAL 1: INFO MODAL (STRUKTUR SUDAH DIPERBAIKI TOTAL & TIDAK DOUBLE) -->
+<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true" data-backdrop="false" style="z-index: 9999;">
+    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 25px; background: #ffffff; overflow: hidden;">
+            
+            <div class="modal-header border-0 pt-5 px-4 pb-2 d-flex align-items-start justify-content-between">
+                <div style="flex: 1; padding-right: 15px;">
+                    <h4 class="font-weight-bold mb-1 text-dark" id="infoModalLabel" style="letter-spacing: -0.5px; line-height: 1.3; word-break: break-word;">
+                        📢 Pengumuman RW 01
+                    </h4>
+                    <p class="text-muted small mb-0">Detail informasi resmi pengurus RW</p>
+                </div>
+                <button type="button" class="close bg-light rounded-circle d-flex align-items-center justify-content-center" data-dismiss="modal" style="outline: none; width: 36px; height: 36px; padding: 0; margin: 0; border: none; transition: 0.2s; flex-shrink: 0;">
+                    <span aria-hidden="true" style="font-size: 1.4rem; line-height: 1; color: #6b7280;">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body px-4 pb-4 pt-2" style="max-height: 70vh; overflow-y: auto;">
+                <img id="modal-img" src="" class="img-fluid rounded mb-3 shadow-sm w-100" style="max-height: 250px; object-fit: cover; border-radius: 18px; display: none;">
+                <div id="modal-desc" class="text-secondary" style="font-size: 0.95rem; line-height: 1.6; text-align: justify; white-space: pre-line;"></div>
+            </div>
+
+            <div class="modal-footer border-0 bg-light px-4 py-3 d-flex justify-content-end" style="border-bottom-left-radius: 25px; border-bottom-right-radius: 25px;">
+                <button type="button" class="btn btn-success px-4 font-weight-bold" data-dismiss="modal" style="border-radius: 12px; background-color: #10b981; border: none; font-size: 0.85rem; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);">
+                    Selesai Membaca
+                </button>
+            </div>
+
+        </div>
     </div>
+</div>
+
+<!-- MODAL 2: MANAJEMEN BERITA ADMIN -->
+<!-- MODAL FORM INPUT BERITA -->
+<div class="modal fade" id="modal-manajemen-berita-admin" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content" style="border-radius: 20px; border: none;">
+            <div class="modal-header border-0 pt-4 px-4">
+                <h5 class="modal-title font-weight-bold text-dark">📝 Manajemen & Input Berita</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-4">
+                
+                <!-- 🔥 TAMBAHAN UTAMA: Input hidden ID Berita, iki wajib ono ben script-mu gak error undefined -->
+                <input type="hidden" id="adm-id-berita" value="">
+
+                <div class="form-group mb-3">
+                    <label class="font-weight-bold text-muted small mb-1" style="letter-spacing: 0.5px;">KATEGORI BERITA</label>
+                    <select class="form-control" id="kategoriBerita" style="border-radius: 10px; height: 45px; font-size: 0.9rem;">
+                        <option value="Edaran Resmi">Edaran Resmi</option>
+                        <option value="Informasi Umum">Informasi Umum</option>
+                    </select>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="font-weight-bold text-muted small mb-1" style="letter-spacing: 0.5px;">JUDUL PENGUMUMAN</label>
+                    <input type="text" class="form-control" id="judulBerita" placeholder="Contoh: Kerja Bakti Akbar RW 01" style="border-radius: 10px; height: 45px; font-size: 0.9rem;">
+                </div>
+                <div class="form-group mb-3">
+                    <label class="font-weight-bold text-muted small mb-1" style="letter-spacing: 0.5px;">ISI PENGUMUMAN</label>
+                    <textarea class="form-control" id="isiBerita" rows="4" placeholder="Tuliskan rincian lengkap agenda, waktu, tempat, atau instruksi di sini..." style="border-radius: 10px; font-size: 0.9rem; resize: none;"></textarea>
+                </div>
+                <div class="form-group mb-4">
+                    <label class="font-weight-bold text-muted small mb-1" style="letter-spacing: 0.5px;">UPLOAD FOTO (OPSIONAL)</label>
+                    <div class="custom-file-container p-3 text-center" style="border: 2px dashed #cbd5e1; border-radius: 15px; background: #f8fafc;">
+                        <!-- 🔥 Efek Jeneng File: Otomatis ngganti tulisan 'No file chosen' pas milih foto -->
+                        <input type="file" id="fotoBerita" class="d-none" onchange="document.getElementById('label-nama-foto').innerText = this.files[0] ? this.files[0].name : 'No file chosen'">
+                        <label for="fotoBerita" class="m-0" style="cursor: pointer;">
+                            <div class="btn btn-light btn-sm font-weight-bold d-block mx-auto mb-1" style="border-radius: 8px;">Choose File</div>
+                            <span id="label-nama-foto" class="small text-muted d-block">No file chosen</span>
+                            <small class="text-muted d-block mt-1" style="font-size: 10px;">Format: JPG, PNG, JPEG</small>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- 🔥 FIX ONCLICK & ID: Diarahno langsung nyeluk fungsi 'prosesUploadAdmin()' lan id 'btn-admin-save' -->
+                <button type="button" id="btn-admin-save" class="btn btn-success btn-block py-2.5 font-weight-bold" style="border-radius: 12px; background-color: #10b981; border: none;" onclick="prosesUploadAdmin()">
+                    💾 Simpan & Publikasikan
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
     <div id="struktur-section" class="container mt-4 mb-5" style="display:none;">
         <div class="card border-0 shadow-sm rounded-lg overflow-hidden">
             <div class="card-header bg-white border-0 pt-4 px-4">
@@ -1066,259 +1141,251 @@
 
 
     </div>
-    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content" style="border-radius: 30px;">
-                <div class="modal-body p-5">
-                    <div class="text-center mb-4">
-                        <h3 class="font-weight-bold">Login Warga</h3>
-                        <p class="text-muted">Gunakan No. NIK sebagai username & password</p>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label class="small font-weight-bold">NOMOR NIK</label>
-                        <input type="number" id="login-kk" class="form-control admin-form-input"
-                            placeholder="16 Digit No. NIK">
-                    </div>
-                    <div class="form-group mb-4">
-                        <label class="small font-weight-bold">PASSWORD</label>
-                        <input type="password" id="login-pass" class="form-control admin-form-input"
-                            placeholder="No. KK Anda">
-                    </div>
-                    <button type="button" onclick="prosesLogin()" class="btn btn-primary btn-block py-3">Masuk
-                        Sekarang</button>
+   <!-- ========================================== -->
+<!-- MODAL LOGIN WARGA                          -->
+<!-- ========================================== -->
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="border-radius: 30px;">
+            <div class="modal-body p-5">
+                <div class="text-center mb-4">
+                    <h3 class="font-weight-bold">Login Warga</h3>
+                    <p class="text-muted">Gunakan No. NIK sebagai username & password</p>
                 </div>
+                <div class="form-group mb-3">
+                    <label class="small font-weight-bold">NOMOR NIK</label>
+                    <input type="number" id="login-kk" class="form-control admin-form-input" placeholder="16 Digit No. NIK">
+                </div>
+                <div class="form-group mb-4">
+                    <label class="small font-weight-bold">PASSWORD</label>
+                    <input type="password" id="login-pass" class="form-control admin-form-input" placeholder="16 Digit NIK Anda">
+                </div>
+                <button type="button" onclick="prosesLogin()" class="btn btn-primary btn-block py-3">Masuk Sekarang</button>
             </div>
         </div>
     </div>
-
-    <div id="btn-floating-keuangan" style="display: none; position: fixed; bottom: 30px; right: 30px; z-index: 9999;">
-        <button type="button" class="btn btn-warning text-dark font-weight-bold shadow-lg p-3 d-flex align-items-center"
-            onclick="bukaSistemNeraca()"
-            style="border-radius: 50px; border: 3px solid #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.3) !important;">
-            <i class="fas fa-balance-scale mr-2" style="font-size: 20px;"></i>
-            <span style="letter-spacing: 0.5px;">NERACA KEUANGAN</span>
-        </button>
-    </div>
+</div>
 
 
-    <div class="tab-content" id="kontenTabNeracaRW">
+<!-- ========================================== -->
+<!-- FLOATING BUTTON NERACA KEUANGAN            -->
+<!-- ========================================== -->
+<div id="btn-floating-keuangan" style="display: none; position: fixed; bottom: 30px; right: 30px; z-index: 9999;">
+    <button type="button" class="btn btn-warning text-dark font-weight-bold shadow-lg p-3 d-flex align-items-center"
+        onclick="bukaSistemNeraca()"
+        style="border-radius: 50px; border: 3px solid #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.3) !important;">
+        <i class="fas fa-balance-scale mr-2" style="font-size: 20px;"></i>
+        <span style="letter-spacing: 0.5px;">NERACA KEUANGAN</span>
+    </button>
+</div>
 
+<!-- ========================================== -->
+<!-- KONTEN TAB & MODAL NERACA KEUANGAN RW      -->
+<!-- ========================================== -->
+<div class="tab-content" id="kontenTabNeracaRW">
 
-        <div class="modal fade" id="modalNeracaKeuangan" tabindex="-1" role="dialog" aria-hidden="true"
-            data-backdrop="static">
-            <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
-                <div class="modal-content"
-                    style="border-radius: 25px; border: none; box-shadow: 0 15px 40px rgba(0,0,0,0.4);">
-                    <div class="modal-header bg-dark text-white p-4 border-0" style="border-radius: 25px 25px 0 0;">
-                        <div>
-                            <h5 class="modal-title font-weight-bold mb-1">⚖️ Neraca & Transparansi Keuangan RW.01</h5>
-                            <small class="text-white-50" id="sub-title-neraca">Sistem Pelaporan Otomatis Terintegrasi
-                                RT/RW</small>
-                        </div>
-                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true" style="font-size: 2rem;">&times;</span>
+    <div class="modal fade" id="modalNeracaKeuangan" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+            <div class="modal-content" style="border-radius: 25px; border: none; box-shadow: 0 15px 40px rgba(0,0,0,0.4);">
+                
+                <!-- Modal Header -->
+                <div class="modal-header bg-dark text-white p-4 border-0" style="border-radius: 25px 25px 0 0;">
+                    <div>
+                        <h5 class="modal-title font-weight-bold mb-1">⚖️ Neraca & Transparansi Keuangan RW.01</h5>
+                        <small class="text-white-50" id="sub-title-neraca">Sistem Pelaporan Otomatis Terintegrasi RT/RW</small>
+                    </div>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" style="font-size: 2rem;">&times;</span>
+                    </button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body p-4 bg-light">
+
+                    <!-- Action Buttons -->
+                    <div class="text-right mb-3">
+                        <button type="button" id="btn-pemicu-form-rt"
+                            class="btn btn-success font-weight-bold px-3 shadow-sm"
+                            onclick="pemicuToggleBukaTutupFormRT()" style="border-radius: 10px; display: none;">
+                            <i class="fas fa-plus-circle mr-1"></i> + Tambah Transaksi Kas Baru
+                        </button>
+                        <button type="button" class="btn btn-danger font-weight-bold px-3 shadow-sm ml-2"
+                            onclick="eksporKeuanganKePDF()" style="border-radius: 10px;">
+                            <i class="fas fa-file-pdf mr-1"></i> Export PDF / Cetak Jurnal
                         </button>
                     </div>
-                    <div class="modal-body p-4 bg-light">
 
-                        <div class="text-right mb-3">
-                            <button type="button" id="btn-pemicu-form-rt"
-                                class="btn btn-success font-weight-bold px-3 shadow-sm"
-                                onclick="pemicuToggleBukaTutupFormRT()" style="border-radius: 10px; display: none;">
-                                <i class="fas fa-plus-circle mr-1"></i> + Tambah Transaksi Kas Baru
-                            </button>
-                            <button type="button" class="btn btn-danger font-weight-bold px-3 shadow-sm ml-2"
-                                onclick="eksporKeuanganKePDF()" style="border-radius: 10px;">
-                                <i class="fas fa-file-pdf mr-1"></i> Export PDF / Cetak Jurnal
-                            </button>
-                        </div>
-
-                        <div id="wrapper-form-rt" class="card border-0 p-4 shadow-sm mb-4"
-                            style="display: none; border-radius: 18px;">
-                            <h6 class="font-weight-bold text-dark mb-3"><i class="fas fa-pen-alt text-primary mr-2"></i>
-                                Form Pembukuan Mutasi Kas Baru - <span id="text-rt-pelapor"
-                                    class="text-primary">RT</span></h6>
-                            <form id="formTransaksiRT" onsubmit="event.preventDefault(); eksekusiSimpanTransaksi();">
-                                <div class="form-row">
-                                    <div class="form-group col-md-3">
-                                        <label class="small font-weight-bold text-muted">ARUS DANA</label>
-                                        <select id="form-jenis" class="form-control" required
-                                            style="border-radius:10px; height: 45px;">
-                                            <option value="Pemasukan">Pemasukan (+)</option>
-                                            <option value="Pengeluaran">Pengeluaran (-)</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group col-md-3">
-                                        <label class="small font-weight-bold text-muted">POS AKUN NERACA</label>
-                                        <select id="form-kategori" class="form-control" required
-                                            style="border-radius:10px; height: 45px;">
-                                            <option value="Kas Lancar Lingkungan">Kas Lancar Lingkungan</option>
-                                            <option value="Iuran Wajib Bulanan">Iuran Wajib Bulanan</option>
-                                            <option value="Donasi / Sumbangan Sukarela">Donasi / Sumbangan Sukarela
-                                            </option>
-                                            <option value="Iuran Pembangunan Tanah Pribadi">Iuran Pembangunan Tanah
-                                                Pribadi
-                                            </option>
-                                            <option value="Iuran Pembangunan Tanah Kavling">Iuran Pembangunan Tanah
-                                                Kavling
-                                            </option>
-                                            <option value="Dana Sosial & Kematian">Dana Sosial & Kematian</option>
-                                            <option value="Pembangunan Fisik & Fasum">Pembangunan Fisik & Fasum</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group col-md-3">
-                                        <label class="small font-weight-bold text-muted">NOMINAL (RP)</label>
-                                        <input type="number" id="form-nominal" class="form-control"
-                                            placeholder="Contoh: 150000" required
-                                            style="border-radius:10px; height: 45px;">
-                                    </div>
-                                    <div class="form-group col-md-3">
-                                        <label class="small font-weight-bold text-muted">KETERANGAN DETIL / NAMA
-                                            WARGA</label>
-                                        <input type="text" id="form-keterangan" list="daftarWargaNeraca"
-                                            class="form-control" placeholder="Ketik nama warga..." required
-                                            style="border-radius:10px; height: 45px;">
-                                        <datalist id="daftarWargaNeraca"></datalist>
-                                    </div>
+                    <!-- Form Pembukuan Mutasi Kas (Collapsible) -->
+                    <div id="wrapper-form-rt" class="card border-0 p-4 shadow-sm mb-4" style="display: none; border-radius: 18px;">
+                        <h6 class="font-weight-bold text-dark mb-3">
+                            <i class="fas fa-pen-alt text-primary mr-2"></i> Form Pembukuan Mutasi Kas Baru - 
+                            <span id="text-rt-pelapor" class="text-primary">RT</span>
+                        </h6>
+                        <form id="formTransaksiRT" onsubmit="event.preventDefault(); eksekusiSimpanTransaksi();">
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label class="small font-weight-bold text-muted">ARUS DANA</label>
+                                    <select id="form-jenis" class="form-control" required style="border-radius:10px; height: 45px;">
+                                        <option value="Pemasukan">Pemasukan (+)</option>
+                                        <option value="Pengeluaran">Pengeluaran (-)</option>
+                                    </select>
                                 </div>
-                                <div class="text-right mt-2">
-                                    <button type="button" class="btn btn-secondary font-weight-bold px-3 mr-2"
-                                        onclick="pemicuToggleBukaTutupFormRT()"
-                                        style="border-radius: 10px; height: 45px;">Batal</button>
-                                    <button type="submit" class="btn btn-primary font-weight-bold px-4 shadow-sm"
-                                        style="border-radius:10px; height: 45px;"><i
-                                            class="fas fa-check-circle mr-2"></i>Laporkan Transaksi</button>
+                                <div class="form-group col-md-3">
+                                    <label class="small font-weight-bold text-muted">POS AKUN NERACA</label>
+                                    <select id="form-kategori" class="form-control" required style="border-radius:10px; height: 45px;">
+                                        <option value="Kas Lancar Lingkungan">Kas Lancar Lingkungan</option>
+                                        <option value="Iuran Wajib Bulanan">Iuran Wajib Bulanan</option>
+                                        <option value="Donasi / Sumbangan Sukarela">Donasi / Sumbangan Sukarela</option>
+                                        <option value="Iuran Pembangunan Tanah Pribadi">Iuran Pembangunan Tanah Pribadi</option>
+                                        <option value="Iuran Pembangunan Tanah Kavling">Iuran Pembangunan Tanah Kavling</option>
+                                        <option value="Dana Sosial & Kematian">Dana Sosial & Kematian</option>
+                                        <option value="Pembangunan Fisik & Fasum">Pembangunan Fisik & Fasum</option>
+                                    </select>
                                 </div>
-                            </form>
-                        </div>
-
-                        <div id="section-rekap-rw" style="display:none;">
-                            <div class="row text-center mb-4">
-                                <div class="col-md-4 mb-3">
-                                    <div class="card border-0 shadow-sm p-3 text-left"
-                                        style="border-radius:18px; border-left: 5px solid #28a745 !important; background: white;">
-                                        <span class="text-muted small font-weight-bold text-uppercase">Total Akumulasi
-                                            Pemasukan</span>
-                                        <h3 id="rekap-total-masuk" class="font-weight-bold text-success mt-2">Rp 0</h3>
-                                        <small class="text-muted">*Gabungan dana masuk seluruh RT</small>
-                                    </div>
+                                <div class="form-group col-md-3">
+                                    <label class="small font-weight-bold text-muted">NOMINAL (RP)</label>
+                                    <input type="number" id="form-nominal" class="form-control" placeholder="Contoh: 150000" required style="border-radius:10px; height: 45px;">
                                 </div>
-                                <div class="col-md-4 mb-3">
-                                    <div class="card border-0 shadow-sm p-3 text-left"
-                                        style="border-radius:18px; border-left: 5px solid #dc3545 !important; background: white;">
-                                        <span class="text-muted small font-weight-bold text-uppercase">Total Akumulasi
-                                            Pengeluaran</span>
-                                        <h3 id="rekap-total-keluar" class="font-weight-bold text-danger mt-2">Rp 0</h3>
-                                        <small class="text-muted">*Gabungan dana keluar seluruh RT</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <div class="card border-0 shadow-sm p-3 text-left text-white"
-                                        style="border-radius:18px; background: linear-gradient(135deg, #1e3c72, #2a5298);">
-                                        <span class="text-white-50 small font-weight-bold text-uppercase">Saldo Bersih
-                                            Saat Ini</span>
-                                        <h3 id="rekap-saldo-bersih" class="font-weight-bold mt-2">Rp 0</h3>
-                                        <small class="text-white-50">*Netto kas konsolidasi RW</small>
-                                    </div>
+                                <div class="form-group col-md-3">
+                                    <label class="small font-weight-bold text-muted">PILIH WARGA</label>
+                                    <!-- Tambahkan class 'select2-warga' untuk inisialisasi -->
+                                    <select id="form-pilih-warga" class="form-control" style="width: 100%; border-radius:10px; height: 45px;">
+                                        <option value="">-- Cari Nama Warga --</option>
+                                    </select>
+                                    <!-- NIK tetap disimpan di sini agar bisa dikirim ke server -->
+                                    <input type="hidden" id="form-nik-terpilih">
                                 </div>
                             </div>
-
-                            <div class="card border-0 shadow-sm p-4 mb-4"
-                                style="border-radius:18px; background: white;">
-                                <h6 class="font-weight-bold text-dark mb-3"><i
-                                        class="fas fa-chart-bar text-info mr-2"></i> Komparasi Ringkasan Buku Kas Antar
-                                    RT</h6>
-                                <div id="wrapper-breakdown-rt" class="row"></div>
+                            <div class="text-right mt-2">
+                                <button type="button" class="btn btn-secondary font-weight-bold px-3 mr-2"
+                                    onclick="pemicuToggleBukaTutupFormRT()" style="border-radius: 10px; height: 45px;">Batal</button>
+                                <button type="submit" class="btn btn-primary font-weight-bold px-4 shadow-sm" style="border-radius:10px; height: 45px;">
+                                    <i class="fas fa-check-circle mr-2"></i>Laporkan Transaksi
+                                </button>
                             </div>
-                        </div>
-
-                        <div class="row mb-4">
-                            <div class="col-md-6 mb-3">
-                                <div class="card border-0 shadow-sm" style="border-radius:18px; height:100%;">
-                                    <div class="card-header bg-success text-white font-weight-bold p-3"
-                                        style="border-radius:18px 18px 0 0;">
-                                        <i class="fas fa-wallet mr-2"></i> SISI (PEMASUKAN KUMULATIF)
-                                    </div>
-                                    <div class="p-3 bg-white" style="border-radius: 0 0 18px 18px;">
-                                        <table class="table table-sm table-hover table-borderless mb-0">
-                                            <tbody id="neraca-aktiva-rows" style="font-size: 13px;"></tbody>
-                                        </table>
-                                        <hr class="my-2">
-                                        <div class="d-flex justify-content-between font-weight-bold px-2 text-success"
-                                            style="font-size:15px;">
-                                            <span>TOTAL DANA MASUK</span>
-                                            <span id="neraca-total-aktiva">Rp 0</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="card border-0 shadow-sm" style="border-radius:18px; height:100%;">
-                                    <div class="card-header bg-danger text-white font-weight-bold p-3"
-                                        style="border-radius:18px 18px 0 0;">
-                                        <i class="fas fa-file-invoice-dollar mr-2"></i> SISI (PENGELUARAN/ALOKASI AKUN)
-                                    </div>
-                                    <div class="p-3 bg-white" style="border-radius: 0 0 18px 18px;">
-                                        <table class="table table-sm table-hover table-borderless mb-0">
-                                            <tbody id="neraca-pasiva-rows" style="font-size: 13px;"></tbody>
-                                        </table>
-                                        <hr class="my-2">
-                                        <div class="d-flex justify-content-between font-weight-bold px-2 text-danger"
-                                            style="font-size:15px;">
-                                            <span>TOTAL DANA KELUAR</span>
-                                            <span id="neraca-total-pasiva">Rp 0</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="box-saldo-internal"
-                            class="alert alert-warning border-0 p-3 shadow-sm d-flex justify-content-between align-items-center mb-4"
-                            style="border-radius:15px; background: #fff3cd;">
-                            <div>
-                                <h6 class="font-weight-bold mb-1 text-dark">💰 Sisa Kas Bersih Saat Ini (Ekuitas/Saldo
-                                    Buku)</h6>
-                                <small class="text-muted">Kalkulasi akhir dari Total Pemasukan dikurangi Total
-                                    Pengeluaran internal</small>
-                            </div>
-                            <h3 class="font-weight-bold mb-0 text-dark" id="neraca-saldo-internal-text">Rp 0</h3>
-                        </div>
-
-                        <div class="card border-0 shadow-sm p-4" style="border-radius:18px; background: white;">
-                            <h6 class="font-weight-bold mb-3 text-secondary text-uppercase tracking-wider"
-                                style="font-size:12px;" id="title-tabel-kas"><i class="fas fa-history mr-2"></i>Log
-                                Jurnal Transaksi</h6>
-                            <div class="table-responsive"
-                                style="max-height: 350px; border-radius:12px; border: 1px solid #e9ecef;">
-                                <table class="table table-striped table-hover mb-0"
-                                    style="font-size: 12px; vertical-align: middle;">
-                                    <thead class="bg-secondary text-white sticky-top">
-                                        <tr>
-                                            <th class="p-3">ID</th>
-                                            <th class="p-3">TANGGAL</th>
-                                            <th class="p-3">WILAYAH</th>
-                                            <th class="p-3">JENIS</th>
-                                            <th class="p-3">KATEGORI AKUN</th>
-                                            <th class="p-3">KETERANGAN</th>
-                                            <th class="p-3 text-right">NOMINAL</th>
-                                            <th class="p-3">PETUGAS</th>
-                                            <th class="p-3">Cetak</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="neraca-log-jurnal" style="font-size: 13px; color: #495057;"></tbody>
-                                </table>
-                            </div>
-                        </div>
-
+                        </form>
                     </div>
+
+                    <!-- Section Rekap Konsolidasi RW -->
+                    <div id="section-rekap-rw" style="display:none;">
+                        <div class="row text-center mb-4">
+                            <div class="col-md-4 mb-3">
+                                <div class="card border-0 shadow-sm p-3 text-left" style="border-radius:18px; border-left: 5px solid #28a745 !important; background: white;">
+                                    <span class="text-muted small font-weight-bold text-uppercase">Total Akumulasi Pemasukan</span>
+                                    <h3 id="rekap-total-masuk" class="font-weight-bold text-success mt-2">Rp 0</h3>
+                                    <small class="text-muted">*Gabungan dana masuk seluruh RT</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card border-0 shadow-sm p-3 text-left" style="border-radius:18px; border-left: 5px solid #dc3545 !important; background: white;">
+                                    <span class="text-muted small font-weight-bold text-uppercase">Total Akumulasi Pengeluaran</span>
+                                    <h3 id="rekap-total-keluar" class="font-weight-bold text-danger mt-2">Rp 0</h3>
+                                    <small class="text-muted">*Gabungan dana keluar seluruh RT</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card border-0 shadow-sm p-3 text-left text-white" style="border-radius:18px; background: linear-gradient(135deg, #1e3c72, #2a5298);">
+                                    <span class="text-white-50 small font-weight-bold text-uppercase">Saldo Bersih Saat Ini</span>
+                                    <h3 id="rekap-saldo-bersih" class="font-weight-bold mt-2">Rp 0</h3>
+                                    <small class="text-white-50">*Netto kas konsolidasi RW</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:18px; background: white;">
+                            <h6 class="font-weight-bold text-dark mb-3">
+                                <i class="fas fa-chart-bar text-info mr-2"></i> Komparasi Ringkasan Buku Kas Antar RT
+                            </h6>
+                            <div id="wrapper-breakdown-rt" class="row"></div>
+                        </div>
+                    </div>
+
+                    <!-- Sisi Pemasukan & Pengeluaran -->
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-0 shadow-sm" style="border-radius:18px; height:100%;">
+                                <div class="card-header bg-success text-white font-weight-bold p-3" style="border-radius:18px 18px 0 0;">
+                                    <i class="fas fa-wallet mr-2"></i> SISI (PEMASUKAN KUMULATIF)
+                                </div>
+                                <div class="p-3 bg-white" style="border-radius: 0 0 18px 18px;">
+                                    <table class="table table-sm table-hover table-borderless mb-0">
+                                        <tbody id="neraca-aktiva-rows" style="font-size: 13px;"></tbody>
+                                    </table>
+                                    <hr class="my-2">
+                                    <div class="d-flex justify-content-between font-weight-bold px-2 text-success" style="font-size:15px;">
+                                        <span>TOTAL DANA MASUK</span>
+                                        <span id="neraca-total-aktiva">Rp 0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-0 shadow-sm" style="border-radius:18px; height:100%;">
+                                <div class="card-header bg-danger text-white font-weight-bold p-3" style="border-radius:18px 18px 0 0;">
+                                    <i class="fas fa-file-invoice-dollar mr-2"></i> SISI (PENGELUARAN/ALOKASI AKUN)
+                                </div>
+                                <div class="p-3 bg-white" style="border-radius: 0 0 18px 18px;">
+                                    <table class="table table-sm table-hover table-borderless mb-0">
+                                        <tbody id="neraca-pasiva-rows" style="font-size: 13px;"></tbody>
+                                    </table>
+                                    <hr class="my-2">
+                                    <div class="d-flex justify-content-between font-weight-bold px-2 text-danger" style="font-size:15px;">
+                                        <span>TOTAL DANA KELUAR</span>
+                                        <span id="neraca-total-pasiva">Rp 0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sisa Kas Bersih / Ekuitas -->
+                    <div id="box-saldo-internal" class="alert alert-warning border-0 p-3 shadow-sm d-flex justify-content-between align-items-center mb-4" style="border-radius:15px; background: #fff3cd;">
+                        <div>
+                            <h6 class="font-weight-bold mb-1 text-dark">💰 Sisa Kas Bersih Saat Ini (Ekuitas/Saldo Buku)</h6>
+                            <small class="text-muted">Kalkulasi akhir dari Total Pemasukan dikurangi Total Pengeluaran internal</small>
+                        </div>
+                        <h3 class="font-weight-bold mb-0 text-dark" id="neraca-saldo-internal-text">Rp 0</h3>
+                    </div>
+
+                    <!-- Log Jurnal Transaksi -->
+                    <div class="card border-0 shadow-sm p-4" style="border-radius:18px; background: white;">
+                        <h6 class="font-weight-bold mb-3 text-secondary text-uppercase tracking-wider" style="font-size:12px;" id="title-tabel-kas">
+                            <i class="fas fa-history mr-2"></i>Log Jurnal Transaksi
+                        </h6>
+                        <div class="table-responsive" style="max-height: 350px; border-radius:12px; border: 1px solid #e9ecef;">
+                            <table class="table table-striped table-hover mb-0" style="font-size: 12px; vertical-align: middle;">
+                                <thead class="bg-secondary text-white sticky-top">
+                                    <tr>
+                                        <th class="p-3">ID</th>
+                                        <th class="p-3">TANGGAL</th>
+                                        <th class="p-3">WILAYAH</th>
+                                        <th class="p-3">JENIS</th>
+                                        <th class="p-3">KATEGORI AKUN</th>
+                                        <th class="p-3">KETERANGAN</th>
+                                        <th class="p-3 text-right">NOMINAL</th>
+                                        <th class="p-3">PETUGAS</th>
+                                        <th class="p-3">Cetak</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="neraca-log-jurnal" style="font-size: 13px; color: #495057;"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
-        <div id="loader">
-            <div class="spinner-border text-success" style="width: 3rem; height: 3rem; border-width: 0.35em;"></div>
-            <h6 class="mt-4 font-weight-bold text-dark" id="loader-text">Loading...</h6>
-        </div>
+    </div>
+
+</div>
+
+<!-- ========================================== -->
+<!-- SYSTEM LOADER                              -->
+<!-- ========================================== -->
+<div id="loader" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(255,255,255,0.8); z-index: 99999; justify-content: center; align-items: center; flex-direction: column;">
+    <div class="spinner-border text-success" style="width: 3rem; height: 3rem; border-width: 0.35em;"></div>
+    <h6 class="mt-4 font-weight-bold text-dark" id="loader-text">Loading...</h6>
+</div>
 
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
@@ -1570,11 +1637,68 @@
                             if (menuPersuratan) {
                                 menuPersuratan.style.setProperty('display', 'inline-block', 'important');
                             }
+                            // 🚀 REFRESH HALAMAN SETELAH LOGIN BERHASIL
+                            location.reload();
                         });
                     } else {
                         Swal.fire({ icon: 'error', title: 'Tidak Ditemukan', text: 'Data No. KK tidak ditemukan di database warga!' });
                     }
                 }, 800);
+            }
+
+
+            function sikatLoginKeServer() {
+                const userTxt = $('#input-username').val();
+                const passTxt = $('#input-password').val();
+
+                $('#loader').show();
+
+                google.script.run.withSuccessHandler(function (response) {
+                    $('#loader').hide();
+
+                    if (response.success) {
+                        // 1. Simpan data profil dari tabel User ke variabel global aplikasi
+                        currentUser = response.userProfile;
+
+                        // 2. Simpan sesi ke memori browser agar saat di-refresh tidak log out
+                        localStorage.setItem('solid_rw_user', JSON.stringify(currentUser));
+
+                        // 3. Tutup modal login & update tampilan dashboard utama Anda
+                        $('#loginModal').modal('hide');
+                        if (typeof updateUIAfterLogin === 'function') updateUIAfterLogin();
+
+                        // 4. JALANKAN PEMICU TOMBOL KEUANGAN MELAYANG 
+                        if (typeof tampilkanTombolKeuanganSesuaiSesi === 'function') {
+                            tampilkanTombolKeuanganSesuaiSesi();
+                        }
+
+                        // 5. LOGIKA KONTROL MENU UNTUK JALUR LOGIN MANAJEMEN SERVER
+                        const menuAdmin = document.getElementById('menu-dashboard-admin');
+                        if (menuAdmin && currentUser && currentUser.role) {
+                            const userRole = currentUser.role.toLowerCase().trim();
+                            if (userRole === "admin" || userRole === "rt" || userRole === "rw") {
+                                menuAdmin.style.display = "block"; // Munculkan jika Admin RW/RT
+                            } else {
+                                menuAdmin.style.display = "none";  // Sembunyikan jika warga biasa
+                            }
+                        }
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil Masuk',
+                            text: 'Selamat datang, ' + (currentUser.nama || 'Warga'),
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            // PAKSA JEDHUL JALUR SERVER VIA FUNGSI GLOBAL
+                            periksaStatusMenuPersuratan();
+                            // 🚀 REFRESH HALAMAN SETELAH JALUR SERVER BERHASIL LOGIN
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({ icon: 'error', title: 'Gagal Login', text: response.message });
+                    }
+                }).prosesLoginAplikasi(userTxt, passTxt);
             }
 
 
@@ -1701,10 +1825,14 @@
                     return;
                 }
 
-                // 1. Munculkan modal secara instan ke layar terlebih dahulu
+                // Tampilkan modal
                 $('#modalNeracaKeuangan').modal('show');
 
+                // Reset form saat modal dibuka
+                $('#form-keterangan').val('');
+                $('#form-nik-terpilih').val('');
 
+                // Ambil data warga
                 $.ajax({
                     url: URL_WEB_APP_SERVER,
                     type: "GET",
@@ -1712,90 +1840,68 @@
                     crossDomain: true,
                     dataType: "jsonp",
                     success: function (response) {
-                        // Ambil hanya NIK dan NAMA dari tiap object
-                        const ambilniknama = response.map(function (obj) {
-                            return {
-                                nik: obj.NIK || "",
-                                nama: obj.NAMA || ""
-                            };
-                        });
+                        const select = $('#form-pilih-warga');
+                        select.empty();
+                        select.append('<option value="">-- Cari Nama Warga --</option>');
 
-                        console.log("Data NIK & NAMA:", ambilniknama);
-
-                        // Isi datalist autocomplete dengan nama warga
-                        $('#daftarWargaNeraca').empty();
-                        ambilniknama.forEach(function (warga) {
-                            if (warga.nama) {
-                                $('#daftarWargaNeraca').append(
-                                    $('<option></option>').val(warga.nama)
+                        response.forEach(function (warga) {
+                            let nama = warga.NAMA || warga.nama || "";
+                            let nik = warga.NIK || warga.nik || "";
+                            
+                            if (nama) {
+                                // Value diisi NIK agar mudah disimpan ke database
+                                select.append(
+                                    $('<option></option>').val(nik).text(nama + " - " + nik)
                                 );
                             }
                         });
-                    },
-                    error: function (xhr, status, err) {
-                        console.error("Gagal ambil data:", err);
+
+                        // Wajib panggil .trigger('change.select2') agar Select2 tahu ada data baru
+                        select.trigger('change.select2');
                     }
                 });
 
-                // Mengamankan pembacaan properti data agar toleran terhadap huruf besar/kecil
-                const valRT = currentUser.no_rt || currentUser.NO_RT || currentUser.rt || currentUser.RT || "-";
-
-                // Satukan semua kemungkinan sumber text jabatan menjadi Huruf Kapital Besar
-                const valJabatan = (currentUser.jabatan || currentUser.JABATAN || currentUser.role || currentUser.ROLE || "").toString().toUpperCase();
-                const namaUser = (currentUser.nama || currentUser.NAMA || "").toString().toUpperCase();
-
-                // 2. Beri jeda 200ms agar browser selesai merender animasi modal, 
-                // baru jalankan engine kalkulasi data yang berat di latar belakang.
+                // Jalankan Engine setelah jeda agar DOM siap
                 setTimeout(function () {
-                    console.log("Memulai pemrosesan engine neraca...");
+                    const valRT = currentUser.no_rt || currentUser.NO_RT || currentUser.rt || currentUser.RT || "-";
+                    const valJabatan = (currentUser.jabatan || currentUser.JABATAN || currentUser.role || currentUser.ROLE || "").toString().toUpperCase();
+                    const namaUser = (currentUser.nama || currentUser.NAMA || "").toString().toUpperCase();
 
-                    // =========================================================================
-                    // KONDISI AKSES LEVEL RW (ADMIN UTAMA)
-                    // =========================================================================
                     if (currentUser.role === 'admin' || currentUser.nik === "3515162010760006" || currentUser.JABATAN === "Admin") {
                         $('#wrapper-form-rt').hide();
                         $('#box-saldo-internal').show();
                         $('#section-rekap-rw').show();
                         $('#btn-pemicu-form-rt').show();
                         $('#text-rt-pelapor').text("RW (Pusat)");
-                        $('#sub-title-neraca').text("⚙️ Dashboard Executive Ketua RW - Input Anggaran RW & Memonitor Kas Konsolidasi Seluruh RT");
-                        $('#title-tabel-kas').html('<i class="fas fa-history mr-2"></i>MASTER JURNAL LOG KONSOLIDASI (ALL RT & RW)');
-
+                        $('#sub-title-neraca').text("⚙️ Dashboard Executive Ketua RW");
+                        $('#title-tabel-kas').html('<i class="fas fa-history mr-2"></i>MASTER JURNAL LOG KONSOLIDASI');
                         jalankanEnginePenghitungNeraca(true);
-                    }
-                    // =========================================================================
-                    // KONDISI AKSES LEVEL KETUA RT (Bypass Validasi Nama Pak Didik)
-                    // =========================================================================
-                    else if (valJabatan.includes('KRT') || valJabatan.includes('KETUA RT') || valJabatan === 'RT' || namaUser.includes('DIDIK SUPRAPTO')) {
+                    } else if (valJabatan.includes('KRT') || valJabatan.includes('KETUA RT') || valJabatan === 'RT' || namaUser.includes('DIDIK SUPRAPTO')) {
                         $('#section-rekap-rw').hide();
                         $('#box-saldo-internal').show();
                         $('#btn-pemicu-form-rt').show();
                         $('#wrapper-form-rt').show();
                         $('#text-rt-pelapor').text(valRT);
                         $('#sub-title-neraca').text("🏡 Panel Internal Pengurus Unit - RT " + valRT);
-                        $('#title-tabel-kas').html('<i class="fas fa-history mr-2"></i>BUKU KAS UTAMA TRANSAKSI INTERNAL - RT ' + valRT);
-
+                        $('#title-tabel-kas').html('<i class="fas fa-history mr-2"></i>BUKU KAS UTAMA - RT ' + valRT);
                         jalankanEnginePenghitungNeraca(false);
-                    }
-                    // =========================================================================
-                    // KONDISI AKSES WARGA BIASA / JABATAN LAINNYA
-                    // =========================================================================
-                    else {
+                    } else {
                         $('#section-rekap-rw').hide();
                         $('#btn-pemicu-form-rt').hide();
                         $('#wrapper-form-rt').hide();
                         $('#box-saldo-internal').show();
                         $('#sub-title-neraca').text("🔍 Transparansi Laporan Kas Warga - RT " + valRT);
                         $('#title-tabel-kas').html('<i class="fas fa-history mr-2"></i>AUDIT BUKU KAS TRANSPARAN WARGA - RT ' + valRT);
-
                         jalankanEnginePenghitungNeraca(false);
                     }
-                }, 200); // Jeda aman 200 milidetik
+                }, 500); // Saya naikkan jeda jadi 500ms agar lebih aman
             }
 
+
+
             function jalankanEnginePenghitungNeraca(isRW) {
-                // 1. Tampilkan status loading awal
-                $('#neraca-log-jurnal').html('<tr><td colspan="8" class="text-center p-4 text-muted"><i class="fas fa-spinner fa-spin mr-2"></i>Mengkalkulasi berkas akuntansi finansial Cloud...</td></tr>');
+                // 1. Tampilkan status loading awal (colspan diupdate jadi 12)
+                $('#neraca-log-jurnal').html('<tr><td colspan="12" class="text-center p-4 text-muted"><i class="fas fa-spinner fa-spin mr-2"></i>Mengkalkulasi berkas akuntansi finansial Cloud...</td></tr>');
 
                 // 2. Deteksi otomatis nomor unit RT warga yang aktif
                 let targetRT = ["1", "2", "3"];
@@ -1804,7 +1910,7 @@
                     if (nomorRTX) targetRT = nomorRTX.toString().replace(/\D/g, "").trim();
                 }
 
-                // 3. Tembak jalur baru menggunakan dataType "jsonp" agar anti blokir CORS / Error 400
+                // 3. Tembak jalur data
                 $.ajax({
                     url: URL_WEB_APP_SERVER,
                     type: "GET",
@@ -1819,12 +1925,14 @@
                         if (responDinamis && responDinamis.length > 0) {
                             renderKomponenLengkapAkuntansi(responDinamis, isRW);
                         } else {
-                            $('#neraca-log-jurnal').html('<tr><td colspan="8" class="text-center text-muted p-4"><i class="fas fa-folder-open mr-2"></i>Data Kas_RT kosong di Google Sheets.</td></tr>');
+                            // Jika data kosong, colspan juga harus 12
+                            $('#neraca-log-jurnal').html('<tr><td colspan="12" class="text-center text-muted p-4"><i class="fas fa-folder-open mr-2"></i>Data Kas_RT kosong di Google Sheets.</td></tr>');
                         }
                     },
                     error: function (xhr, status, error) {
                         console.error("Gagal memuat neraca dinamis:", error);
-                        $('#neraca-log-jurnal').html('<tr><td colspan="8" class="text-center text-danger p-4"><i class="fas fa-exclamation-triangle mr-2"></i>Gagal mengambil data dari server cloud.</td></tr>');
+                        // Jika error, colspan juga harus 12
+                        $('#neraca-log-jurnal').html('<tr><td colspan="12" class="text-center text-danger p-4"><i class="fas fa-exclamation-triangle mr-2"></i>Gagal mengambil data dari server cloud.</td></tr>');
                     }
                 });
             }
@@ -1922,23 +2030,26 @@
                     const badgeJenis = isPemasukan ? "badge-success" : "badge-danger";
                     const iconJenis = isPemasukan ? "↑" : "↓";
                     const badgeRTWarna = rt.toUpperCase() === "-" ? "badge-warning text-dark font-weight-bold" : "badge-dark";
+                    const namaBayar = row[8] || "-"; // Mengambil kolom ke-9 (index 8) yang dikirim backend
 
                     let barisHTML = `
-                            <tr>
-                                <td class="font-weight-bold text-muted">${id}</td>
-                                <td>${tgl}</td>
-                                <td><span class="badge ${badgeRTWarna} px-2 py-1">${rt}</span></td>
-                                <td><span class="badge ${badgeJenis} px-2 py-1">${iconJenis} ${jenis}</span></td>
-                                <td><small class="font-weight-bold text-primary">${posAkun}</small></td>
-                                <td style="max-width: 250px; white-space: normal;">${escapeScriptHTML(ket)}</td>
-                                <td class="text-right font-weight-bold text-dark">Rp ${nominal.toLocaleString('id-ID')}</td>
-                                <td class="text-muted"><small>${petugas}</small></td>
-                                <td class="text-right font-weight-bold text-primary" 
-                                    onclick="cetakKuitansi('${id}', '${tgl}', '${rt}', '${jenis}', '${posAkun}', '${escapeScriptHTML(ket)}', ${nominal}, '${petugas}')" 
-                                    style="cursor:pointer; text-decoration: underline;">
-                                    Cetak
-                                </td>
-                            </tr>`;
+                        <tr>
+                            <td class="font-weight-bold text-muted">${id}</td>
+                            <td>${tgl}</td>
+                            <td><span class="badge ${badgeRTWarna} px-2 py-1">${rt}</span></td>
+                            <td><span class="badge ${badgeJenis} px-2 py-1">${iconJenis} ${jenis}</span></td>
+                            <td><small class="font-weight-bold text-primary">${posAkun}</small></td>
+                            <td style="max-width: 250px; white-space: normal;">${escapeScriptHTML(ket)}</td>
+                            <td class="text-right font-weight-bold text-dark">Rp ${nominal.toLocaleString('id-ID')}</td>
+                            <td class="text-muted"><small>${petugas}</small></td>
+                            <td class="font-weight-bold text-dark">${namaBayar}</td> <!-- Kolom Nama Bayar -->
+                            <td><button class="btn btn-sm btn-outline-warning"><i class="fas fa-edit"></i></button></td>
+                            <td><button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button></td>
+                            <td class="text-right font-weight-bold text-primary" 
+                                onclick="cetakKuitansi('${id}', '${tgl}', '${rt}', '${jenis}', '${posAkun}', '${escapeScriptHTML(ket)}', ${nominal}, '${petugas}')" 
+                                style="cursor:pointer; text-decoration: underline;">Cetak</td>
+                        </tr>`;
+                    // ... sisa logika RT/RW tetap sama
 
                     const rtValue = rt.toString().trim();
 
@@ -1989,7 +2100,14 @@
                 function aplikasikanSwitchTampilanHalaman(isPribadiActive) {
                     if (isPribadiActive || !isAdminAtauNikKhusus) {
                         $('#title-tabel-kas').html('<i class="fas fa-history mr-2"></i>BUKU JURNAL TRANSAKSI INTERNAL (KHUSUS RW PRIBADI)');
-                        $('#neraca-log-jurnal').html(htmlJurnalRW || '<tr><td colspan="8" class="text-center text-muted p-3">Belum ada transaksi internal RW</td></tr>');
+                        // Contoh di awal fungsi
+                    if (!data || data.length <= 1) {
+                        $('#neraca-log-jurnal').html('<tr><td colspan="12" class="text-center text-muted p-4"><i class="fas fa-folder-open mr-2"></i>Belum ada data kas terekam di sheet Kas_RT.</td></tr>');
+                        // ...
+                    }
+
+                    // Contoh di dalam fungsi aplikasikanSwitchTampilanHalaman
+                    $('#neraca-log-jurnal').html(htmlJurnalRW || '<tr><td colspan="12" class="text-center text-muted p-3">Belum ada transaksi internal RW</td></tr>');
 
                         $('#neraca-total-aktiva').text("Rp " + rwPemasukan.toLocaleString('id-ID'));
                         $('#neraca-total-pasiva').text("Rp " + rwPengeluaran.toLocaleString('id-ID'));
@@ -2096,17 +2214,26 @@
                 const jenis = $('#form-jenis').val();
                 const kat = $('#form-kategori').val();
                 const nominal = $('#form-nominal').val();
-                const ket = $('#form-keterangan').val();
+                const nikWarga = $('#form-nik-terpilih').val();
+                
+                // Ambil input keterangan dan bersihkan agar hanya menyisakan nama
+                // Contoh: "Budi Santoso (3515...)" menjadi "Budi Santoso"
+                const rawKeterangan = $('#form-keterangan').val();
+                const namaBersih = rawKeterangan.split('(')[0].trim(); 
 
                 if (!nominal || isNaN(nominal) || Number(nominal) <= 0) {
                     Swal.fire({ icon: 'warning', title: 'Data Tidak Valid', text: 'Silakan masukkan nilai nominal angka yang benar!' });
                     return;
                 }
 
+                if (!nikWarga || !rawKeterangan) {
+                    Swal.fire({ icon: 'warning', title: 'Data Warga Belum Valid', text: 'Mohon pilih nama warga dari daftar yang tersedia!' });
+                    return;
+                }
+
                 $('#loader-text').text("Mengirim entri kas ke master jurnal neraca...");
                 $('#loader').show();
 
-                // 🌟 LOGIKA CERDAS: Mendeteksi jika yang menginput Admin RW, kunci data kolom RT sebagai "RW"
                 let targetRT = currentUser.no_rt || currentUser.NO_RT || currentUser.rt || currentUser.RT || "3";
                 if (currentUser.role === 'admin' || currentUser.nik === "3515162010760006") {
                     targetRT = "RW";
@@ -2115,9 +2242,11 @@
                 const namaPetugas = currentUser.nama || currentUser.NAMA || "Pak Didik Suprapto";
 
                 const payloadData = {
+                    action: "simpanTransaksi", // Tambahkan action jika backend Anda memerlukannya
                     jenis: jenis,
                     kategori: kat,
-                    keterangan: ket,
+                    keterangan: namaBersih, // Mengirim nama bersih saja
+                    nik: nikWarga, 
                     nominal: Number(nominal),
                     rtAsal: targetRT,
                     namaPetugas: namaPetugas
@@ -2129,27 +2258,31 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payloadData)
                 })
-                    .then(() => {
-                        $('#loader').hide();
-                        Swal.fire({ icon: 'success', title: 'Pencatatan Berhasil', text: 'Data kas dikirim ke sistem jurnal!', timer: 1500, showConfirmButton: false });
-
-                        $('#form-nominal').val('');
-                        $('#form-keterangan').val('');
-
-                        // Auto-close form slide setelah menginput data demi kerapian UX
-                        $('#wrapper-form-rt').slideUp();
-
-                        if (currentUser.role === 'admin' || currentUser.nik === "3515162010760006") {
-                            jalankanEnginePenghitungNeraca(true);
-                        } else {
-                            jalankanEnginePenghitungNeraca(false);
-                        }
-                    })
-                    .catch(error => {
-                        $('#loader').hide();
-                        Swal.fire({ icon: 'error', title: 'Gagal Menyimpan', text: 'Koneksi ke server API terputus atau salah!' });
-                        console.error("Error Post Simpan:", error);
+                .then(() => {
+                    $('#loader').hide();
+                    Swal.fire({ 
+                        icon: 'success', 
+                        title: 'Pencatatan Berhasil', 
+                        text: 'Data kas dikirim ke sistem jurnal!', 
+                        timer: 1500, 
+                        showConfirmButton: false 
                     });
+
+                    // Reset semua field
+                    $('#form-nominal').val('');
+                    $('#form-keterangan').val('');
+                    $('#form-nik-terpilih').val('');
+                    $('#wrapper-form-rt').slideUp();
+
+                    // Refresh data
+                    const isAdmin = (currentUser.role === 'admin' || currentUser.nik === "3515162010760006");
+                    jalankanEnginePenghitungNeraca(isAdmin);
+                })
+                .catch(error => {
+                    $('#loader').hide();
+                    Swal.fire({ icon: 'error', title: 'Gagal Menyimpan', text: 'Koneksi ke server API terputus atau salah!' });
+                    console.error("Error Post Simpan:", error);
+                });
             }
 
             function escapeScriptHTML(str) {
@@ -3466,248 +3599,121 @@
             // =========================================================================
             // 🟢 GANTI DENGAN VERSI ANTI-MACET INI (LOADER PASTI BERHENTI / REFRESH AMAN)
             // =========================================================================
-            function prosesUploadAdmin() {
-                const idBerita = $('#adm-id-berita').val() || "";
-                const kategori = $('#adm-kategori').val() || "Informasi Umum";
-                const judul = $('#adm-judul').val();
-                const isi = $('#adm-isi').val();
-                const fileInput = document.getElementById('adm-file');
+            async function prosesUploadAdmin() {
+    const idBerita = $('#adm-id-berita').val() || "";
+    const kategori = $('#kategoriBerita').val() || "Informasi Umum";
+    const judul = $('#judulBerita').val();
+    const isi = $('#isiBerita').val();
+    const fileInput = document.getElementById('fotoBerita'); 
 
-                if (!judul || !isi) {
-                    alert("Isi judul dan pengumuman!");
-                    return;
-                }
+    if (!judul || !isi) {
+        alert("Isi judul dan pengumuman!");
+        return;
+    }
 
-                // Aktifkan Loader
-                $('#loader-text').text(idBerita ? "Memperbarui..." : "Menyimpan...");
-                $('#loader').show();
+    if ($('#loader-text').length) $('#loader-text').text(idBerita ? "Memperbarui..." : "Menyimpan...");
+    if ($('#loader').length) $('#loader').show();
 
-                const file = fileInput.files[0];
+    let fotoUrlHasil = "";
+    const file = fileInput ? fileInput.files[0] : null;
 
-                // Dipaksa string langsung agar tidak merujuk ke objek login yang rawan error/undefined
-                let namaPetugas = "ADMIN RW01";
+    if (file) {
+        try {
+            let formDataImgur = new FormData();
+            formDataImgur.append("image", file);
 
-                const dataPaket = { idBerita, kategori, judul, isi, namaPetugas };
+            let responImgur = await fetch("https://api.imgur.com/3/image", {
+                method: "POST",
+                headers: { Authorization: "Client-ID 6e80b2b8cc9df3a" },
+                body: formDataImgur
+            }).then(res => res.json());
 
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const fileData = {
-                            data: e.target.result.split(',')[1],
-                            mimeType: file.type,
-                            fileName: file.name
-                        };
+            if (responImgur.success) {
+                fotoUrlHasil = responImgur.data.link;
+            } else {
+                console.warn("Gagal upload ke Imgur, menggunakan gambar lama.");
+            }
+        } catch (errImgur) {
+            console.error("Error upload Imgur:", errImgur);
+        }
+    }
 
-                        google.script.run.withSuccessHandler(res => {
-                            // AMAN: Matikan loader terlebih dahulu sebelum melakukan aksi lain
-                            $('#loader').hide();
+    let payload = {
+        action: "simpanBeritaAPI",
+        dataPaket: {
+            idBerita: idBerita,
+            judul: judul,
+            kategori: kategori,
+            isi: isi,
+            namaPetugas: "ADMIN RW01",
+            fotoUrlDariFrontEnd: fotoUrlHasil,
+            // 🔥 FIX FOTO: Tak pasangi variasi jeneng variabel ben backend-mu iso moco
+            fotoUrl: fotoUrlHasil, 
+            foto: fotoUrlHasil
+        },
+        fileData: null
+    };
 
-                            alert(res.message || "Berhasil diproses!");
-                            $('#modalAdminBerita').modal('hide');
+    try {
+        let response = await fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        }).then(res => res.json());
 
-                            // Panggil refresh halaman, jika error abaikan agar loader tidak macet
-                            try { showHome(); } catch (e) { window.location.reload(); }
-                        })
-                            .withFailureHandler(err => {
-                                $('#loader').hide();
-                                alert("Gagal koneksi ke server: " + err.toString());
-                            })
-                            .processAdminUpdateWithFile(dataPaket, fileData);
-                    };
-                    reader.readAsDataURL(file);
+        if ($('#loader').length) $('#loader').hide();
+
+        if (response.status === "sukses" || response.success) {
+            alert("✅ Berita berhasil disimpan!");
+            
+            // 🔥 FIX 1: Form Langsung Menutup Otomatis (Nganggo ID modal sing bener)
+            $('#modal-manajemen-berita-admin').modal('hide');
+            
+            // Kosongno isi form ben resik pas dibuka maneh
+            $('#adm-id-berita').val('');
+            $('#judulBerita').val('');
+            $('#isiBerita').val('');
+            $('#fotoBerita').val('');
+            $('#label-nama-foto').text('No file chosen');
+
+            // 🔥 FIX 2: Supaya Tampil yang Terbaru (Reload total meksa browser moco data anyar seko Sheets)
+            try { 
+                // Goleki fungsi sing nggo njupuk data awalmu (misal: ambilBerita(), loadData(), utawa showHome())
+                if (typeof showHome === "function") {
+                    showHome(); 
                 } else {
-                    google.script.run.withSuccessHandler(res => {
-                        // AMAN: Matikan loader terlebih dahulu
-                        $('#loader').hide();
-
-                        alert(res.message || "Berhasil diproses!");
-                        $('#modalAdminBerita').modal('hide');
-
-                        try { showHome(); } catch (e) { window.location.reload(); }
-                    })
-                        .withFailureHandler(err => {
-                            $('#loader').hide();
-                            alert("Gagal koneksi ke server: " + err.toString());
-                        })
-                        .processAdminUpdateWithFile(dataPaket, null);
+                    window.location.reload(true); 
                 }
+            } catch (e) { 
+                window.location.reload(true); 
             }
-            function editBeritaDariTabel(id, kategori, judul, isi) {
-                $('#adm-id-berita').val(id);
-                $('#adm-kategori').val(kategori);
-                $('#adm-judul').val(judul);
-                $('#adm-isi').val(isi);
-                $('#adm-file').val('');
-                $('#btn-admin-save').text("Simpan Perubahan Berita");
-                $('#modalAdminBerita').modal('show');
-            }
+        } else {
+            alert("Gagal memproses berita: " + (response.message || "Unknown Error"));
+        }
+    } catch (err) {
+        if ($('#loader').length) $('#loader').hide();
+        alert("Gagal terhubung ke Google Sheets: " + err.toString());
+    }
+}
 
-            // Fungsi Eksekusi Pengiriman Data ke Google Apps Script (Backend)
-            function prosesUploadAdmin() {
-                const idBerita = $('#adm-id-berita').val() || "";
-                const kategori = $('#adm-kategori').val() || "Informasi Umum";
-                const judul = $('#adm-judul').val();
-                const isi = $('#adm-isi').val();
-                const fileInput = document.getElementById('adm-file');
+// Fungsi Otomatis untuk Mengisi Data Baris Tabel Manajemen Berita
+function muatTabelBeritaAdmin(allValuesBerita) {
+    if (!allValuesBerita || allValuesBerita.length <= 1) {
+        $('#tabel-list-berita').html('<tr><td colspan="4" class="text-center text-muted py-4">Belum ada data berita di sheet. Silakan tambah baru!</td></tr>');
+        return;
+    }
 
-                if (!judul || !isi) {
-                    alert("Isi judul dan pengumuman!");
-                    return;
-                }
+    let htmlBaris = '';
+    for (let i = 1; i < allValuesBerita.length; i++) {
+        const row = allValuesBerita[i];
+        const id = row[0] || `BRT-${String(i).padStart(3, '0')}`;
+        const kategori = row[2] || 'Informasi Umum';
+        const judul = row[3] || 'Tanpa Judul';
+        const isi = row[4] || '';
 
-                // Hidupkan Loader Jaringan
-                $('#loader-text').text(idBerita ? "Memperbarui..." : "Menyimpan...");
-                $('#loader').show();
+        const judulAman = btoa(unescape(encodeURIComponent(judul)));
+        const isiAman = btoa(unescape(encodeURIComponent(isi)));
 
-                const file = fileInput.files[0];
-                const dataPaket = { idBerita, kategori, judul, isi, namaPetugas: "ADMIN RW01" };
-
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const fileData = {
-                            data: e.target.result.split(',')[1],
-                            mimeType: file.type,
-                            fileName: file.name
-                        };
-
-                        google.script.run.withSuccessHandler(res => {
-                            $('#loader').hide();
-                            alert(res.message || "Berhasil diproses!");
-                            $('#modalAdminBerita').modal('hide');
-                            try { showHome(); } catch (e) { window.location.reload(); }
-                        })
-                            .withFailureHandler(err => {
-                                $('#loader').hide();
-                                alert("Gagal terhubung ke Google Sheets: " + err.toString());
-                            })
-                            .processAdminUpdateWithFile(dataPaket, fileData);
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    google.script.run.withSuccessHandler(res => {
-                        $('#loader').hide();
-                        alert(res.message || "Berhasil diproses!");
-                        $('#modalAdminBerita').modal('hide');
-                        try { showHome(); } catch (e) { window.location.reload(); }
-                    })
-                        .withFailureHandler(err => {
-                            $('#loader').hide();
-                            alert("Gagal terhubung ke Google Sheets: " + err.toString());
-                        })
-                        .processAdminUpdateWithFile(dataPaket, null);
-                }
-            }
-
-            // Fungsi Otomatis untuk Mengisi Data Baris Tabel Manajemen Berita
-            function muatTabelBeritaAdmin(allValuesBerita) {
-                if (!allValuesBerita || allValuesBerita.length <= 1) {
-                    $('#tabel-list-berita').html('<tr><td colspan="4" class="text-center text-muted py-4">Belum ada data berita.</td></tr>');
-                    return;
-                }
-
-                let htmlBaris = '';
-                for (let i = 1; i < allValuesBerita.length; i++) {
-                    const row = allValuesBerita[i];
-                    const id = row[0] || `BRT-${String(i).padStart(3, '0')}`;
-                    const kategori = row[2] || 'Informasi Umum';
-                    const judul = row[3] || 'Tanpa Judul';
-                    const isi = row[4] || '';
-
-                    // Pembersihan karakter enter/kutip rawan crash JavaScript tombol inline
-                    const isiAman = isi.replace(/['"]/g, '\\"').replace(/\n/g, ' ');
-
-                    htmlBaris += `
-            <tr style="border-bottom: 1px solid #f8f9fa;">
-                <td class="align-middle font-weight-bold text-secondary small">${id}</td>
-                <td class="align-middle"><span class="badge badge-light text-dark px-2 py-1 border rounded-pill">${kategori}</span></td>
-                <td class="align-middle font-weight-bold text-dark">${judul}</td>
-                <td class="align-middle text-center">
-                    <button type="button" class="btn btn-sm btn-outline-warning text-dark font-weight-bold px-3 rounded-pill shadow-sm"
-                        onclick="editBeritaDariTabel('${id}', '${kategori}', '${judul}', '${isiAman}')">
-                        ✏️ Edit
-                    </button>
-                </td>
-            </tr>
-        `;
-                }
-                $('#tabel-list-berita').html(htmlBaris);
-            }
-            // 🟢 TARUH DI BAWAHNYA PAS: Fungsi pembantu saat tombol Edit ditekan oleh Pengurus
-            function pemicuBukaFormEditBerita(id, kategori, judul, isi) {
-                // Masukkan data lama ke dalam kotak input formulir admin
-                $('#adm-id-berita').val(id);
-                $('#adm-kategori').val(kategori);
-                $('#adm-judul').val(judul);
-                $('#adm-isi').val(isi);
-
-                // Munculkan pop-up modal input admin Anda
-                if ($('#modalAdminForm').length) $('#modalAdminForm').modal('show');
-            }
-            // =========================================================================
-
-            // =========================================================================
-            // A. Fungsi mengisi Berita Utama Terkini di Halaman Depan (Beranda)
-            // =========================================================================
-
-            // =========================================================================
-            // PENTING: Ganti URL di bawah ini dengan URL Web App Google Apps Script Anda
-            // =========================================================================
-            const API_URL = "https://script.google.com/macros/s/AKfycbxtQMhoPtjcm2epdw0qJGfRiSCCLa0e2GeFz5NCHZkHTVMBGol8qkOHivqfhaMQkaB2/exec";
-
-            // =========================================================================
-            // A. Fungsi mengisi Berita Utama Terkini di Halaman Depan (Beranda)
-            // =========================================================================
-            function muatBeritaUtamaDinamis(allValuesBerita) {
-                if (!allValuesBerita || allValuesBerita.length <= 1) {
-                    $('#main-news-title').text("Belum Ada Pengumuman");
-                    $('#main-news-desc').text("Saat ini belum ada informasi resmi yang diterbitkan oleh pengurus RW.");
-                    $('#main-news-badge').text("INFORMASI VIA SHEETS KOSONG");
-                    $('#main-news-date').text("-");
-                    $('#main-news-img').attr('src', 'https://picsum.photos/id/11/800/450');
-                    return;
-                }
-
-                const barisTerakhir = allValuesBerita[allValuesBerita.length - 1];
-
-                const id = barisTerakhir[0] || '-';
-                const tanggal = barisTerakhir[1] || 'Hari Ini';
-                const kategori = barisTerakhir[2] || 'Informasi Umum';
-                const judul = barisTerakhir[3] || 'Tanpa Judul';
-                const isi = barisTerakhir[4] || '';
-                const urlGambar = barisTerakhir[5] || 'https://picsum.photos/id/11/800/450';
-
-                $('#main-news-badge').text(kategori.toUpperCase());
-                $('#main-news-date').text(tanggal);
-                $('#main-news-title').text(judul);
-
-                $('#main-news-desc').text(isi.length > 150 ? isi.substring(0, 150) + "..." : isi);
-                $('#main-news-img').attr('src', urlGambar);
-            }
-
-            // =========================================================================
-            // B. Fungsi memetakan baris data dari Google Sheet masuk ke dalam Tabel Dashboard
-            // =========================================================================
-            function muatTabelBeritaAdmin(allValuesBerita) {
-                if (!allValuesBerita || allValuesBerita.length <= 1) {
-                    $('#tabel-list-berita').html('<tr><td colspan="4" class="text-center text-muted py-4">Belum ada data berita di sheet. Silakan tambah baru!</td></tr>');
-                    return;
-                }
-
-                let htmlBaris = '';
-
-                for (let i = 1; i < allValuesBerita.length; i++) {
-                    const row = allValuesBerita[i];
-
-                    const id = row[0] || `BRT-${String(i).padStart(3, '0')}`;
-                    const kategori = row[2] || 'Informasi Umum';
-                    const judul = row[3] || 'Tanpa Judul';
-                    const isi = row[4] || '';
-
-                    const judulAman = btoa(unescape(encodeURIComponent(judul)));
-                    const isiAman = btoa(unescape(encodeURIComponent(isi)));
-
-                    htmlBaris += `
+        htmlBaris += `
             <tr style="border-bottom: 1px solid #f8f9fa;">
                 <td class="align-middle font-weight-bold text-secondary small">${id}</td>
                 <td class="align-middle"><span class="badge badge-light text-dark px-2 py-1 border rounded-pill">${kategori}</span></td>
@@ -3720,201 +3726,324 @@
                 </td>
             </tr>
         `;
+    }
+    $('#tabel-list-berita').html(htmlBaris);
+}
+
+function pemicuBukaFormEditBerita(id, kategori, judul, isi) {
+    $('#adm-id-berita').val(id);
+    $('#adm-kategori').val(kategori);
+    $('#adm-judul').val(judul);
+    $('#adm-isi').val(isi);
+    if ($('#modalAdminForm').length) $('#modalAdminForm').modal('show');
+}
+
+// URL API Google Apps Script
+const API_URL = "https://script.google.com/macros/s/AKfycbxtQMhoPtjcm2epdw0qJGfRiSCCLa0e2GeFz5NCHZkHTVMBGol8qkOHivqfhaMQkaB2/exec";
+
+// Variable global penampung data teks asli utama
+let dataTeksUtamaAman = { judul: '', isi: '', img: '' };
+
+// Fungsi SAKTI: Gawe Pop-up ALERT Bawaan Browser sing Gak Bakal Gagal
+function bukaPopUpAlerteCok(judulBase64, isiBase64, imgUrl) {
+    try {
+        const judul = decodeURIComponent(escape(atob(judulBase64)));
+        const isi = decodeURIComponent(escape(atob(isiBase64)));
+        
+        // Nggawe alert biasa ben 100% metu pop-up info ne
+        alert("📢 PENGUMUMAN RW 01\n\nJudul: " + judul + "\n\nIsi Informasi:\n" + isi);
+    } catch (e) {
+        console.error("Gagal decode data pop-up:", e);
+    }
+}
+
+// Fungsi muat berita utama dinamis halaman depan
+function muatBeritaUtamaDinamis(allValuesBerita) {
+    if (!allValuesBerita || allValuesBerita.length <= 1) {
+        $('#main-news-title').text("Belum Ada Pengumuman");
+        $('#main-news-desc').text("Saat ini belum ada informasi resmi yang diterbitkan oleh pengurus RW.");
+        $('#main-news-badge').text("KOSONG");
+        return;
+    }
+
+    // 1. DATA PALING BARU (Baris Paling Akhir)
+    const barisTerakhir = allValuesBerita[allValuesBerita.length - 1];
+    const kategoriUtama = barisTerakhir[2] || 'Informasi Umum';
+    const judulUtama = barisTerakhir[3] || 'Tanpa Judul';
+    const isiUtama = barisTerakhir[4] || '';
+    const urlGambarUtama = barisTerakhir[5] || 'https://picsum.photos/id/11/800/450';
+
+    $('#main-news-badge').text(kategoriUtama.toUpperCase());
+    if (barisTerakhir[1]) $('#main-news-date').text(barisTerakhir[1]);
+    $('#main-news-title').text(judulUtama);
+    $('#main-news-desc').text(isiUtama.length > 150 ? isiUtama.substring(0, 150) + "..." : isiUtama);
+    $('#main-news-img').attr('src', urlGambarUtama);
+
+    // Encode Base64 data berita utama untuk link klik inline
+    const jdlUtamaAman = btoa(unescape(encodeURIComponent(judulUtama)));
+    const isiUtamaAman = btoa(unescape(encodeURIComponent(isiUtama)));
+
+    // Pasang ONCLICK LANGSUNG nang area gambar lan tulisan utama ben anti-gagal
+    $('#main-news-img').attr('onclick', `bukaPopUpAlerteCok('${jdlUtamaAman}', '${isiUtamaAman}', '${urlGambarUtama}')`).css('cursor', 'pointer');
+    $('#main-news-title').attr('onclick', `bukaPopUpAlerteCok('${jdlUtamaAman}', '${isiUtamaAman}', '${urlGambarUtama}')`).css('cursor', 'pointer');
+    $('#main-news-desc').attr('onclick', `bukaPopUpAlerteCok('${jdlUtamaAman}', '${isiUtamaAman}', '${urlGambarUtama}')`).css('cursor', 'pointer');
+
+    // Upayanon tombol bawaan "Lihat Rincian Agenda" lek pancen ono, yo langsung iso diklik pop-up
+    $('button:contains("Lihat Rincian"), a:contains("Lihat Rincian")').attr('onclick', `bukaPopUpAlerteCok('${jdlUtamaAman}', '${isiUtamaAman}', '${urlGambarUtama}')`);
+
+    // 2. DAFTAR BERITA TERDAHULU (Kolom Kanan)
+    let htmlListKanan = '';
+    let jumlahTampil = 0;
+
+    for (let i = allValuesBerita.length - 2; i >= 1; i--) {
+        if (jumlahTampil >= 3) break;
+
+        const row = allValuesBerita[i];
+        const tglLama = row[1] || '';
+        const katLama = row[2] || 'INFO';
+        const jdlLama = row[3] || 'Tanpa Judul';
+        const isiLama = row[4] || '';
+        const imgLama = row[5] || `https://picsum.photos/id/${15 + i}/150/150`;
+
+        const jdlAmanLama = btoa(unescape(encodeURIComponent(jdlLama)));
+        const isiAmanLama = btoa(unescape(encodeURIComponent(isiLama)));
+        const borderStyle = (jumlahTampil === 2) ? '' : 'pb-3 border-bottom mb-3';
+
+        htmlListKanan += `
+            <div class="d-flex align-items-start justify-content-between ${borderStyle}" style="gap: 12px; cursor: pointer;" 
+                 onclick="bukaPopUpAlerteCok('${jdlAmanLama}', '${isiAmanLama}', '${imgLama}')">
+                <div style="flex: 1; min-width: 0;">
+                    <span class="text-success font-weight-bold d-block text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px; margin-bottom: 2px;">${katLama}</span>
+                    <a href="javascript:void(0)" class="text-dark font-weight-bold text-decoration-none d-block mb-1" style="font-size: 0.85rem; line-height: 1.3;">
+                        ${jdlLama}
+                    </a>
+                    <small class="text-muted d-block" style="font-size: 0.7rem;">${tglLama}</small>
+                </div>
+                <img src="${imgLama}" class="rounded" style="width: 60px; height: 60px; object-fit: cover; border-radius: 10px !important;">
+            </div>
+        `;
+        jumlahTampil++;
+    }
+
+    if (htmlListKanan === '') {
+        htmlListKanan = '<div class="text-muted small text-center py-3">Belum ada berita terdahulu.</div>';
+    }
+    $('#list-berita-terdahulu').html(htmlListKanan);
+}
+
+function bukaDashboardManajemenBerita() {
+    // Tampilkan animasi loading atau siapkan tempat data jika diperlukan
+    $('#tabel-list-berita').html('<tr><td colspan="4" class="text-center text-muted py-4">⏳ Memuat data terbaru dari API G-Sheets...</td></tr>');
+
+    // 🔥 FIX UTAMA: Pindahkan elemen modal langsung ke tag <body> biar gak ketutupan backdrop ireng,
+    // banjur nembe di-show modale.
+    $('#modal-manajemen-berita-admin').appendTo("body").modal('show');
+
+    // Ambil data dari server jika memang dibutuhkan untuk mengisi form/tabel di dalam modal
+    fetch(`${API_URL}?action=ambilBeritaAPI`)
+        .then(response => response.json())
+        .then(result => {
+            if (result.status === "sukses") {
+                if (typeof muatTabelBeritaAdmin === 'function') {
+                    muatTabelBeritaAdmin(result.data);
                 }
-                $('#tabel-list-berita').html(htmlBaris);
+            } else {
+                console.error("Gagal membaca database: " + result.message);
             }
+        })
+        .catch(err => console.error("Koneksi API Error: " + err.toString()));
+}
 
-            // =========================================================================
-            // C. Fungsi Navigasi & Pemanggilan Dashboard Berita Menggunakan API GET
-            // =========================================================================
-            function bukaDashboardManajemenBerita() {
-                $('#main-page-content').hide();
-                $('#admin-page-content').show();
-                $('#tabel-list-berita').html('<tr><td colspan="4" class="text-center text-muted py-4">⏳ Memuat data terbaru dari API G-Sheets...</td></tr>');
+function kembaliKeBeranda() {
+    $('#admin-page-content').hide();
+    $('#main-page-content').show();
+    fetch(`${API_URL}?action=ambilBeritaAPI`)
+        .then(response => response.json())
+        .then(result => {
+            if (result.status === "sukses") muatBeritaUtamaDinamis(result.data);
+        });
+}
 
-                // Memanggil API dengan parameter action agar ditangkap oleh doGet(e) Apps Script
-                fetch(`${API_URL}?action=ambilBeritaAPI`)
-                    .then(response => response.json())
-                    .then(result => {
-                        if (result.status === "sukses") {
-                            muatTabelBeritaAdmin(result.data);
-                        } else {
-                            alert("Gagal membaca database: " + result.message);
-                            $('#tabel-list-berita').html(`<tr><td colspan="4" class="text-center text-danger py-4">Error: ${result.message}</td></tr>`);
-                        }
-                    })
-                    .catch(err => {
-                        alert("Koneksi API Error: " + err.toString());
-                        $('#tabel-list-berita').html(`<tr><td colspan="4" class="text-center text-danger py-4">Gagal terhubung ke server API.</td></tr>`);
-                    });
+function bukaModalBeritaBaru() {
+    $('#adm-id-berita').val('');
+    $('#adm-kategori').val('Informasi Umum');
+    $('#adm-judul').val('');
+    $('#adm-isi').val('');
+    $('#adm-file').val('');
+    $('#btn-admin-save').prop('disabled', false).text("Publikasikan Berita Baru");
+    $('#modalAdminBerita').modal('show');
+}
+
+function siapkanEditBerita(id, kategori, judulBase64, isiBase64) {
+    const judul = decodeURIComponent(escape(atob(judulBase64)));
+    const isi = decodeURIComponent(escape(atob(isiBase64)));
+    $('#adm-id-berita').val(id);
+    $('#adm-kategori').val(kategori);
+    $('#adm-judul').val(judul);
+    $('#adm-isi').val(isi);
+    $('#adm-file').val('');
+    $('#btn-admin-save').prop('disabled', false).text("Simpan Perubahan");
+    $('#modalAdminBerita').modal('show');
+}
+
+// Fungsi muat modal bawaan template lek pancen ono
+function bukaRincianBeritaLangsung(judulText, isiText, imgUrl) {
+    try {
+        $('#infoModalLabel').text(judulText);
+        $('#modal-desc').text(isiText);
+        $('#modal-img').attr('src', imgUrl).show();
+        $('#infoModal').modal('show');
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+$(document).ready(function () {
+    // Load data awal pas pertama kali web dibukak
+    fetch(`${API_URL}?action=ambilBeritaAPI`)
+        .then(response => response.json())
+        .then(result => {
+            if (result.status === "sukses") {
+                muatBeritaUtamaDinamis(result.data);
             }
+        })
+        .catch(err => console.log("Gagal memuat data awal via API:", err));
+});
 
-            function kembaliKeBeranda() {
-                $('#admin-page-content').hide();
-                $('#main-page-content').show();
+// Fungsi cadangan / alternatif manual form depan jika dibutuhkan tetap ada
+async function kirimBeritaKeBackend() {
+    let fileInput = document.getElementById('input-foto-berita').files[0];
+    let fotoUrlHasil = "";
 
-                fetch(`${API_URL}?action=ambilBeritaAPI`)
-                    .then(response => response.json())
-                    .then(result => {
-                        if (result.status === "sukses") {
-                            muatBeritaUtamaDinamis(result.data);
-                        }
-                    })
-                    .catch(err => console.log("Gagal menyinkronkan beranda:", err));
+    if (fileInput) {
+        let formDataImgur = new FormData();
+        formDataImgur.append("image", fileInput);
+
+        let responImgur = await fetch("https://api.imgur.com/3/image", {
+            method: "POST",
+            headers: { Authorization: "Client-ID 6e80b2b8cc9df3a" },
+            body: formDataImgur
+        }).then(res => res.json());
+
+        if (responImgur.success) {
+            fotoUrlHasil = responImgur.data.link;
+        }
+    }
+
+    let payload = {
+        action: "simpanBeritaAPI",
+        dataPaket: {
+            idBerita: document.getElementById('id-berita').value,
+            judul: document.getElementById('judul-berita').value,
+            kategori: document.getElementById('kategori-berita').value,
+            isi: document.getElementById('isi-berita').value,
+            namaPetugas: "ADMIN",
+            fotoUrlDariFrontEnd: fotoUrlHasil
+        },
+        fileData: null
+    };
+
+    let response = await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+    }).then(res => res.json());
+
+    if (response.status === "sukses") {
+        alert("✅ Berita berhasil disimpan!");
+    }
+}
+// =========================================================================
+// FUNGSI BARU: MEMBUKA MODAL DETIL BERITA YANG KEREN & PROFESIONAL DI TENGAH
+// =========================================================================
+function bukaPopUpAlerteCok(judulBase64, isiBase64, imgUrl) {
+    try {
+        const judul = decodeURIComponent(escape(atob(judulBase64)));
+        const isi = decodeURIComponent(escape(atob(isiBase64)));
+        
+        // Memformat paragraf/baris baru agar teks isi tidak menumpuk rapat
+        const isiFormatHtml = isi.replace(/\n/g, '<br>');
+
+        // Jika element modal bawaan '#infoModal' ada di HTML Anda:
+        if ($('#infoModal').length) {
+            $('#infoModalLabel').text(judul);
+            
+            // Masukkan isi berita dengan format HTML (mendukung baris baru)
+            if ($('#modal-desc').length) {
+                $('#modal-desc').html(isiFormatHtml);
             }
-
-            // =========================================================================
-            // D. Membuka Pop-up Modal Kosong untuk membuat Berita Baru
-            // =========================================================================
-            function bukaModalBeritaBaru() {
-                $('#adm-id-berita').val('');
-                $('#adm-kategori').val('Informasi Umum');
-                $('#adm-judul').val('');
-                $('#adm-isi').val('');
-                $('#adm-file').val('');
-                $('#btn-admin-save').prop('disabled', false).text("Publikasikan Berita Baru");
-                $('#modalAdminBerita').modal('show');
-            }
-
-            // =========================================================================
-            // E. Membuka Pop-up Modal Terisi Data Lama untuk proses Update/Edit
-            // =========================================================================
-            function siapkanEditBerita(id, kategori, judulBase64, isiBase64) {
-                const judul = decodeURIComponent(escape(atob(judulBase64)));
-                const isi = decodeURIComponent(escape(atob(isiBase64)));
-
-                $('#adm-id-berita').val(id);
-                $('#adm-kategori').val(kategori);
-                $('#adm-judul').val(judul);
-                $('#adm-isi').val(isi);
-                $('#adm-file').val('');
-                $('#btn-admin-save').prop('disabled', false).text("Simpan Perubahan");
-                $('#modalAdminBerita').modal('show');
-            }
-
-            // =========================================================================
-            // F. Pemrosesan Data Menggunakan API Fetch POST (Menghubungi doPost)
-            // =========================================================================
-            function prosesUploadAdmin() {
-                const idBerita = $('#adm-id-berita').val() || "";
-                const kategori = $('#adm-kategori').val() || "Informasi Umum";
-                const judul = $('#adm-judul').val().trim();
-                const isi = $('#adm-isi').val().trim();
-                const fileInput = document.getElementById('adm-file');
-
-                if (!judul || !isi) {
-                    alert("Mohon isi judul dan konten pengumuman terlebih dahulu!");
-                    return;
-                }
-
-                if (document.getElementById('loader')) { $('#loader').show(); }
-                $('#btn-admin-save').prop('disabled', true).text('Sedang memproses ke sistem...');
-
-                const file = fileInput.files[0];
-                const dataPaket = { idBerita, kategori, judul, isi, namaPetugas: "ADMIN RW01" };
-
-                // Fungsi internal pengirim data terintegrasi CORS API POST
-                const kirimViaApiPost = (fileDataObj) => {
-                    fetch(API_URL, {
-                        method: 'POST',
-                        mode: 'cors',
-                        body: JSON.stringify({
-                            action: "simpanBeritaAPI",
-                            dataPaket: dataPaket,
-                            fileData: fileDataObj
-                        })
-                    })
-                        .then(response => response.json())
-                        .then(res => {
-                            if (document.getElementById('loader')) { $('#loader').hide(); }
-                            $('#btn-admin-save').prop('disabled', false);
-
-                            if (res.status === "sukses") {
-                                alert(res.message || "Data berhasil disimpan!");
-                                $('#modalAdminBerita').modal('hide');
-                                bukaDashboardManajemenBerita();
-                            } else {
-                                alert("Gagal memproses: " + res.message);
-                                $('#btn-admin-save').text(idBerita ? 'Simpan Perubahan' : 'Publikasikan Berita Baru');
-                            }
-                        })
-                        .catch(err => {
-                            if (document.getElementById('loader')) { $('#loader').hide(); }
-                            $('#btn-admin-save').prop('disabled', false).text(idBerita ? 'Simpan Perubahan' : 'Publikasikan Berita Baru');
-                            alert("Terjadi kesalahan jaringan/sistem API: " + err.toString());
-                        });
-                };
-
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const fileDataObj = { data: e.target.result.split(',')[1], mimeType: file.type, fileName: file.name };
-                        kirimViaApiPost(fileDataObj);
-                    };
-                    reader.readAsDataURL(file);
+            
+            // Set gambar berita di dalam modal secara dinamis
+            if ($('#modal-img').length) {
+                if (imgUrl && !imgUrl.includes('picsum.photos')) { 
+                    $('#modal-img').attr('src', imgUrl).show();
                 } else {
-                    kirimViaApiPost(null);
+                    // Jika hanya gambar dummy/tidak ada gambar, sembunyikan atau set default
+                    $('#modal-img').attr('src', imgUrl).show(); 
                 }
             }
+            
+            // Tampilkan modal ke tengah layar secara anggun
+            $('#infoModal').modal('show');
+            
+        } else {
+            // FALLBACK CADANGAN: Jika template tidak sengaja menghapus elemen #infoModal,
+            // Fungsi ini akan otomatis membuat modal Bootstrap instan agar web anti-error!
+            $('#modal-berita-instan-rw').remove(); // bersihkan modal lama jika ada
+            
+            const htmlModalInstan = `
+                <div class="modal fade" id="modal-berita-instan-rw" tabindex="-1" role="dialog" aria-labelledby="modalInstanLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                        <div class="modal-content border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
+                            <div class="modal-header bg-success text-white py-3">
+                                <h5 class="modal-title font-weight-bold" id="modalInstanLabel">📢 DETAIL INFORMASI RW</h5>
+                                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body p-4" style="max-height: 70vh; overflow-y: auto;">
+                                <h4 class="font-weight-bold text-dark mb-3">${judul}</h4>
+                                <img src="${imgUrl}" class="img-fluid rounded mb-3 shadow-sm" style="width: 100%; max-height: 380px; object-fit: cover;">
+                                <div class="text-secondary" style="font-size: 0.95rem; line-height: 1.6; white-space: pre-line;">${isi}</div>
+                            </div>
+                            <div class="modal-footer bg-light border-top-0">
+                                <button type="button" class="btn btn-secondary px-4 rounded-pill" data-dismiss="modal">Tutup</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            $('body').append(htmlModalInstan);
+            $('#modal-berita-instan-rw').modal('show');
+        }
+    } catch (e) {
+        console.error("Gagal decode data pop-up:", e);
+        // Fallback jika decode gagal total
+        alert("Gagal memuat detail berita.");
+    }
+}
 
-            // =========================================================================
-            // G. Inisialisasi awal saat web app pertama kali dibuka oleh warga
-            // =========================================================================
-            $(document).ready(function () {
-                fetch(`${API_URL}?action=ambilBeritaAPI`)
-                    .then(response => response.json())
-                    .then(result => {
-                        if (result.status === "sukses") {
-                            muatBeritaUtamaDinamis(result.data);
-                        }
-                    })
-                    .catch(err => console.log("Gagal memuat data awal via API:", err));
+
+
+</script>
+<script>
+$(document).ready(function() {
+    // Fungsi untuk inisialisasi Select2
+    function initSelect2() {
+        if (typeof $.fn.select2 !== 'undefined') {
+            $('#form-pilih-warga').select2({
+                placeholder: "Cari nama warga...",
+                allowClear: true,
+                dropdownParent: $('#modalNeracaKeuangan')
             });
-            async function kirimBeritaKeBackend() {
-                let fileInput = document.getElementById('input-foto-berita').files[0];
-                let fotoUrlHasil = "";
+        }
+    }
 
-                if (fileInput) {
-                    // 1. Upload ke Imgur secara anonim (Gratis & Instan)
-                    let formDataImgur = new FormData();
-                    formDataImgur.append("image", fileInput);
-
-                    let responImgur = await fetch("https://api.imgur.com/3/image", {
-                        method: "POST",
-                        headers: { Authorization: "Client-ID 6e80b2b8cc9df3a" }, // Menggunakan Client-ID publik universal
-                        body: formDataImgur
-                    }).then(res => res.json());
-
-                    if (responImgur.success) {
-                        fotoUrlHasil = responImgur.data.link; // Mendapatkan link pendek, misal: https://i.imgur.com/xxxx.png
-                    }
-                }
-
-                // 2. Kirim data paket berita seperti biasa ke Google Apps Script Anda
-                let payload = {
-                    action: "simpanBeritaAPI",
-                    dataPaket: {
-                        idBerita: document.getElementById('id-berita').value,
-                        judul: document.getElementById('judul-berita').value,
-                        kategori: document.getElementById('kategori-berita').value,
-                        isi: document.getElementById('isi-berita').value,
-                        namaPetugas: "ADMIN",
-                        fotoUrlDariFrontEnd: fotoUrlHasil // Link pendek masuk ke sini!
-                    },
-                    fileData: null // Set null saja agar backend Anda tidak terbebani file biner besar
-                };
-
-                // Tembak fetch ke API_URL Apps Script Anda seperti biasa
-                let response = await fetch(API_URL, {
-                    method: "POST",
-                    body: JSON.stringify(payload)
-                }).then(res => res.json());
-
-                if (response.status === "sukses") {
-                    alert("✅ Berita berhasil disimpan!");
-                }
-            }
-        </script>
+    // Jalankan inisialisasi saat modal terbuka
+    $('#modalNeracaKeuangan').on('shown.bs.modal', function () {
+        initSelect2();
+    });
+});
+</script>
 </body>
 
 </html>
