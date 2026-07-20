@@ -74,39 +74,91 @@
 
         .hero-banner {
             position: relative;
-            height: 480px;
             min-height: 480px;
-            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)),
-                url('https://lh3.googleusercontent.com/d/11DW6vVakC3tRWFOyLQ0ZQQ6Vm9fHJ0I8');
+            /* Gradient makin terang ke arah kanan agar gambar orang jelas */
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.15) 100%),
+                        url('https://lh3.googleusercontent.com/d/11DW6vVakC3tRWFOyLQ0ZQQ6Vm9fHJ0I8');
             background-size: cover;
-            background-position: center;
+            background-position: right center; /* Kunci agar orang di sebelah kanan selalu kelihatan */
             background-repeat: no-repeat;
-            background-attachment: fixed;
             background-color: var(--primary);
             color: white;
-            margin-bottom: -60px;
-            border-radius: 0 0 60px 60px;
+            margin-bottom: -40px;
+            border-radius: 0 0 40px 40px;
             display: flex;
             align-items: center;
             overflow: hidden;
             z-index: 1;
+            padding: 40px 0 60px 0;
+        }
+
+        .hero-banner-content {
+            max-width: 65%; /* Teks dibatasi di sebelah kiri saja agar tidak menutupi gambar orang */
+            text-align: left;
+        }
+
+        .hero-logo-box {
+            background: #ffffff;
+            border-radius: 18px;
+            width: 100px;
+            height: 100px;
+            padding: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .hero-logo-box img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
         }
 
         .hero-banner h1 {
-            font-size: 3.2rem;
+            font-size: 2.5rem;
             font-weight: 800;
-            letter-spacing: -1.5px;
-            margin-bottom: 15px;
-            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            line-height: 1.15;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
         }
 
         .hero-banner p {
-            font-size: 1.25rem;
-            opacity: 0.95;
-            max-width: 650px;
-            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 0;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
         }
 
+        /* Penyesuaian Khusus Tampilan Layar HP (Mobile) */
+        @media (max-width: 768px) {
+            .hero-banner {
+                min-height: 420px;
+                /* Di HP posisi gambar sedikit digeser agar orangnya tetap masuk frame */
+                background-position: 80% center; 
+                padding: 30px 0 50px 0;
+            }
+
+            .hero-banner-content {
+                max-width: 75%; /* Memberi ruang lebih di kanan untuk gambar orang di HP */
+            }
+
+            .hero-logo-box {
+                width: 75px;
+                height: 75px;
+                padding: 8px;
+                border-radius: 14px;
+            }
+
+            .hero-banner h1 {
+                font-size: 1.75rem;
+            }
+
+            .hero-banner p {
+                font-size: 0.85rem;
+            }
+        }
         .card {
             border: none;
             border-radius: 30px;
@@ -369,32 +421,34 @@ body.modal-open {
 
 
 
-    <div id="main-page-content">
-        <div id="home-wrapper">
-            <div id="banner-section" class="hero-banner">
+    <div id="banner-section" class="hero-banner">
                 <div class="container">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="mb-3">
-                                <div class="d-inline-block bg-white p-2 shadow-sm"
-                                    style="border-radius: 16px; width: 130px; height: 130px;">
-                                    <img src="https://lh3.googleusercontent.com/d/1X2JWhxIH7reXxkP24-yfMqU_qyGxikgR"
-                                        alt="Logo SOLID RW" class="img-fluid"
-                                        style="max-height: 100%; object-fit: contain;">
-                                </div>
-                            </div>
-
-                            <span class="badge badge-success px-3 py-2 mb-3 rounded-pill font-weight-bold"
-                                style="background: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.2);">SISTEM
-                                INFORMASI TERPADU</span>
-
-                            <h1 class="font-weight-bold" style="line-height: 1.2;">SOLID RW <br>RW 01, Desa Ganting</h1>
-                            <p class="mb-0 text-white-50">WebApps Informasi Digital Kependudukan RW.01 Desa Ganting</p>
+                    <div class="hero-banner-content">
+                        
+                        <!-- Logo -->
+                        <div class="hero-logo-box">
+                            <img src="https://lh3.googleusercontent.com/d/1X2JWhxIH7reXxkP24-yfMqU_qyGxikgR"
+                                 alt="Logo SOLID RW">
                         </div>
+
+                        <!-- Badge Status -->
+                        <div>
+                            <span class="badge badge-success px-3 py-2 mb-2 rounded-pill font-weight-bold"
+                                  style="background: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+                                SISTEM INFORMASI TERPADU
+                            </span>
+                        </div>
+
+                        <!-- Judul Utama -->
+                        <h1>SOLID RW <br><span style="font-size: 0.8em;">RW 01, Desa Ganting</span></h1>
+                        
+                        <!-- Subjudul -->
+                        <p>WebApps Informasi Digital Kependudukan RW.01 Desa Ganting</p>
+
                     </div>
                 </div>
             </div>
-
+    
     <div class="container" style="margin-top: -30px; position: relative; z-index: 5;">
     <div id="home-section">
         <div class="row">
