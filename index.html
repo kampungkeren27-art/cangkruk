@@ -74,40 +74,43 @@
 
         .hero-banner {
             position: relative;
+            height: 480px;
             min-height: 480px;
-            /* Gradient makin terang ke arah kanan agar gambar orang jelas */
-            background: linear-gradient(to right, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.15) 100%),
-                        url('https://lh3.googleusercontent.com/d/11DW6vVakC3tRWFOyLQ0ZQQ6Vm9fHJ0I8');
+            /* Gradient gelap di kiri agar teks terbaca, transparan di kanan agar orangnya jelas */
+            background: linear-gradient(to right, rgba(17, 24, 39, 0.85) 0%, rgba(17, 24, 39, 0.6) 50%, rgba(17, 24, 39, 0.1) 100%),
+                url('https://lh3.googleusercontent.com/d/11DW6vVakC3tRWFOyLQ0ZQQ6Vm9fHJ0I8');
             background-size: cover;
-            background-position: right center; /* Kunci agar orang di sebelah kanan selalu kelihatan */
+            background-position: 78% center; /* Kunci presisi agar wajah tidak terpotong di HP/PC */
             background-repeat: no-repeat;
+            background-attachment: fixed;
             background-color: var(--primary);
             color: white;
-            margin-bottom: -40px;
-            border-radius: 0 0 40px 40px;
+            margin-bottom: -60px;
+            border-radius: 0 0 60px 60px;
             display: flex;
             align-items: center;
             overflow: hidden;
             z-index: 1;
-            padding: 40px 0 60px 0;
+            transition: all 0.4s ease-in-out;
         }
 
         .hero-banner-content {
-            max-width: 65%; /* Teks dibatasi di sebelah kiri saja agar tidak menutupi gambar orang */
+            max-width: 65%; /* Agar teks tidak menjorok ke kanan menutupi wajah */
             text-align: left;
+            animation: fadeIn 0.8s ease-out;
         }
 
         .hero-logo-box {
             background: #ffffff;
             border-radius: 18px;
-            width: 100px;
-            height: 100px;
+            width: 110px;
+            height: 110px;
             padding: 10px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .hero-logo-box img {
@@ -117,47 +120,19 @@
         }
 
         .hero-banner h1 {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 800;
+            letter-spacing: -1.2px;
             line-height: 1.15;
             margin-bottom: 10px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         }
 
         .hero-banner p {
-            font-size: 1rem;
-            opacity: 0.9;
-            margin-bottom: 0;
-            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
-        }
-
-        /* Penyesuaian Khusus Tampilan Layar HP (Mobile) */
-        @media (max-width: 768px) {
-            .hero-banner {
-                min-height: 420px;
-                /* Di HP posisi gambar sedikit digeser agar orangnya tetap masuk frame */
-                background-position: 80% center; 
-                padding: 30px 0 50px 0;
-            }
-
-            .hero-banner-content {
-                max-width: 75%; /* Memberi ruang lebih di kanan untuk gambar orang di HP */
-            }
-
-            .hero-logo-box {
-                width: 75px;
-                height: 75px;
-                padding: 8px;
-                border-radius: 14px;
-            }
-
-            .hero-banner h1 {
-                font-size: 1.75rem;
-            }
-
-            .hero-banner p {
-                font-size: 0.85rem;
-            }
+            font-size: 1.15rem;
+            opacity: 0.95;
+            max-width: 550px;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
         }
         .card {
             border: none;
