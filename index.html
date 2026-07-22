@@ -74,43 +74,50 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
         }
 
-/* --- HERO BANNER (FULL BACKGROUND & PROPORSI PAS) --- */
+/* --- HERO BANNER (KUSUS HP - RATA KIWA SUPAYA WAJAH KETOK) --- */
 .hero-banner {
     position: relative;
     height: auto;
-    min-height: 380px; /* Disesuaikan agar banner tidak terlalu panjang ke bawah */
+    min-height: 380px;
     
-    background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)),
+    background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.55)),
         url('https://lh3.googleusercontent.com/d/11DW6vVakC3tRWFOyLQ0ZQQ6Vm9fHJ0I8');
-    background-size: cover;          /* Latar belakang FULL menutup container tanpa garis kosong */
+    background-size: cover;
     background-repeat: no-repeat;
     background-color: var(--primary);
     
-    /* 💥 PENTING: Position 68% membuat gambar orangnya terdorong ke kiri agar terlihat full 💥 */
-    background-position: 68% center; 
+    /* Pasang posisi gambar agak mengiri sithik ben pas wajah orangnya */
+    background-position: 65% center; 
     
     color: white;
-    margin-bottom: -40px;            /* Jarak pas ke card di bawahnya */
+    margin-bottom: -40px;
     border-radius: 0 0 40px 40px;
     display: flex;
     align-items: center;
     overflow: hidden;
     z-index: 1;
-    padding: 25px 15px;              /* Padding dipres agar ringkas */
-    text-align: center !important;
+    padding: 30px 20px;
+    
+    /* PENTING: Teks & Logo digeser rata kiwa ben ora numpuk ing wajah */
+    text-align: left !important; 
 }
 
-.hero-banner .row,
+/* Biar logo & badge ngikut rata kiri di HP */
+.hero-banner .row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
 .hero-banner .col-12 {
-    text-align: center !important;
+    padding-left: 0;
+    text-align: left !important;
 }
 
-/* Ukuran Font Menyesuaikan */
 .hero-banner h1 {
-    font-size: clamp(1.4rem, 4.5vw, 2.8rem);
+    font-size: clamp(1.5rem, 4.5vw, 2.8rem);
     font-weight: 800;
     letter-spacing: -0.5px;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     line-height: 1.2;
     text-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
     word-wrap: break-word;
@@ -119,23 +126,21 @@
 .hero-banner p {
     font-size: clamp(0.85rem, 2.2vw, 1.1rem);
     opacity: 0.95;
-    max-width: 550px;
-    margin: 0 auto;
+    margin: 0;
     text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
 }
 
-/* Ukuran Logo Dibuat Sedikit Lebih Ringkas Supaya Wajah Lebih Luas Kelihatan */
 .hero-logo-box {
     display: inline-block;
     background: #ffffff;
-    padding: 6px;
-    border-radius: 12px;
-    width: 70px;
-    height: 70px;
+    padding: 8px;
+    border-radius: 14px;
+    width: 75px;
+    height: 75px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* Tampilan Desktop / Laptop */
+/* Tampilan Desktop / Laptop (Tetep Center) */
 @media (min-width: 768px) {
     .hero-banner {
         min-height: 480px;
@@ -143,12 +148,18 @@
         margin-bottom: -60px;
         border-radius: 0 0 60px 60px;
         background-position: center center;
+        text-align: center !important;
+    }
+    .hero-banner .col-12 {
+        text-align: center !important;
+    }
+    .hero-banner p {
+        margin: 0 auto;
     }
     .hero-logo-box {
         width: 120px;
         height: 120px;
         border-radius: 16px;
-        padding: 10px;
     }
 }
 }.stat-card {
