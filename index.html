@@ -74,76 +74,75 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
         }
 
-/* --- HERO BANNER (GAMBAR UTUH 100% TANPA TERPOTONG) --- */
+/* --- HERO BANNER (FULL BACKGROUND & PROPORSI PAS) --- */
 .hero-banner {
     position: relative;
     height: auto;
-    min-height: 420px;
+    min-height: 380px; /* Disesuaikan agar banner tidak terlalu panjang ke bawah */
     
-    /* 1. Pakai background-size: CONTAIN agar gambar tidak terpotong sama sekali */
-    background-image: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.45)),
+    background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)),
         url('https://lh3.googleusercontent.com/d/11DW6vVakC3tRWFOyLQ0ZQQ6Vm9fHJ0I8');
-    background-size: contain;       /* 💥 PENTING: Menjaga proporsi asli gambar */
+    background-size: cover;          /* Latar belakang FULL menutup container tanpa garis kosong */
     background-repeat: no-repeat;
-    background-position: center center;
+    background-color: var(--primary);
     
-    /* 2. Warna latar pengganti untuk area kosong di luar gambar */
-    background-color: #1a365d;      /* Sesuaikan dengan warna dominan foto/tema RW */
+    /* 💥 PENTING: Position 40% membuat orangnya geser agak ke kanan sehingga wajah tidak tertutup logo 💥 */
+    background-position: 40% center; 
     
     color: white;
-    margin-bottom: -40px;
+    margin-bottom: -40px;            /* Jarak pas ke card di bawahnya */
     border-radius: 0 0 40px 40px;
     display: flex;
     align-items: center;
-    justify-content: center;
     overflow: hidden;
     z-index: 1;
-    padding: 35px 15px;
+    padding: 25px 15px;              /* Padding dipres agar ringkas */
     text-align: center !important;
 }
 
-/* Memastikan elemen teks & logo fleksibel di tengah */
-.hero-banner .container {
-    width: 100%;
+.hero-banner .row,
+.hero-banner .col-12 {
+    text-align: center !important;
 }
 
+/* Ukuran Font Menyesuaikan */
 .hero-banner h1 {
-    font-size: clamp(1.3rem, 4vw, 2.8rem); /* Font otomatis mengecil di HP agar pas */
+    font-size: clamp(1.4rem, 4.5vw, 2.8rem);
     font-weight: 800;
     letter-spacing: -0.5px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     line-height: 1.2;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+    text-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
     word-wrap: break-word;
 }
 
 .hero-banner p {
-    font-size: clamp(0.8rem, 2vw, 1.1rem);
+    font-size: clamp(0.85rem, 2.2vw, 1.1rem);
     opacity: 0.95;
     max-width: 550px;
     margin: 0 auto;
-    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
 }
 
-/* Logo Box dibuat lebih ramping agar tidak menutupi gambar */
+/* Ukuran Logo Dibuat Sedikit Lebih Ringkas Supaya Wajah Lebih Luas Kelihatan */
 .hero-logo-box {
     display: inline-block;
     background: #ffffff;
     padding: 6px;
     border-radius: 12px;
-    width: 65px;
-    height: 65px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    width: 70px;
+    height: 70px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* Responsif Laptop / Desktop */
+/* Tampilan Desktop / Laptop */
 @media (min-width: 768px) {
     .hero-banner {
         min-height: 480px;
-        background-size: cover; /* Di laptop/screen lebar kembali ke cover agar penuh */
         padding: 60px 0;
         margin-bottom: -60px;
         border-radius: 0 0 60px 60px;
+        background-position: center center;
     }
     .hero-logo-box {
         width: 120px;
