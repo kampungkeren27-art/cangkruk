@@ -74,11 +74,11 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
         }
 
-    /* --- HERO BANNER (REVISI HP) --- */
+   /* --- HERO BANNER (KUSUS HP - GESER GAMBAR KE KANAN) --- */
 .hero-banner {
     position: relative;
     height: auto;
-    min-height: 360px; /* Dikurangi supaya tidak terlalu panjang ke bawah */
+    min-height: 380px; /* Tinggi banner disesuaikan agar tidak terlalu panjang */
     
     background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.55)),
         url('https://lh3.googleusercontent.com/d/11DW6vVakC3tRWFOyLQ0ZQQ6Vm9fHJ0I8');
@@ -86,11 +86,11 @@
     background-repeat: no-repeat;
     background-color: var(--primary);
     
-    /* PENTING: Geser gambar lebih ke kanan (100%) agar wajah berada di area samping/bebas teks */
-    background-position: 100% center; 
+    /* 💥 PENTING: Geser posisi background ke 25% agar orangnya bergeser ke kanan 💥 */
+    background-position: 25% center; 
     
     color: white;
-    margin-bottom: -40px; /* Disesuaikan agar jarak ke card bawah lebih pas */
+    margin-bottom: -40px;
     border-radius: 0 0 40px 40px;
     display: flex;
     align-items: center;
@@ -100,9 +100,9 @@
     text-align: center;
 }
 
-/* Ukuran Font Otomatis */
+/* Ukuran Font & Spasi */
 .hero-banner h1 {
-    font-size: clamp(1.5rem, 4.5vw, 3rem); /* Di-pres sikit biar proporsional */
+    font-size: clamp(1.5rem, 4.5vw, 3rem);
     font-weight: 800;
     letter-spacing: -0.5px;
     margin-bottom: 8px;
@@ -119,25 +119,25 @@
     text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
 }
 
-/* Logo Box Di-ringkaskan */
+/* Ukuran Logo Box Ringkas */
 .hero-logo-box {
     display: inline-block;
     background: #ffffff;
     padding: 8px;
     border-radius: 14px;
-    width: 80px;  /* Mengecilkan logo di HP agar tidak makan space muka */
+    width: 80px;
     height: 80px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 
-/* Tampilan Desktop (Laptop / Tablet) */
+/* Tampilan Laptop / Desktop */
 @media (min-width: 768px) {
     .hero-banner {
         min-height: 480px;
         padding: 60px 0;
         margin-bottom: -60px;
         border-radius: 0 0 60px 60px;
-        background-position: center center; /* Di laptop kembali normal center */
+        background-position: center center; /* Di laptop kembali ke tengah */
     }
     .hero-logo-box {
         width: 120px;
@@ -145,7 +145,6 @@
         border-radius: 16px;
     }
 }
-
 .stat-card {
     background: #ffffff;
     border-left: 6px solid var(--primary);
