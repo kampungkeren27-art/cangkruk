@@ -74,7 +74,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
         }
 
- /* --- HERO BANNER (KUSUS HP - RATA KIWA SUPAYA WAJAH KETOK) --- */
+/* --- HERO BANNER (RATA TENGAH & WAJAH AMAN) --- */
 .hero-banner {
     position: relative;
     height: auto;
@@ -86,8 +86,8 @@
     background-repeat: no-repeat;
     background-color: var(--primary);
     
-    /* Pasang posisi gambar agak mengiri sithik ben pas wajah orangnya */
-    background-position: 65% center; 
+    /* 💥 PENTING: Position 35% membuat orangnya tetep pas di kanan walau teks di tengah 💥 */
+    background-position: 35% center; 
     
     color: white;
     margin-bottom: -40px;
@@ -96,40 +96,36 @@
     align-items: center;
     overflow: hidden;
     z-index: 1;
-    padding: 30px 20px;
-    
-    /* PENTING: Teks & Logo digeser rata kiwa ben ora numpuk ing wajah */
-    text-align: left !important; 
+    padding: 30px 15px;
+    text-align: center !important; /* Rata tengah di HP */
 }
 
-/* Biar logo & badge ngikut rata kiri di HP */
-.hero-banner .row {
-    margin-left: 0;
-    margin-right: 0;
-}
-
+/* Memastikan konten di dalam row & col tetep rata tengah */
+.hero-banner .row,
 .hero-banner .col-12 {
-    padding-left: 0;
-    text-align: left !important;
+    text-align: center !important;
 }
 
+/* Ukuran Font & Spasi */
 .hero-banner h1 {
-    font-size: clamp(1.5rem, 4.5vw, 2.8rem);
+    font-size: clamp(1.5rem, 4.5vw, 3rem);
     font-weight: 800;
     letter-spacing: -0.5px;
     margin-bottom: 8px;
     line-height: 1.2;
-    text-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
     word-wrap: break-word;
 }
 
 .hero-banner p {
-    font-size: clamp(0.85rem, 2.2vw, 1.1rem);
+    font-size: clamp(0.85rem, 2.2vw, 1.15rem);
     opacity: 0.95;
-    margin: 0;
-    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    max-width: 600px;
+    margin: 0 auto; /* Tengah secara horizontal */
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
 }
 
+/* Ukuran Logo Box Ringkas di Tengah */
 .hero-logo-box {
     display: inline-block;
     background: #ffffff;
@@ -137,10 +133,10 @@
     border-radius: 14px;
     width: 75px;
     height: 75px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 
-/* Tampilan Desktop / Laptop (Tetep Center) */
+/* Tampilan Laptop / Desktop */
 @media (min-width: 768px) {
     .hero-banner {
         min-height: 480px;
@@ -148,21 +144,13 @@
         margin-bottom: -60px;
         border-radius: 0 0 60px 60px;
         background-position: center center;
-        text-align: center !important;
-    }
-    .hero-banner .col-12 {
-        text-align: center !important;
-    }
-    .hero-banner p {
-        margin: 0 auto;
     }
     .hero-logo-box {
         width: 120px;
         height: 120px;
         border-radius: 16px;
     }
-}
-.stat-card {
+}.stat-card {
     background: #ffffff;
     border-left: 6px solid var(--primary);
 }
