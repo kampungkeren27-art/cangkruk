@@ -638,7 +638,7 @@ body.modal-open {
                             <div class="d-flex align-items-center">
                                 <i class="fab fa-whatsapp mr-3 text-success fa-lg"></i>
                                 <div>
-                                    <div style="font-size: 0.95rem; line-height: 1.2;">BabinKamtibmas</div>
+                                    <div style="font-size: 0.95rem; line-height: 1.2;">BabinKamtibmas (Aipda Riski Prasetyo)</div>
                                     <span class="small opacity-75 font-weight-normal" style="letter-spacing: 0.5px;">0815-2585-5470</span>
                                 </div>
                             </div>
@@ -648,7 +648,7 @@ body.modal-open {
                             <div class="d-flex align-items-center">
                                 <i class="fab fa-whatsapp mr-3 text-success fa-lg"></i>
                                 <div>
-                                    <div style="font-size: 0.95rem; line-height: 1.2;">Babinsa</div>
+                                    <div style="font-size: 0.95rem; line-height: 1.2;">Babinsa (Arthur)</div>
                                     <span class="small opacity-75 font-weight-normal" style="letter-spacing: 0.5px;">0813-3467-9116</span>
                                 </div>
                             </div>
@@ -1584,7 +1584,7 @@ body.modal-open {
                 }
 
                 if (kk !== pass) {
-                    Swal.fire({ icon: 'error', title: 'Login Gagal', text: 'Password salah! Pastikan password sama dengan No. KK.' });
+                    Swal.fire({ icon: 'error', title: 'Login Gagal', text: 'Password salah! Pastikan password sama dengan NIK.' });
                     return;
                 }
 
@@ -1745,7 +1745,7 @@ body.modal-open {
                             location.reload();
                         });
                     } else {
-                        Swal.fire({ icon: 'error', title: 'Tidak Ditemukan', text: 'Data No. KK tidak ditemukan di database warga!' });
+                        Swal.fire({ icon: 'error', title: 'Tidak Ditemukan', text: 'Data NIK tidak ditemukan di database warga!' });
                     }
                 }, 800);
             }
@@ -3568,7 +3568,7 @@ function bukaFormEditTransaksi(idTrx) {
                 <div class="col-md-8">
                     <table class="table table-sm table-borderless">
                         <tr><td class="text-muted" width="35%">NIK</td><td class="font-weight-bold">:${profil.nik}</td></tr>
-                        <tr><td class="text-muted">No. KK</td><td class="font-weight-bold">:${profil.kk}</td></tr>
+                        <tr><td class="text-muted">NIK</td><td class="font-weight-bold">:${profil.kk}</td></tr>
                         <tr><td class="text-muted">Tempat, Tgl Lahir</td><td>:${profil.tmpLahir}, ${profil.tglLahir}</td></tr>
                         <tr><td class="text-muted">Jenis Kelamin</td><td>:${profil.jk}</td></tr>
                         <tr><td class="text-muted">Pekerjaan</td><td>:${profil.pekerjaan}</td></tr>
@@ -4328,7 +4328,7 @@ function bukaFormEditTransaksi(idTrx) {
                     🔑 Login Sekarang
                 </button>
             </div>
-            <p class="small text-muted mt-3">Gunakan No. KK sebagai username dan password.</p>
+            <p class="small text-muted mt-3">Gunakan NIK sebagai username dan password.</p>
         </div>
     `;
 
